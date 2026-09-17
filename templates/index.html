@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story Scraper & Auto CMS Publisher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #090d16;
+      --bg-surface: #111827;
+      --bg-surface-elevated: #1f293d;
+      --bg-terminal: #070a12;
+      --border: #243049;
+      --border-focus: #38bdf8;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --primary: #38bdf8;
+      --primary-hover: #0284c7;
+      --primary-glow: rgba(56, 189, 248, 0.25);
+      --success: #34d399;
+      --success-glow: rgba(52, 211, 153, 0.2);
+      --warning: #fbbf24;
+      --error: #f87171;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    header {
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 0 16px var(--primary-glow);
+    }
+    .brand-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      background: linear-gradient(to right, #f8fafc, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 20px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn-secondary {
+      background: var(--bg-surface-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover {
+      background: #28354f;
+      border-color: #3b4c6e;
+    }
+
+    /* Main Container */
+    .app-container {
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      gap: 24px;
+      padding: 28px 32px;
+      flex: 1;
+      max-width: 1680px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Card Panels */
+    .panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+    }
+    .panel-title {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-primary);
+    }
+
+    /* Form inputs */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-text {
+      width: 100%;
+      background: #090e1a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .input-text:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    /* Toggle switches */
+    .toggles-group {
+      background: #0b1120;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    .toggle-label {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .toggle-title {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .toggle-desc {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    /* Custom Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #334155;
+      transition: .3s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #fff;
+      transition: .3s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: var(--primary);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    /* Grid inputs */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    /* CMS Account Card */
+    .account-card {
+      background: #0b1120;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+    .account-card:hover {
+      border-color: #334466;
+    }
+    .account-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .account-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-account-test {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: var(--primary);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+    .btn-account-test:hover:not(:disabled) {
+      background: rgba(56, 189, 248, 0.25);
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+    .btn-account-test:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .account-status-badge {
+      font-size: 12px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1.4;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .status-badge-success {
+      background: rgba(52, 211, 153, 0.15);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      color: #34d399;
+    }
+    .status-badge-error {
+      background: rgba(248, 113, 113, 0.15);
+      border: 1px solid rgba(248, 113, 113, 0.35);
+      color: #f87171;
+    }
+    .btn-toggle-pw {
+      position: absolute;
+      right: 8px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s;
+    }
+    .btn-toggle-pw:hover {
+      color: var(--text-primary);
+    }
+
+    /* License Badge & Alert Banner */
+    .license-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 13px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .license-badge:hover {
+      transform: translateY(-1px);
+    }
+    .license-badge-loading {
+      background: #1e293b;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .license-badge-active {
+      background: rgba(52, 211, 153, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      box-shadow: 0 0 10px rgba(52, 211, 153, 0.2);
+    }
+    .license-badge-inactive {
+      background: rgba(248, 113, 113, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(248, 113, 113, 0.4);
+      animation: badgePulse 2s infinite ease-in-out;
+    }
+    @keyframes badgePulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 rgba(248, 113, 113, 0); }
+      50% { opacity: 0.85; box-shadow: 0 0 12px rgba(248, 113, 113, 0.4); }
+    }
+    .license-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .license-alert-banner {
+      background: rgba(239, 68, 68, 0.12);
+      border-bottom: 1px solid rgba(239, 68, 68, 0.35);
+      padding: 10px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fca5a5;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* Modal Backdrop & Card */
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(5, 8, 15, 0.75);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+    .modal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 500px;
+      max-width: 92vw;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+    }
+    .modal-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+    .btn-modal-close:hover {
+      color: var(--text-primary);
+    }
+    .modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+    }
+
+    .hwid-box {
+      background: #080c16;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .hwid-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .hwid-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      font-weight: 700;
+      color: #38bdf8;
+      letter-spacing: 1px;
+    }
+
+    /* Primary Button */
+    .btn-primary {
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      color: #ffffff;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: linear-gradient(135deg, #0284c7, #1d4ed8);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+    }
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Progress bar */
+    .progress-container {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      background: #0b1120;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #1e293b;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #38bdf8, #34d399);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    /* Preview Card */
+    .preview-card {
+      display: none;
+      background: #0d1424;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      gap: 16px;
+    }
+    .preview-cover {
+      width: 80px;
+      height: 110px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: #1e293b;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .preview-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+      min-width: 0;
+    }
+    .preview-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .preview-meta {
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 12px;
+    }
+    .preview-meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Terminal Console */
+    .terminal-wrapper {
+      background: var(--bg-terminal);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-height: 520px;
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+    .terminal-topbar {
+      background: #0d121f;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .terminal-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+    .terminal-title {
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-secondary);
+    }
+    .terminal-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-term-action {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-term-action:hover {
+      background: #1e293b;
+      color: var(--text-primary);
+    }
+    .terminal-body {
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.6;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .log-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      word-break: break-word;
+    }
+    .log-time {
+      color: #475569;
+      flex-shrink: 0;
+      user-select: none;
+    }
+    .log-msg { flex: 1; }
+    .log-info { color: #cbd5e1; }
+    .log-success { color: #34d399; font-weight: 500; }
+    .log-warning { color: #fbbf24; }
+    .log-error { color: #f87171; font-weight: 500; }
+
+    /* Result CMS posts */
+    .cms-results-container {
+      display: none;
+      background: #091322;
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      border-radius: 10px;
+      padding: 16px;
+      gap: 12px;
+      flex-direction: column;
+    }
+    .cms-results-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--success);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cms-posts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+    .cms-post-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0f1c33;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #1c3258;
+      font-size: 12.5px;
+    }
+    .cms-post-title {
+      font-weight: 500;
+      color: #e2e8f0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-right: 12px;
+    }
+    .cms-post-id {
+      background: #1e3a8a;
+      color: #93c5fd;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    /* History section */
+    .history-card {
+      margin-top: 20px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+    }
+    .history-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .history-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    .history-item {
+      background: #0b1120;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .history-item:hover {
+      border-color: var(--primary);
+      background: #0e172c;
+    }
+    .history-slug {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #e2e8f0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 200px;
+    }
+    .history-count {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: #1e293b;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    @media (max-width: 1024px) {
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">📖</div>
+      <div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <h1 class="brand-title">Story Scraper & Publisher</h1>
+          <span class="brand-badge">Auto CMS</span>
+        </div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div id="licenseBadge" class="license-badge license-badge-loading" onclick="openLicenseModal()" title="Bấm để xem thông tin bản quyền">
+        <span class="license-dot"></span>
+        <span id="licenseBadgeText">Đang kiểm tra...</span>
+      </div>
+      <button class="btn-secondary" onclick="openOutputFolder()">
+        📁 Mở thư mục Output
+      </button>
+      <button class="btn-secondary" onclick="openCmsAdmin()">
+        🌐 Mở CMS Admin
+      </button>
+    </div>
+  </header>
+
+  <!-- Banner cảnh báo bản quyền -->
+  <div id="licenseAlertBanner" class="license-alert-banner" style="display: none;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span>🔒</span>
+      <span id="licenseAlertText">Bản quyền chưa được kích hoạt hoặc đã hết hạn. Vui lòng kích hoạt key để tiếp tục sử dụng.</span>
+    </div>
+    <button type="button" class="btn-primary" style="padding: 5px 14px; font-size: 12px;" onclick="openLicenseModal()">
+      🔑 Kích hoạt ngay
+    </button>
+  </div>
+
+  <!-- Main Grid -->
+  <main class="app-container">
+
+    <!-- Cột trái: Điều khiển & Cấu hình -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2 class="panel-title">⚙️ Cấu hình tác vụ</h2>
+      </div>
+
+      <!-- Ô nhập URL -->
+      <div class="form-group">
+        <label class="form-label" for="storyUrl">URL Truyện (TreeIQ / Fast2Tricks)</label>
+        <div class="input-wrapper">
+          <input type="text" id="storyUrl" class="input-text" placeholder="https://sad.treeiq.biz/blog/... hoặc https://intelligence.treeiq.biz/blog/..." required>
+        </div>
+      </div>
+
+      <!-- Xem trước truyện sau khi parse -->
+      <div class="preview-card" id="previewCard">
+        <img id="previewCover" class="preview-cover" src="" alt="Cover">
+        <div class="preview-info">
+          <div class="preview-title" id="previewTitle">Tên truyện</div>
+          <div class="preview-meta">
+            <span id="previewChapters">📄 0 chapters</span>
+            <span id="previewParser">🌐 TreeIQ</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tùy chọn Tự động hóa -->
+      <div class="toggles-group">
+        <label class="toggle-item">
+          <div class="toggle-label">
+            <div class="toggle-title">🌐 Tự động dịch sang tiếng Anh</div>
+            <div class="toggle-desc">Dịch title, heading và content toàn bộ chapter</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="translateToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </label>
+
+        <label class="toggle-item">
+          <div class="toggle-label">
+            <div class="toggle-title">🚀 Tự động đăng CMS BlogBio</div>
+            <div class="toggle-desc">Chế độ Chapter mode, chèn cover và tạo liên kết</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="publishToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </label>
+
+        <label class="toggle-item">
+          <div class="toggle-label">
+            <div class="toggle-title">🖼️ Tải hình ảnh minh họa</div>
+            <div class="toggle-desc">Tải ảnh bìa cover và ảnh minh họa trong truyện</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="imagesToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </label>
+      </div>
+
+      <!-- Cấu hình Tài khoản CMS -->
+      <div class="account-card" id="cmsAccountCard">
+        <div class="account-header">
+          <div class="account-title">
+            <span>🔐</span>
+            <span>Tài khoản CMS</span>
+          </div>
+          <button type="button" class="btn-account-test" id="btnTestCms" onclick="testCmsLogin()">
+            ⚡ Kiểm tra kết nối
+          </button>
+        </div>
+
+        <div id="cmsTestStatus" class="account-status-badge" style="display: none;"></div>
+
+        <div class="form-group">
+          <label class="form-label" for="cmsUrl" style="font-size: 11px;">CMS Base URL</label>
+          <input type="text" id="cmsUrl" class="input-text" style="padding: 9px 12px; font-size: 13px;" value="https://vmnewstoryus.cfx.bz" placeholder="https://vmnewstoryus.cfx.bz" oninput="saveAccountSettings()">
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label" for="cmsUser" style="font-size: 11px;">Tài khoản (Email/User)</label>
+            <input type="text" id="cmsUser" class="input-text" style="padding: 9px 12px; font-size: 13px;" value="admin" placeholder="admin" oninput="saveAccountSettings()">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cmsPass" style="font-size: 11px;">Mật khẩu</label>
+            <div class="input-wrapper">
+              <input type="password" id="cmsPass" class="input-text" style="padding: 9px 36px 9px 12px; font-size: 13px;" value="Vnpt@123" placeholder="Mật khẩu" oninput="saveAccountSettings()">
+              <button type="button" class="btn-toggle-pw" onclick="togglePasswordVisibility()" title="Ẩn/Hiện mật khẩu">👁️</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 2px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--text-secondary); cursor: pointer; user-select: none;">
+            <input type="checkbox" id="rememberAccount" checked style="accent-color: var(--primary); cursor: pointer;" onchange="saveAccountSettings()">
+            <span>Ghi nhớ tài khoản trên thiết bị này</span>
+          </label>
+          <span style="font-size: 11px; color: var(--text-muted);">Lưu an toàn ở trình duyệt</span>
+        </div>
+      </div>
+
+      <!-- Giới hạn chapter & delay -->
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label" for="fromChapter">Từ Chapter</label>
+          <input type="number" id="fromChapter" class="input-text" value="1" min="1">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="toChapter">Đến Chapter (0 = Hết)</label>
+          <input type="number" id="toChapter" class="input-text" value="0" min="0">
+        </div>
+      </div>
+
+      <!-- Nút hành động chính -->
+      <button class="btn-primary" id="btnStart" onclick="startProcess()">
+        <span>🚀 Bắt đầu Cào, Dịch & Đăng bài</span>
+      </button>
+
+      <!-- Thanh tiến trình -->
+      <div class="progress-container" id="progressContainer">
+        <div class="progress-header">
+          <span id="progressLabel">Đang xử lý...</span>
+          <span id="progressPercent">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+      </div>
+
+      <!-- Kết quả đăng CMS -->
+      <div class="cms-results-container" id="cmsResultsContainer">
+        <div class="cms-results-title">
+          <span>🎉 Đã đăng thành công lên CMS</span>
+        </div>
+        <div class="cms-posts-list" id="cmsPostsList"></div>
+      </div>
+    </div>
+
+    <!-- Cột phải: Live Console Terminal -->
+    <div class="panel" style="padding: 0; overflow: hidden;">
+      <div class="terminal-wrapper">
+        <div class="terminal-topbar">
+          <div class="terminal-dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <div class="terminal-title">live_terminal.log</div>
+          <div class="terminal-actions">
+            <button class="btn-term-action" onclick="clearTerminal()">Xóa log</button>
+            <button class="btn-term-action" onclick="copyLogs()">Sao chép</button>
+          </div>
+        </div>
+        <div class="terminal-body" id="terminalBody">
+          <div class="log-row">
+            <span class="log-time">[System]</span>
+            <span class="log-msg log-info">Hệ thống sẵn sàng. Nhập link truyện và bấm "Bắt đầu".</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Lịch sử truyện đã cào -->
+  <div style="padding: 0 32px 32px 32px; max-width: 1680px; margin: 0 auto; width: 100%;">
+    <div class="history-card">
+      <div class="history-title">
+        <span>📁 Truyện đã cào gần đây</span>
+        <button class="btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="loadHistory()">Làm mới</button>
+      </div>
+      <div class="history-list" id="historyList">
+        <div style="color: var(--text-muted); font-size: 13px;">Đang tải lịch sử...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Kích Hoạt Bản Quyền -->
+  <div id="licenseModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>🔑</span>
+          <span>Bản quyền Story Scraper</span>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeLicenseModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Thông báo trạng thái -->
+        <div id="modalLicenseStatus" class="account-status-badge status-badge-success">
+          Đang kiểm tra...
+        </div>
+
+        <!-- Khối hiển thị Machine ID -->
+        <div class="hwid-box">
+          <div style="font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase;">
+            Mã thiết bị của bạn (Machine ID / HWID)
+          </div>
+          <div class="hwid-row">
+            <span id="displayHwid" class="hwid-code">Đang tải...</span>
+            <button type="button" id="btnCopyHwid" class="btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="copyHwid()">
+              📋 Sao chép mã máy
+            </button>
+          </div>
+          <div style="font-size: 11.5px; color: var(--text-muted); line-height: 1.5;">
+            Gửi mã máy này cho Admin để được cấp <strong>License Key</strong> sử dụng theo tháng.
+          </div>
+        </div>
+
+        <!-- Ô nhập License Key -->
+        <div class="form-group">
+          <label class="form-label" for="licenseKeyInput" style="font-size: 11px;">Nhập License Key nhận từ Admin</label>
+          <textarea id="licenseKeyInput" class="input-text" rows="3" placeholder="Dán chuỗi License Key vào đây..." style="font-family: 'JetBrains Mono', monospace; font-size: 12px; resize: vertical;"></textarea>
+        </div>
+
+        <div id="activateErrorMsg" class="account-status-badge status-badge-error" style="display: none;"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="closeLicenseModal()">Đóng</button>
+        <button type="button" class="btn-primary" id="btnSubmitLicense" style="padding: 9px 18px; font-size: 13.5px;" onclick="submitLicenseKey()">
+          <span>⚡ Kích hoạt bản quyền</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Kết nối SSE để nhận log real-time
+    const evtSource = new EventSource("/api/stream-logs");
+    const terminalBody = document.getElementById("terminalBody");
+    const btnStart = document.getElementById("btnStart");
+    const progressContainer = document.getElementById("progressContainer");
+    const progressBarFill = document.getElementById("progressBarFill");
+    const progressLabel = document.getElementById("progressLabel");
+    const progressPercent = document.getElementById("progressPercent");
+
+    const previewCard = document.getElementById("previewCard");
+    const previewCover = document.getElementById("previewCover");
+    const previewTitle = document.getElementById("previewTitle");
+    const previewChapters = document.getElementById("previewChapters");
+
+    const cmsResultsContainer = document.getElementById("cmsResultsContainer");
+    const cmsPostsList = document.getElementById("cmsPostsList");
+
+    let currentOutputDir = null;
+
+    evtSource.onmessage = function(event) {
+      try {
+        const payload = JSON.parse(event.data);
+        const { type, message, time, data } = payload;
+
+        // Ghi log vào terminal
+        if (message) {
+          appendLog(type, message, time);
+        }
+
+        // Xử lý sự kiện xem trước thông tin truyện
+        if (type === "story_info" && data) {
+          previewCard.style.display = "flex";
+          previewTitle.innerText = data.title || "Không có tên";
+          previewChapters.innerText = `📄 ${data.total_chapters || 1} chapters`;
+          if (data.cover_image) {
+            previewCover.src = data.cover_image;
+            previewCover.style.display = "block";
+          } else {
+            previewCover.style.display = "none";
+          }
+        }
+
+        // Cập nhật thanh tiến trình
+        if (type === "progress" && data) {
+          progressContainer.style.display = "flex";
+          progressLabel.innerText = message;
+          progressPercent.innerText = `${data.percent}%`;
+          progressBarFill.style.width = `${data.percent}%`;
+        }
+
+        // Xử lý danh sách bài đăng CMS
+        if (type === "success" && data && data.cms_posts) {
+          renderCmsResults(data.cms_posts);
+        }
+
+        // Khi hoàn thành
+        if (type === "done") {
+          btnStart.disabled = false;
+          btnStart.innerHTML = `<span>🚀 Bắt đầu Cào, Dịch & Đăng bài</span>`;
+          if (data && data.output_dir) {
+            currentOutputDir = data.output_dir;
+          }
+          if (data && data.cms_posts && data.cms_posts.length > 0) {
+            renderCmsResults(data.cms_posts);
+          }
+          loadHistory();
+        }
+
+      } catch (err) {
+        console.error("Lỗi parse SSE event:", err);
+      }
+    };
+
+    function appendLog(type, message, time) {
+      const row = document.createElement("div");
+      row.className = "log-row";
+
+      let colorClass = "log-info";
+      if (type === "success") colorClass = "log-success";
+      else if (type === "warning") colorClass = "log-warning";
+      else if (type === "error") colorClass = "log-error";
+
+      row.innerHTML = `
+        <span class="log-time">[${time}]</span>
+        <span class="log-msg ${colorClass}">${escapeHtml(message)}</span>
+      `;
+      terminalBody.appendChild(row);
+      terminalBody.scrollTop = terminalBody.scrollHeight;
+    }
+
+    function renderCmsResults(posts) {
+      if (!posts || posts.length === 0) return;
+      cmsResultsContainer.style.display = "flex";
+      cmsPostsList.innerHTML = "";
+      posts.forEach(p => {
+        const item = document.createElement("div");
+        item.className = "cms-post-item";
+        item.innerHTML = `
+          <span class="cms-post-title" title="${escapeHtml(p.title)}">${escapeHtml(p.title)}</span>
+          <span class="cms-post-id">ID: ${p.id}</span>
+        `;
+        cmsPostsList.appendChild(item);
+      });
+    }
+
+    function startProcess() {
+      const url = document.getElementById("storyUrl").value.trim();
+      if (!url) {
+        alert("Vui lòng nhập link URL truyện!");
+        document.getElementById("storyUrl").focus();
+        return;
+      }
+
+      if (!isLicenseActive) {
+        openLicenseModal();
+        alert("Bản quyền chưa được kích hoạt hoặc đã hết hạn. Vui lòng kích hoạt License Key để bắt đầu!");
+        return;
+      }
+
+      // Reset giao diện
+      cmsResultsContainer.style.display = "none";
+      cmsPostsList.innerHTML = "";
+      progressContainer.style.display = "flex";
+      progressBarFill.style.width = "0%";
+      progressPercent.innerText = "0%";
+      progressLabel.innerText = "Đang khởi tạo...";
+
+      btnStart.disabled = true;
+      btnStart.innerHTML = `<span>⏳ Đang xử lý...</span>`;
+
+      const cmsUrl = document.getElementById("cmsUrl").value.trim() || "https://vmnewstoryus.cfx.bz";
+      const cmsUser = document.getElementById("cmsUser").value.trim() || "admin";
+      const cmsPass = document.getElementById("cmsPass").value.trim() || "Vnpt@123";
+      saveAccountSettings();
+
+      const payload = {
+        url: url,
+        translate: document.getElementById("translateToggle").checked,
+        publish: document.getElementById("publishToggle").checked,
+        download_images: document.getElementById("imagesToggle").checked,
+        from_chapter: document.getElementById("fromChapter").value,
+        to_chapter: document.getElementById("toChapter").value,
+        cms_url: cmsUrl,
+        cms_user: cmsUser,
+        cms_pass: cmsPass,
+        delay: 1.5
+      };
+
+      fetch("/api/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(r => r.json()).then(res => {
+        if (!res.ok) {
+          if (res.license_required) {
+            openLicenseModal();
+          }
+          alert(res.message || "Lỗi khi bắt đầu tác vụ");
+          btnStart.disabled = false;
+          btnStart.innerHTML = `<span>🚀 Bắt đầu Cào, Dịch & Đăng bài</span>`;
+        }
+      }).catch(err => {
+        alert("Lỗi kết nối tới server: " + err);
+        btnStart.disabled = false;
+        btnStart.innerHTML = `<span>🚀 Bắt đầu Cào, Dịch & Đăng bài</span>`;
+      });
+    }
+
+    /* Quản lý Bản quyền */
+    let currentHwid = "";
+    let isLicenseActive = false;
+
+    function fetchLicenseInfo(openModalOnInactive = false) {
+      fetch("/api/license-info")
+        .then(r => r.json())
+        .then(res => {
+          if (res.ok && res.data) {
+            const data = res.data;
+            currentHwid = data.hwid || "";
+            document.getElementById("displayHwid").innerText = currentHwid || "Không xác định";
+
+            const badge = document.getElementById("licenseBadge");
+            const badgeText = document.getElementById("licenseBadgeText");
+            const alertBanner = document.getElementById("licenseAlertBanner");
+            const alertText = document.getElementById("licenseAlertText");
+            const modalStatus = document.getElementById("modalLicenseStatus");
+
+            if (data.valid) {
+              isLicenseActive = true;
+              badge.className = "license-badge license-badge-active";
+              badgeText.innerText = `Bản quyền: ${data.user || 'User'} (${data.days_left} ngày)`;
+              alertBanner.style.display = "none";
+
+              modalStatus.className = "account-status-badge status-badge-success";
+              modalStatus.innerHTML = `<span>✅</span><span>Bản quyền hợp lệ! Cấp cho <strong>${escapeHtml(data.user)}</strong>, còn <strong>${data.days_left} ngày</strong> (hết hạn ngày ${data.expires}).</span>`;
+            } else {
+              isLicenseActive = false;
+              badge.className = "license-badge license-badge-inactive";
+              badgeText.innerText = (data.code === "EXPIRED") ? "Bản quyền: Đã hết hạn" : "Bản quyền: Chưa kích hoạt";
+
+              alertBanner.style.display = "flex";
+              alertText.innerText = data.message || "Bản quyền chưa được kích hoạt hoặc đã hết hạn.";
+
+              modalStatus.className = "account-status-badge status-badge-error";
+              modalStatus.innerHTML = `<span>❌</span><span>${escapeHtml(data.message)}</span>`;
+
+              if (openModalOnInactive) {
+                openLicenseModal();
+              }
+            }
+          }
+        })
+        .catch(err => {
+          console.error("Lỗi kiểm tra bản quyền:", err);
+        });
+    }
+
+    function openLicenseModal() {
+      document.getElementById("activateErrorMsg").style.display = "none";
+      document.getElementById("licenseModal").style.display = "flex";
+    }
+
+    function closeLicenseModal() {
+      document.getElementById("licenseModal").style.display = "none";
+    }
+
+    function copyHwid() {
+      if (!currentHwid) return;
+      navigator.clipboard.writeText(currentHwid).then(() => {
+        const btn = document.getElementById("btnCopyHwid");
+        const orig = btn.innerHTML;
+        btn.innerHTML = "✅ Đã sao chép!";
+        btn.style.color = "#34d399";
+        setTimeout(() => {
+          btn.innerHTML = orig;
+          btn.style.color = "";
+        }, 2000);
+      });
+    }
+
+    function submitLicenseKey() {
+      const keyInput = document.getElementById("licenseKeyInput");
+      const key = keyInput.value.trim();
+      const errBox = document.getElementById("activateErrorMsg");
+      const btn = document.getElementById("btnSubmitLicense");
+
+      if (!key) {
+        errBox.innerText = "Vui lòng nhập License Key!";
+        errBox.style.display = "flex";
+        return;
+      }
+
+      errBox.style.display = "none";
+      btn.disabled = true;
+      btn.innerHTML = "<span>⏳ Đang kiểm tra...</span>";
+
+      fetch("/api/activate-license", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: key })
+      })
+      .then(r => r.json().then(data => ({ status: r.status, body: data })))
+      .then(res => {
+        btn.disabled = false;
+        btn.innerHTML = "<span>⚡ Kích hoạt bản quyền</span>";
+        if (res.body.ok) {
+          alert("🎉 " + res.body.message);
+          keyInput.value = "";
+          fetchLicenseInfo(false);
+          closeLicenseModal();
+        } else {
+          errBox.innerText = res.body.message || "Key không hợp lệ!";
+          errBox.style.display = "flex";
+        }
+      })
+      .catch(err => {
+        btn.disabled = false;
+        btn.innerHTML = "<span>⚡ Kích hoạt bản quyền</span>";
+        errBox.innerText = "Lỗi kết nối tới server: " + err;
+        errBox.style.display = "flex";
+      });
+    }
+
+    function togglePasswordVisibility() {
+      const passInput = document.getElementById("cmsPass");
+      if (passInput.type === "password") {
+        passInput.type = "text";
+      } else {
+        passInput.type = "password";
+      }
+    }
+
+    function loadAccountSettings() {
+      try {
+        const savedUrl = localStorage.getItem("cms_url");
+        const savedUser = localStorage.getItem("cms_user");
+        const savedPass = localStorage.getItem("cms_pass");
+        const savedRemember = localStorage.getItem("cms_remember");
+
+        if (savedUrl) document.getElementById("cmsUrl").value = savedUrl;
+        if (savedUser) document.getElementById("cmsUser").value = savedUser;
+        if (savedPass) document.getElementById("cmsPass").value = savedPass;
+        if (savedRemember !== null) {
+          document.getElementById("rememberAccount").checked = (savedRemember === "true");
+        }
+      } catch (e) {
+        console.warn("Lỗi đọc localStorage:", e);
+      }
+    }
+
+    function saveAccountSettings() {
+      try {
+        const remember = document.getElementById("rememberAccount").checked;
+        localStorage.setItem("cms_remember", remember ? "true" : "false");
+        if (remember) {
+          localStorage.setItem("cms_url", document.getElementById("cmsUrl").value.trim());
+          localStorage.setItem("cms_user", document.getElementById("cmsUser").value.trim());
+          localStorage.setItem("cms_pass", document.getElementById("cmsPass").value.trim());
+        } else {
+          localStorage.removeItem("cms_url");
+          localStorage.removeItem("cms_user");
+          localStorage.removeItem("cms_pass");
+        }
+      } catch (e) {
+        console.warn("Lỗi ghi localStorage:", e);
+      }
+    }
+
+    function testCmsLogin() {
+      const btn = document.getElementById("btnTestCms");
+      const statusBadge = document.getElementById("cmsTestStatus");
+      const cmsUrl = document.getElementById("cmsUrl").value.trim();
+      const cmsUser = document.getElementById("cmsUser").value.trim();
+      const cmsPass = document.getElementById("cmsPass").value.trim();
+
+      if (!cmsUrl || !cmsUser || !cmsPass) {
+        showTestStatus("Vui lòng điền đủ URL, tài khoản và mật khẩu CMS", false);
+        return;
+      }
+
+      saveAccountSettings();
+      btn.disabled = true;
+      btn.innerHTML = `<span>⏳ Đang kiểm tra...</span>`;
+      statusBadge.style.display = "none";
+
+      fetch("/api/test-cms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cms_url: cmsUrl,
+          cms_user: cmsUser,
+          cms_pass: cmsPass
+        })
+      })
+      .then(r => r.json().then(data => ({ status: r.status, body: data })))
+      .then(res => {
+        btn.disabled = false;
+        btn.innerHTML = `<span>⚡ Kiểm tra kết nối</span>`;
+        if (res.body.ok) {
+          showTestStatus(res.body.message, true);
+        } else {
+          showTestStatus(res.body.message || "Đăng nhập thất bại!", false);
+        }
+      })
+      .catch(err => {
+        btn.disabled = false;
+        btn.innerHTML = `<span>⚡ Kiểm tra kết nối</span>`;
+        showTestStatus("Lỗi kết nối tới máy chủ: " + err, false);
+      });
+    }
+
+    function showTestStatus(msg, isSuccess) {
+      const statusBadge = document.getElementById("cmsTestStatus");
+      statusBadge.className = "account-status-badge " + (isSuccess ? "status-badge-success" : "status-badge-error");
+      statusBadge.innerHTML = `<span>${isSuccess ? '✅' : '❌'}</span><span>${escapeHtml(msg)}</span>`;
+      statusBadge.style.display = "flex";
+    }
+
+    function openCmsAdmin() {
+      let url = document.getElementById("cmsUrl").value.trim() || "https://vmnewstoryus.cfx.bz";
+      url = url.replace(/\/+$/, "");
+      if (!url.endsWith("/admin")) {
+        url += "/admin";
+      }
+      window.open(url, "_blank");
+    }
+
+    function clearTerminal() {
+      terminalBody.innerHTML = `
+        <div class="log-row">
+          <span class="log-time">[System]</span>
+          <span class="log-msg log-info">Đã xóa log.</span>
+        </div>
+      `;
+    }
+
+    function copyLogs() {
+      const text = Array.from(terminalBody.querySelectorAll(".log-row"))
+        .map(r => r.innerText)
+        .join("\n");
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Đã sao chép log vào clipboard!");
+      });
+    }
+
+    function openOutputFolder(path = null) {
+      fetch("/api/open-folder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path: path || currentOutputDir })
+      });
+    }
+
+    function loadHistory() {
+      fetch("/api/history")
+        .then(r => r.json())
+        .then(res => {
+          const list = document.getElementById("historyList");
+          if (res.ok && res.data && res.data.length > 0) {
+            list.innerHTML = "";
+            res.data.forEach(item => {
+              const div = document.createElement("div");
+              div.className = "history-item";
+              div.onclick = () => openOutputFolder(item.path);
+              div.innerHTML = `
+                <span class="history-slug" title="${item.slug}">📁 ${item.slug}</span>
+                <span class="history-count">${item.chapters_count} chap</span>
+              `;
+              list.appendChild(div);
+            });
+          } else {
+            list.innerHTML = `<div style="color: var(--text-muted); font-size: 13px;">Chưa có truyện nào trong thư mục output.</div>`;
+          }
+        });
+    }
+
+    function escapeHtml(text) {
+      if (!text) return "";
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // Khởi tạo ban đầu
+    fetchLicenseInfo(true);
+    loadAccountSettings();
+    loadHistory();
+  </script>
+</body>
+</html>
