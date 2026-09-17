@@ -99,7 +99,7 @@ def process_story_thread(params):
     delay = float(params.get("delay") or 1.5)
     cms_url = (params.get("cms_url") or "https://vmnewstoryus.cfx.bz").strip()
     cms_user = (params.get("cms_user") or "admin").strip()
-    cms_pass = (params.get("cms_pass") or "Vnpt@123").strip()
+    cms_pass = (params.get("cms_pass") or "admin123").strip()
 
     emit_event("info", f"🔍 Phân tích URL: {url}")
 

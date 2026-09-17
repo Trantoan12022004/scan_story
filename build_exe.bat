@@ -1,6 +1,10 @@
 @echo off
 chcp 65001 >nul
 title Build StoryScraper EXE
+
+:: Tự động tắt StoryScraper nếu đang chạy để không bị khóa file
+taskkill /F /IM StoryScraper.exe 2>nul
+
 echo ============================================================
 echo   ĐANG ĐÓNG GÓI STORY SCRAPER THÀNH FILE EXE (PyInstaller)
 echo ============================================================

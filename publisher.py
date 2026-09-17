@@ -44,7 +44,7 @@ def split_chapter_by_parts(chapter: ChapterContent) -> List[ChapterContent]:
 class CMSPublisher:
     """Quản lý đăng nhập và đăng bài viết lên CMS BlogBio (Laravel REST API)"""
 
-    def __init__(self, base_url: str = "https://vmnewstoryus.cfx.bz", username: str = "admin", password: str = "Vnpt@123"):
+    def __init__(self, base_url: str = "https://vmnewstoryus.cfx.bz", username: str = "admin", password: str = "admin123"):
         self.base_url = base_url.rstrip("/")
         self.username = username
         self.password = password

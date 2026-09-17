@@ -153,8 +153,8 @@ Trang web hỗ trợ:
                            help="Base URL của hệ thống CMS (mặc định: https://vmnewstoryus.cfx.bz)")
     arg_parser.add_argument("--cms-user", type=str, default=os.getenv("CMS_USER", "admin"),
                            help="Tài khoản đăng nhập CMS (mặc định: admin)")
-    arg_parser.add_argument("--cms-pass", type=str, default=os.getenv("CMS_PASS", "Vnpt@123"),
-                           help="Mật khẩu đăng nhập CMS (mặc định: Vnpt@123)")
+    arg_parser.add_argument("--cms-pass", type=str, default=os.getenv("CMS_PASS", "admin123"),
+                           help="Mật khẩu đăng nhập CMS (mặc định: admin123)")
     arg_parser.add_argument("--license-key", type=str, default="",
                            help="Kích hoạt License Key bản quyền")
 
