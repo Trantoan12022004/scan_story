@@ -156,12 +156,19 @@ Admin không cần tạo key thủ công hay gửi mã cho từng máy nữa:
 
 ---
 
-### 2. Tự động Cập nhật Code mới từ GitHub
-- Khi có commit mới được đẩy lên GitHub (`Trantoan12022004/scan_story`):
-  - Phía người dùng sẽ tự động thấy một banner thông báo nổi bật ở đầu trang:  
-    *🚀 "Phát hiện bản cập nhật mới trên GitHub (abc1234): '...'"*
-  - Người dùng chỉ cần bấm nút **⚡ Cập nhật ngay**, tool sẽ tự động chạy `git pull origin main` và tự động tải lại trang.
-  - Người dùng cũng có thể chủ động bấm nút **🔄 Cập nhật** trên thanh Header để kiểm tra bản mới bất kỳ lúc nào.
+### 2. Tự động Cập nhật 1-Click Cho File EXE & Mã Nguồn
+- **Đối với người dùng file `.exe` (`StoryScraper_User.exe`)**:
+  - Ứng dụng tự động kiểm tra phiên bản mới từ GitHub (`version.json`).
+  - Khi bạn phát hành phiên bản mới (ví dụ: `v2.0.1`), trên giao diện người dùng sẽ hiện thông báo nổi bật kèm mô tả thay đổi.
+  - Người dùng chỉ cần bấm **⚡ Cập nhật ngay**:
+    1. Tool tự động tải file `.exe` mới về ngầm.
+    2. Tự động thay thế file `.exe` cũ và khởi động lại phiên bản mới trong vòng 2 giây mà không bị khóa file Windows.
+- **Đối với người chạy mã nguồn Python**:
+  - Tool tự động kiểm tra commit Git và chạy lệnh `git pull origin main` khi bấm cập nhật.
+- **Quy trình Admin phát hành bản mới**:
+  1. Chạy `python build.py --target user` hoặc click `build_exe.bat` để build file `StoryScraper_User.exe`.
+  2. Tạo **Release** mới trên GitHub (ví dụ: tag `v2.0.1`) và đính kèm file `StoryScraper_User.exe`.
+  3. Cập nhật số phiên bản trong file `version.json` và `git push`. Toàn bộ khách hàng sẽ tự động nhận được thông báo cập nhật!
 
 ---
 

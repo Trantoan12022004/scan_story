@@ -2419,7 +2419,7 @@
               badgeText.innerText = `Bản quyền: ${data.user || 'User'} (${data.days_left} ngày)`;
               alertBanner.style.display = "none";
 
-              let sourceText = "Online";
+              let sourceText = "Online(sheets)";
               if (data.source === "cache") sourceText = "Offline Cache (Đã đồng bộ)";
               else if (data.source === "offline_key") sourceText = "Key Offline";
 
@@ -2546,14 +2546,18 @@
 
     function performAppUpdate() {
       const btn = document.getElementById("btnUpdateNow");
+      const isExe = latestUpdateData && latestUpdateData.is_exe;
       if (btn) {
         btn.disabled = true;
-        btn.innerHTML = "<span>⏳ Đang cập nhật code từ GitHub...</span>";
+        btn.innerHTML = isExe ? "<span>⏳ Đang tải bản EXE mới từ GitHub...</span>" : "<span>⏳ Đang cập nhật code từ GitHub...</span>";
       }
+
+      const payload = latestUpdateData ? { download_url: latestUpdateData.download_url } : {};
 
       fetch("/api/perform-update", {
         method: "POST",
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
       })
         .then(r => r.json())
         .then(res => {
@@ -2562,8 +2566,12 @@
             btn.innerHTML = "<span>⚡ Cập nhật ngay</span>";
           }
           if (res.ok) {
-            alert("🎉 " + res.message + "\n\nTrang sẽ tự động tải lại để áp dụng các thay đổi mới.");
-            window.location.reload();
+            alert("🎉 " + res.message);
+            if (res.is_exe) {
+              setTimeout(() => { window.location.reload(); }, 3500);
+            } else {
+              window.location.reload();
+            }
           } else {
             alert("❌ Lỗi khi cập nhật:\n" + (res.message || "Không thể tải mã nguồn mới"));
           }
@@ -2573,7 +2581,12 @@
             btn.disabled = false;
             btn.innerHTML = "<span>⚡ Cập nhật ngay</span>";
           }
-          alert("❌ Lỗi kết nối khi cập nhật: " + err);
+          if (isExe) {
+            alert("🚀 Bản cập nhật đang được áp dụng và khởi động lại. Vui lòng chờ vài giây...");
+            setTimeout(() => { window.location.reload(); }, 4000);
+          } else {
+            alert("❌ Lỗi kết nối khi cập nhật: " + err);
+          }
         });
     }
 

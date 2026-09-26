@@ -389,13 +389,73 @@ def admin_test_sheet():
     })
 
 
+APP_VERSION = "2.0.0"
+VERSION_CHECK_URL = "https://raw.githubusercontent.com/Trantoan12022004/scan_story/main/version.json"
+
+
+def parse_semver(ver_str: str) -> tuple:
+    """Chuyển chuỗi version 'v2.0.1' hoặc '2.0.1' thành tuple số (2, 0, 1) để so sánh"""
+    import re
+    cleaned = re.sub(r'[^0-9.]', '', str(ver_str or '0.0.0'))
+    parts = cleaned.split('.')
+    return tuple(int(p) if p.isdigit() else 0 for p in parts)
+
+
 @app.route("/api/check-update")
 def check_update_route():
-    """Kiểm tra xem có commit mới nào trên GitHub repo chính không"""
+    """Kiểm tra xem có phiên bản hoặc commit mới nào trên GitHub không"""
+    is_frozen = getattr(sys, 'frozen', False)
+    admin = is_admin_mode()
+
+    # 1. Trường hợp 1: Chạy bằng file EXE độc lập -> Kiểm tra qua version.json trên GitHub
+    if is_frozen:
+        try:
+            import requests
+            resp = requests.get(
+                f"{VERSION_CHECK_URL}?_cb={int(time.time() * 1000)}",
+                timeout=6,
+                headers={"Cache-Control": "no-cache", "Pragma": "no-cache"}
+            )
+            if resp.status_code == 200:
+                info = resp.json()
+                remote_ver = info.get("version", "2.0.0")
+                has_update = parse_semver(remote_ver) > parse_semver(APP_VERSION)
+
+                dl_key = "download_url_admin" if admin else "download_url_user"
+                download_url = info.get(dl_key) or info.get("download_url_user") or ""
+
+                return jsonify({
+                    "ok": True,
+                    "is_exe": True,
+                    "has_update": has_update,
+                    "local_sha": f"v{APP_VERSION}",
+                    "remote_sha": f"v{remote_ver}",
+                    "commit_message": info.get("changelog", "Bản cập nhật mới"),
+                    "commit_date": info.get("release_date", ""),
+                    "download_url": download_url,
+                    "html_url": "https://github.com/Trantoan12022004/scan_story/releases"
+                })
+            elif resp.status_code == 404:
+                return jsonify({
+                    "ok": True,
+                    "is_exe": True,
+                    "has_update": False,
+                    "local_sha": f"v{APP_VERSION}",
+                    "remote_sha": f"v{APP_VERSION}",
+                    "commit_message": "Bạn đang dùng phiên bản mới nhất!",
+                    "commit_date": "",
+                    "download_url": "",
+                    "html_url": "https://github.com/Trantoan12022004/scan_story/releases"
+                })
+            else:
+                return jsonify({"ok": False, "message": f"Không thể tải thông tin phiên bản mới từ GitHub (HTTP {resp.status_code})."})
+        except Exception as e:
+            return jsonify({"ok": False, "message": f"Không thể kiểm tra bản mới: {str(e)}"})
+
+    # 2. Trường hợp 2: Chạy mã nguồn Python -> Kiểm tra commit Git
     repo = "Trantoan12022004/scan_story"
     branch = "main"
 
-    # 1. Lấy SHA của commit hiện tại trên máy local
     local_sha = ""
     try:
         local_sha = subprocess.check_output(
@@ -410,7 +470,6 @@ def check_update_route():
             "message": f"Không thể đọc mã commit git cục bộ: {str(e)}"
         })
 
-    # 2. Truy vấn GitHub API lấy thông tin commit mới nhất trên branch main
     api_url = f"https://api.github.com/repos/{repo}/commits/{branch}"
     try:
         import requests
@@ -439,6 +498,7 @@ def check_update_route():
 
         return jsonify({
             "ok": True,
+            "is_exe": False,
             "has_update": has_update,
             "local_sha": local_sha[:7],
             "remote_sha": remote_sha[:7],
@@ -455,7 +515,101 @@ def check_update_route():
 
 @app.route("/api/perform-update", methods=["POST"])
 def perform_update_route():
-    """Thực hiện lệnh git pull origin main để tự động cập nhật mã nguồn mới nhất"""
+    """Tự động cập nhật: Thay thế file EXE nếu là bản đóng gói, hoặc git pull nếu là dev"""
+    is_frozen = getattr(sys, 'frozen', False)
+
+    # 1. Nếu đang chạy file EXE độc lập -> Tải file EXE mới và tự động thay thế
+    if is_frozen:
+        req_data = request.get_json(silent=True) or {}
+        download_url = req_data.get("download_url", "").strip()
+
+        if not download_url:
+            try:
+                import requests
+                r = requests.get(VERSION_CHECK_URL, timeout=6)
+                if r.status_code == 200:
+                    info = r.json()
+                    dl_key = "download_url_admin" if is_admin_mode() else "download_url_user"
+                    download_url = info.get(dl_key) or info.get("download_url_user") or ""
+            except Exception:
+                pass
+
+        if not download_url:
+            return jsonify({
+                "ok": False,
+                "message": "Không tìm thấy đường link tải file EXE cập nhật trên GitHub Release."
+            }), 400
+
+        current_exe = os.path.abspath(sys.executable)
+        app_dir = os.path.dirname(current_exe)
+        new_exe_path = os.path.join(app_dir, "new_update.exe")
+
+        try:
+            import requests
+            with requests.get(download_url, stream=True, timeout=120) as stream_resp:
+                if stream_resp.status_code != 200:
+                    return jsonify({
+                        "ok": False,
+                        "message": f"Lỗi khi tải file bản mới từ GitHub (HTTP {stream_resp.status_code}). Vui lòng thử lại sau."
+                    }), 500
+
+                with open(new_exe_path, "wb") as f:
+                    for chunk in stream_resp.iter_content(chunk_size=65536):
+                        if chunk:
+                            f.write(chunk)
+        except Exception as e:
+            if os.path.exists(new_exe_path):
+                try:
+                    os.remove(new_exe_path)
+                except Exception:
+                    pass
+            return jsonify({
+                "ok": False,
+                "message": f"Quá trình tải file EXE cập nhật thất bại: {str(e)}"
+            }), 500
+
+        # Tạo script batch phụ để thay thế file EXE sau khi tiến trình hiện tại thoát
+        bat_script_path = os.path.join(app_dir, "apply_update.bat")
+        current_pid = os.getpid()
+        bat_content = f"""@echo off
+chcp 65001 >nul
+timeout /t 1 /nobreak >nul
+taskkill /F /PID {current_pid} >nul 2>&1
+timeout /t 1 /nobreak >nul
+
+:retry_del
+del /F /Q "{current_exe}" >nul 2>&1
+if exist "{current_exe}" (
+    timeout /t 1 /nobreak >nul
+    goto retry_del
+)
+
+move /Y "{new_exe_path}" "{current_exe}" >nul 2>&1
+start "" "{current_exe}"
+del "%~f0" >nul 2>&1
+exit
+"""
+        try:
+            with open(bat_script_path, "w", encoding="utf-8") as bf:
+                bf.write(bat_content)
+
+            CREATE_NO_WINDOW = 0x08000000
+            subprocess.Popen(["cmd.exe", "/c", bat_script_path], creationflags=CREATE_NO_WINDOW)
+
+            threading.Timer(1.0, lambda: os._exit(0)).start()
+
+            return jsonify({
+                "ok": True,
+                "is_exe": True,
+                "message": "Đã tải xong bản cập nhật! Ứng dụng sẽ tự động thay thế file và khởi động lại trong 2 giây..."
+            })
+        except Exception as e:
+            return jsonify({
+                "ok": False,
+                "message": f"Lỗi kích hoạt tiến trình cập nhật: {str(e)}"
+            }), 500
+
+    # 2. Nếu đang chạy mã nguồn Python -> chạy git pull origin main
     try:
         proc = subprocess.run(
             ["git", "pull", "origin", "main"],
@@ -469,11 +623,13 @@ def perform_update_route():
         if proc.returncode == 0:
             return jsonify({
                 "ok": True,
+                "is_exe": False,
                 "message": f"Cập nhật thành công từ GitHub!\n{output_text}"
             })
         else:
             return jsonify({
                 "ok": False,
+                "is_exe": False,
                 "message": f"Lỗi khi cập nhật (mã lỗi {proc.returncode}):\n{output_text}"
             }), 500
     except Exception as e:
