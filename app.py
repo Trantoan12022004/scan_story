@@ -263,19 +263,20 @@ def process_story_thread(params):
     cms_posts = []
     if publish_cms and chapters:
         emit_event("info", f"🚀 Bắt đầu đăng lên CMS ({cms_url}) với user '{cms_user}' (Content mode: chapter)...")
-        publisher = CMSPublisher(base_url=cms_url, username=cms_user, password=cms_pass)
+        publisher = CMSPublisher(base_url=cms_url, username=cms_user, password=cms_pass, on_log=emit_event)
         if publisher.login():
             emit_event("success", f"🔑 Đăng nhập CMS thành công (User: {cms_user})!")
             created = publisher.publish_story(story_info, chapters)
             if created:
                 cms_posts = created
-                emit_event("success", f"🎉 Đăng bài thành công ({len(created)} posts đã tạo trên CMS)!", {"cms_posts": created})
-                for p in created:
-                    emit_event("success", f"   📄 ID: {p.get('id')} | Tiêu đề: {p.get('title')}")
+                if len(created) == len(chapters):
+                    emit_event("success", f"🎉 Đăng bài thành công ({len(created)}/{len(chapters)} posts đã tạo trên CMS)!", {"cms_posts": created})
+                else:
+                    emit_event("warning", f"⚠️ Đăng bài hoàn tất một phần: {len(created)}/{len(chapters)} chapter thành công, {len(chapters) - len(created)} chapter thất bại. Xem chi tiết lỗi ở trên.", {"cms_posts": created})
             else:
-                emit_event("error", "❌ Lỗi đăng bài lên CMS.")
+                emit_event("error", f"❌ Lỗi đăng bài lên CMS (0/{len(chapters)} chapter thành công). Chi tiết: {publisher.last_error or 'Kiểm tra lại log lỗi ở trên'}")
         else:
-            emit_event("error", f"❌ Đăng nhập CMS thất bại cho user '{cms_user}'. Vui lòng kiểm tra lại URL hoặc mật khẩu.")
+            emit_event("error", f"❌ Đăng nhập CMS thất bại cho user '{cms_user}': {publisher.last_error or 'Vui lòng kiểm tra lại URL hoặc mật khẩu.'}")
 
     is_processing = False
     emit_event("done", "🎉 Đã hoàn tất toàn bộ quy trình!", {
@@ -306,9 +307,10 @@ def test_cms():
                 "message": f"Kết nối & Đăng nhập thành công CMS với tài khoản '{cms_user}'!"
             })
         else:
+            err_detail = publisher.last_error or f"Kiểm tra lại tài khoản '{cms_user}', mật khẩu hoặc CMS URL."
             return jsonify({
                 "ok": False,
-                "message": f"Đăng nhập thất bại! Kiểm tra lại tài khoản '{cms_user}', mật khẩu hoặc CMS URL."
+                "message": f"Đăng nhập thất bại: {err_detail}"
             }), 401
     except Exception as e:
         return jsonify({"ok": False, "message": f"Lỗi kết nối tới CMS: {str(e)}"}), 500

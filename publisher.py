@@ -53,7 +53,7 @@ def split_chapter_by_parts(chapter: ChapterContent) -> List[ChapterContent]:
 class CMSPublisher:
     """Quản lý đăng nhập và đăng bài viết lên CMS BlogBio (Laravel REST API)"""
 
-    def __init__(self, base_url: str = "https://vmnewstoryus.cfx.bz", username: str = "admin", password: str = "Vnpt@123"):
+    def __init__(self, base_url: str = "https://vmnewstoryus.cfx.bz", username: str = "admin", password: str = "Vnpt@123", on_log=None):
         self.base_url = base_url.rstrip("/")
         self.username = username
         self.password = password
@@ -62,17 +62,76 @@ class CMSPublisher:
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         })
         self.csrf_token: Optional[str] = None
+        self.on_log = on_log              # Callback phát log ra UI: on_log(type, message)
+        self.last_error: str = ""         # Lưu trữ chi tiết lỗi gần nhất
 
-    def login(self) -> bool:
+    def log(self, level: str, message: str):
+        """Ghi log nội bộ ra console và phát qua callback ra giao diện UI nếu có"""
+        try:
+            if level == "error":
+                print(f"  ❌ {message}")
+            elif level == "success":
+                print(f"  ✅ {message}")
+            elif level == "warning":
+                print(f"  ⚠️ {message}")
+            else:
+                print(f"  ℹ️ {message}")
+        except Exception:
+            try:
+                print(f"  [{level.upper()}] {message.encode('ascii', 'replace').decode('ascii')}")
+            except Exception:
+                pass
+
+        if self.on_log:
+            try:
+                self.on_log(level, message)
+            except Exception:
+                pass
+
+    def _extract_error_detail(self, response: requests.Response) -> str:
+        """Trích xuất chi tiết lỗi từ HTTP Response của CMS"""
+        status_code = response.status_code
+        try:
+            res_data = response.json()
+            msg = res_data.get("message") or ""
+            # Bóc tách lỗi chi tiết theo từng field validate (ví dụ slug, title, content...)
+            errors = res_data.get("errors")
+            if errors and isinstance(errors, dict):
+                error_list = []
+                for field, err in errors.items():
+                    if isinstance(err, list):
+                        error_list.append(f"{field}: {', '.join(err)}")
+                    else:
+                        error_list.append(f"{field}: {err}")
+                detail_str = "; ".join(error_list)
+                return f"HTTP {status_code}: {msg} ({detail_str})" if msg else f"HTTP {status_code}: {detail_str}"
+            elif msg:
+                return f"HTTP {status_code}: {msg}"
+            return f"HTTP {status_code}: {response.text[:200]}"
+        except Exception:
+            # CMS trả về HTML hoặc lỗi 500 / 502
+            clean_text = response.text[:150].replace('\n', ' ').strip()
+            return f"HTTP {status_code} ({response.reason}): {clean_text}"
+
+    def login(self, on_log=None) -> bool:
         """Đăng nhập vào hệ thống CMS và lấy CSRF Token cho API"""
+        if on_log:
+            self.on_log = on_log
+
         login_url = f"{self.base_url}/login"
         try:
             # 1. Lấy _token từ trang login
             r1 = self.session.get(login_url, timeout=15)
+            if r1.status_code != 200:
+                self.last_error = f"Không thể tải trang login (HTTP {r1.status_code})"
+                self.log("error", f"Đăng nhập thất bại: {self.last_error}")
+                return False
+
             soup1 = BeautifulSoup(r1.text, "lxml")
             token_input = soup1.find("input", {"name": "_token"})
             if not token_input:
-                print("  ❌ Không tìm thấy _token trong trang login.")
+                self.last_error = "Không tìm thấy _token trong trang login (kiểm tra lại CMS URL)."
+                self.log("error", f"Đăng nhập thất bại: {self.last_error}")
                 return False
 
             login_data = {
@@ -85,8 +144,19 @@ class CMSPublisher:
             # 2. Gửi request đăng nhập
             r2 = self.session.post(login_url, data=login_data, timeout=15)
             if r2.status_code != 200:
-                print(f"  ❌ Đăng nhập thất bại (HTTP {r2.status_code})")
+                self.last_error = f"Request đăng nhập thất bại (HTTP {r2.status_code})"
+                self.log("error", f"Đăng nhập thất bại: {self.last_error}")
                 return False
+
+            # Kiểm tra xem có cảnh báo sai tài khoản/mật khẩu trong trang không
+            soup2 = BeautifulSoup(r2.text, "lxml")
+            error_box = soup2.find(class_=lambda c: c and any(k in c for k in ["alert-danger", "invalid-feedback", "error-msg"]))
+            if error_box:
+                err_text = error_box.get_text(strip=True)
+                if err_text:
+                    self.last_error = f"Sai tài khoản hoặc mật khẩu: {err_text}"
+                    self.log("error", f"Đăng nhập thất bại: {self.last_error}")
+                    return False
 
             # 3. Lấy CSRF token cho API từ trang admin
             admin_url = f"{self.base_url}/admin/posts/new"
@@ -97,11 +167,16 @@ class CMSPublisher:
                 self.csrf_token = csrf_meta["content"]
                 return True
             else:
-                print("  ❌ Không tìm thấy csrf-token trong admin.")
+                if "/login" in r3.url:
+                    self.last_error = "Tài khoản hoặc mật khẩu không chính xác (bị điều hướng lại trang login)."
+                else:
+                    self.last_error = "Không tìm thấy csrf-token trong admin (kiểm tra quyền hạn của tài khoản CMS)."
+                self.log("error", f"Đăng nhập thất bại: {self.last_error}")
                 return False
 
         except Exception as e:
-            print(f"  ❌ Lỗi khi đăng nhập CMS: {e}")
+            self.last_error = f"Lỗi kết nối tới CMS: {str(e)}"
+            self.log("error", f"Đăng nhập thất bại: {self.last_error}")
             return False
 
     def build_chapter_description(self, cover_url: str, chapter: ChapterContent) -> str:
@@ -127,11 +202,14 @@ class CMSPublisher:
 
         return "".join(html_parts)
 
-    def publish_story(self, story_info: StoryInfo, chapters: List[ChapterContent], skip_intro: bool = True) -> Optional[list]:
+    def publish_story(self, story_info: StoryInfo, chapters: List[ChapterContent], skip_intro: bool = True, on_log=None) -> Optional[list]:
         """
         Đăng các chapter theo dạng Standalone Posts và liên kết chuỗi next_chapter & prev_chapter.
         Giúp mỗi chapter hiển thị đúng tiêu đề riêng của nó, không bị dính tiêu đề chương 1.
         """
+        if on_log:
+            self.on_log = on_log
+
         if not self.csrf_token:
             if not self.login():
                 return None
@@ -142,6 +220,8 @@ class CMSPublisher:
             resolved_chapters.extend(split_chapter_by_parts(ch))
 
         if not resolved_chapters:
+            self.last_error = "Không có nội dung chương nào để đăng."
+            self.log("error", self.last_error)
             return None
 
         # 1. Dự tính trước slug duy nhất cho từng chapter để liên kết Next/Prev
@@ -199,17 +279,34 @@ class CMSPublisher:
 
             try:
                 r = self.session.post(api_url, json=payload, headers=api_headers, timeout=30)
-                res_data = r.json()
-                if r.status_code in (200, 201) and res_data.get("ok"):
-                    post_data = res_data.get("data", {})
-                    created_posts.append(post_data)
-                    print(f"  ✅ Đã tạo [{idx+1}/{total}]: {ch.title[:50]} (Next: {next_slug or 'Hết'})")
+                if r.status_code in (200, 201):
+                    try:
+                        res_data = r.json()
+                    except Exception:
+                        res_data = {}
+
+                    if res_data.get("ok", True):
+                        post_data = res_data.get("data", {})
+                        created_posts.append(post_data)
+                        post_id = post_data.get("id", "N/A")
+                        self.log("success", f"[{idx+1}/{total}] Đã đăng chapter: {ch.title[:45]} (ID: {post_id})")
+                    else:
+                        err_msg = res_data.get("message") or "CMS phản hồi ok: false"
+                        self.last_error = f"Lỗi tạo chapter: {err_msg}"
+                        self.log("error", f"[{idx+1}/{total}] '{ch.title[:35]}': {self.last_error}")
                 else:
-                    print(f"  ❌ Lỗi tạo chapter {ch.title[:30]}: {res_data.get('message')}")
-                    if "errors" in res_data:
-                        print(f"     Chi tiết lỗi: {res_data.get('errors')}")
+                    detail_error = self._extract_error_detail(r)
+                    self.last_error = detail_error
+                    self.log("error", f"[{idx+1}/{total}] Lỗi đăng '{ch.title[:35]}': {detail_error}")
+
+            except requests.exceptions.Timeout:
+                err_msg = "Request bị quá thời gian (Timeout >30s) khi gửi lên CMS"
+                self.last_error = err_msg
+                self.log("error", f"[{idx+1}/{total}] '{ch.title[:35]}': {err_msg}")
             except Exception as e:
-                print(f"  ❌ Lỗi khi gửi request: {e}")
+                err_msg = f"Lỗi kết nối khi gửi request: {str(e)}"
+                self.last_error = err_msg
+                self.log("error", f"[{idx+1}/{total}] '{ch.title[:35]}': {err_msg}")
 
         return created_posts if created_posts else None
 
