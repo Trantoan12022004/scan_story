@@ -1,7 +1,7 @@
 {
-  "version": "2.0.0",
+  "version": "2.0.2",
   "release_date": "2026-09-26",
-  "changelog": "Tách riêng 2 phiên bản User/Admin, hỗ trợ Google Sheets thời gian thực và tự động cập nhật file EXE",
-  "download_url_user": "https://github.com/Trantoan12022004/scan_story/releases/latest/download/StoryScraper_User.exe",
-  "download_url_admin": "https://github.com/Trantoan12022004/scan_story/releases/latest/download/StoryScraper_Admin.exe"
+  "changelog": "Cập nhật hiển thị nguồn bản quyền Online(sheets123456) và tối ưu giao diện",
+  "download_url_user": "https://github.com/Trantoan12022004/scan_story/releases/download/v2.0.2/StoryScraper_User.exe",
+  "download_url_admin": "https://github.com/Trantoan12022004/scan_story/releases/download/v2.0.2/StoryScraper_Admin.exe"
 }
