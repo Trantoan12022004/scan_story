@@ -1,0 +1,1 @@
+Chapter 2 - The Secret Ledger of Shaker HeightsThe study on the third floor of the Hudson Valley estate was a fortress of dark mahogany, leather-bound books, and encrypted communication terminals. Outside the heavy oak doors, two armed guards stood at attention, their rifles held at low-ready.

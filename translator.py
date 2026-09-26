@@ -7,6 +7,33 @@ from typing import List, Tuple
 from parsers.base import ChapterContent
 
 
+import re
+
+
+def clean_translated_markdown(text: str) -> str:
+    """
+    Chuẩn hóa khoảng trắng sau khi Google Translate dịch văn bản có chứa markdown:
+    Tránh trường hợp Google Translate vô tình tách khoảng trắng vào trong dấu sao:
+    '** text **' -> '**text**'
+    '* text *' -> '*text*'
+    '~~ text ~~' -> '~~text~~'
+    """
+    if not text:
+        return ""
+    try:
+        from parsers.base import fix_mojibake
+        text = fix_mojibake(text)
+    except Exception:
+        pass
+    # Bold: ** text ** -> **text**
+    text = re.sub(r"\*\*\s+([^\*]+?)\s+\*\*", r"**\1**", text)
+    # Italic: * text * -> *text*
+    text = re.sub(r"(?<!\*)\*\s+([^\*]+?)\s+\*(?!\*)", r"*\1*", text)
+    # Strike: ~~ text ~~ -> ~~text~~
+    text = re.sub(r"~~\s+(.+?)\s+~~", r"~~\1~~", text)
+    return text
+
+
 class Translator:
     """Tự động dịch văn bản sang tiếng Anh sử dụng Google Translate endpoint"""
 
@@ -35,7 +62,7 @@ class Translator:
             if r.status_code == 200:
                 data = r.json()
                 if data and isinstance(data, list) and len(data) > 0 and len(data[0]) > 0:
-                    return data[0][0]
+                    return clean_translated_markdown(data[0][0])
         except Exception as e:
             print(f"  ⚠ Lỗi dịch text: {e}")
         return text
@@ -107,7 +134,7 @@ class Translator:
                     translated_combined = data[0][0]
                     parts = translated_combined.split("====SPLIT====")
                     if len(parts) == len(texts):
-                        return [p.strip() for p in parts]
+                        return [clean_translated_markdown(p.strip()) for p in parts]
                     # Fallback nếu số đoạn sau khi tách không khớp
                     return [self.translate_text(t) for t in texts]
         except Exception as e:

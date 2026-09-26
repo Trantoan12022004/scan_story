@@ -10,8 +10,9 @@ import queue
 import threading
 import subprocess
 import webbrowser
+import urllib.parse
 from urllib.parse import urlparse, urljoin
-from flask import Flask, render_template, request, Response, jsonify
+from flask import Flask, render_template, request, Response, jsonify, send_from_directory
 
 # Fix encoding cho Windows console
 if sys.platform == "win32":
@@ -34,6 +35,9 @@ if getattr(sys, 'frozen', False):
 else:
     app = Flask(__name__)
     APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.jinja_env.auto_reload = True
 
 # Quản lý danh sách các subscriber SSE để hỗ trợ nhiều tab trình duyệt
 subscribers = []
@@ -137,7 +141,8 @@ def process_story_thread(params):
         "slug": story_info.slug,
         "total_chapters": story_info.total_chapters,
         "base_url": story_info.base_url,
-        "cover_image": story_info.cover_image
+        "cover_image": story_info.cover_image,
+        "parser_name": parser.get_name()
     })
 
     # Xử lý tổng số chapter
@@ -179,16 +184,23 @@ def process_story_thread(params):
         })
 
         ch_url = parser.build_chapter_url(story_info.base_url, ch_num, story_info.is_single_page)
-        current_chapter_match = urlparse(url).path
-        is_cached = (story_info.is_single_page and ch_num == 1) or (f"/chapter-{ch_num}" in current_chapter_match)
-
-        if is_cached and html:
-            ch_html = html
-            emit_event("info", f"   ♻ Sử dụng cache từ lần tải đầu")
+        
+        ch_html = getattr(parser, "get_cached_html", lambda u: None)(ch_url)
+        if ch_html:
+            emit_event("info", f"   ♻ Sử dụng cache từ lần quét cấu trúc")
         else:
-            ch_html = downloader.fetch_html(ch_url)
-            if ch_num < end_ch:
-                downloader.wait()
+            current_chapter_match = urlparse(url).path
+            clean_ch_url = ch_url.split("?")[0].split("#")[0].rstrip("/")
+            clean_init_url = url.split("?")[0].split("#")[0].rstrip("/")
+            is_cached = (story_info.is_single_page and ch_num == 1) or (clean_ch_url == clean_init_url) or (f"/chapter-{ch_num}" in current_chapter_match)
+
+            if is_cached and html:
+                ch_html = html
+                emit_event("info", f"   ♻ Sử dụng cache từ lần tải đầu")
+            else:
+                ch_html = downloader.fetch_html(ch_url)
+                if ch_num < end_ch:
+                    downloader.wait()
 
         if not ch_html:
             emit_event("error", f"   ❌ Thất bại khi tải Chapter {ch_num}")
@@ -373,20 +385,317 @@ def get_history():
     return jsonify({"ok": True, "data": history[:15]})
 
 
+def force_bring_window_foreground(class_filter=None, title_filter=None):
+    """
+    Đưa cửa sổ mong muốn (Windows Explorer, Media Player, Chrome) lên trước màn hình (Foreground),
+    giải quyết triệt để vấn đề ứng dụng bị mở ngầm dưới trình duyệt.
+    """
+    if sys.platform != "win32":
+        return
+
+    def _bring():
+        time.sleep(0.35)
+        try:
+            import ctypes
+            from ctypes import wintypes
+            user32 = ctypes.windll.user32
+            kernel32 = ctypes.windll.kernel32
+
+            # Tap phím Alt để bypass cơ chế ForegroundLockTimeout của Windows
+            user32.keybd_event(0x12, 0, 0, 0)
+            user32.keybd_event(0x12, 0, 2, 0)
+
+            hwnds = []
+            @ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
+            def enum_proc(hwnd, lparam):
+                if user32.IsWindowVisible(hwnd):
+                    c_buf = ctypes.create_unicode_buffer(256)
+                    user32.GetClassNameW(hwnd, c_buf, 256)
+                    cls = c_buf.value
+                    t_buf = ctypes.create_unicode_buffer(256)
+                    user32.GetWindowTextW(hwnd, t_buf, 256)
+                    title = t_buf.value
+
+                    match = True
+                    if class_filter and class_filter.lower() not in cls.lower():
+                        match = False
+                    if title_filter and title_filter.lower() not in title.lower():
+                        match = False
+                    if match and (title or cls == "CabinetWClass"):
+                        hwnds.append(hwnd)
+                return True
+
+            user32.EnumWindows(enum_proc, 0)
+
+            if hwnds:
+                target_hwnd = hwnds[0]
+                fore_hwnd = user32.GetForegroundWindow()
+                fore_tid = user32.GetWindowThreadProcessId(fore_hwnd, None)
+                cur_tid = kernel32.GetCurrentThreadId()
+                target_tid = user32.GetWindowThreadProcessId(target_hwnd, None)
+
+                if fore_tid and cur_tid and fore_tid != cur_tid:
+                    user32.AttachThreadInput(fore_tid, cur_tid, True)
+                if target_tid and cur_tid and target_tid != cur_tid:
+                    user32.AttachThreadInput(cur_tid, target_tid, True)
+
+                user32.ShowWindow(target_hwnd, 9)  # SW_RESTORE
+                user32.BringWindowToTop(target_hwnd)
+                user32.SetForegroundWindow(target_hwnd)
+
+                if fore_tid and cur_tid and fore_tid != cur_tid:
+                    user32.AttachThreadInput(fore_tid, cur_tid, False)
+                if target_tid and cur_tid and target_tid != cur_tid:
+                    user32.AttachThreadInput(cur_tid, target_tid, False)
+        except Exception:
+            pass
+
+    threading.Thread(target=_bring, daemon=True).start()
+
+
+def resolve_video_path(req_path: str) -> str:
+    """
+    Tìm và chuẩn hóa đường dẫn file video một cách cực kỳ mạnh mẽ:
+    - Sửa các lỗi escape backslash từ JS (ví dụ \t -> Tab, \v -> Vertical Tab, \3 -> Octal, C:\ bị mất).
+    - Tự động quét tìm file trong thư mục output/videos theo mã ID video Facebook hoặc tên tương đồng.
+    """
+    if not req_path:
+        return ""
+
+    videos_dir = os.path.abspath(os.path.join(APP_ROOT, "output", "videos"))
+    os.makedirs(videos_dir, exist_ok=True)
+
+    # Chuẩn hóa về forward slash
+    clean_path = req_path.replace("\\", "/").strip()
+
+    # 1. Kiểm tra trực tiếp file có tồn tại
+    if os.path.isfile(clean_path):
+        return os.path.abspath(clean_path)
+
+    # 2. Kiểm tra nếu ghép với APP_ROOT
+    joined_root = os.path.abspath(os.path.join(APP_ROOT, clean_path.lstrip("/")))
+    if os.path.isfile(joined_root):
+        return joined_root
+
+    # 3. Thử với basename trong videos_dir
+    base_name = os.path.basename(clean_path)
+    cand_base = os.path.join(videos_dir, base_name)
+    if os.path.isfile(cand_base):
+        return cand_base
+
+    # 4. Tìm kiếm thông minh trong videos_dir nếu chuỗi bị lỗi parse từ JS
+    try:
+        existing_files = [f for f in os.listdir(videos_dir) if f.lower().endswith((".mp4", ".m4a", ".webm", ".mkv"))]
+    except Exception:
+        existing_files = []
+
+    if not existing_files:
+        return ""
+
+    # 4a. Tìm theo mã số Facebook (chuỗi số dài >= 8 ký tự, ví dụ 1450514546921034)
+    import re
+    ids = re.findall(r"\d{8,}", clean_path)
+    if ids:
+        for vid_id in reversed(ids):
+            for ef in existing_files:
+                if vid_id in ef:
+                    return os.path.join(videos_dir, ef)
+
+    # 4b. Khớp một phần tên file (nếu tên file thật nằm trong clean_path hoặc ngược lại)
+    for ef in existing_files:
+        ef_stem = os.path.splitext(ef)[0]
+        if len(ef_stem) > 10 and (ef_stem in clean_path or clean_path in ef):
+            return os.path.join(videos_dir, ef)
+
+    # 4c. Tìm theo từ khóa (chia tách theo ký tự đặc biệt)
+    clean_no_ext = os.path.splitext(base_name)[0]
+    keywords = [seg for seg in re.split(r"[^a-zA-Z0-9]", clean_no_ext) if len(seg) >= 4]
+    if keywords:
+        best_match = None
+        best_score = 0
+        for ef in existing_files:
+            score = sum(1 for kw in keywords if kw.lower() in ef.lower())
+            if score > best_score:
+                best_score = score
+                best_match = ef
+        if best_match and best_score >= 2:
+            return os.path.join(videos_dir, best_match)
+
+    # Nếu chỉ có duy nhất 1 video trong thư mục
+    if len(existing_files) == 1:
+        return os.path.join(videos_dir, existing_files[0])
+
+    return ""
+
+
 @app.route("/api/open-folder", methods=["POST"])
 def open_folder():
-    """Mở thư mục trên Windows Explorer"""
-    data = request.json or {}
-    folder_path = data.get("path") or os.path.abspath(os.path.join(APP_ROOT, "output"))
-    if os.path.exists(folder_path):
+    """Mở thư mục trên Windows Explorer và đưa cửa sổ lên màn hình chính"""
+    data = request.get_json(silent=True) or {}
+    req_path = (data.get("path") or "").strip()
+
+    # Nếu người dùng truyền đường dẫn tới một video hoặc chuỗi video bị lỗi ký tự
+    resolved_file = resolve_video_path(req_path) if req_path else ""
+    if resolved_file and os.path.isfile(resolved_file):
+        norm_path = os.path.normpath(resolved_file)
+        try:
+            if sys.platform == "win32":
+                subprocess.Popen(f'explorer.exe /select,"{norm_path}"')
+                force_bring_window_foreground(class_filter="CabinetWClass")
+            elif sys.platform == "darwin":
+                subprocess.Popen(["open", "-R", norm_path])
+            else:
+                subprocess.Popen(["xdg-open", os.path.dirname(norm_path)])
+            return jsonify({
+                "ok": True,
+                "path": norm_path.replace("\\", "/"),
+                "message": f"Đã hiển thị video trong thư mục: {os.path.basename(norm_path)}"
+            })
+        except Exception as e:
+            return jsonify({"ok": False, "message": f"Lỗi hiển thị file: {e}"}), 500
+
+    # Nếu là thư mục
+    if not req_path:
+        target_path = os.path.abspath(os.path.join(APP_ROOT, "output", "videos"))
+    elif os.path.isabs(req_path):
+        target_path = os.path.abspath(req_path)
+    else:
+        target_path = os.path.abspath(os.path.join(APP_ROOT, req_path))
+
+    norm_path = os.path.normpath(target_path)
+    os.makedirs(norm_path, exist_ok=True)
+
+    try:
         if sys.platform == "win32":
-            os.startfile(folder_path)
+            subprocess.Popen(f'explorer.exe "{norm_path}"')
+            force_bring_window_foreground(class_filter="CabinetWClass")
         elif sys.platform == "darwin":
-            subprocess.Popen(["open", folder_path])
+            subprocess.Popen(["open", norm_path])
         else:
-            subprocess.Popen(["xdg-open", folder_path])
-        return jsonify({"ok": True})
-    return jsonify({"ok": False, "message": "Thư mục không tồn tại"}), 404
+            subprocess.Popen(["xdg-open", norm_path])
+        return jsonify({
+            "ok": True,
+            "path": norm_path.replace("\\", "/"),
+            "message": "Đã mở thư mục thành công."
+        })
+    except Exception as e:
+        return jsonify({"ok": False, "message": f"Lỗi khi mở thư mục: {e}"}), 500
+
+
+@app.route("/api/open-file", methods=["POST"])
+def open_file():
+    """Mở video bằng ứng dụng mặc định trên máy tính (Windows Media Player, VLC, ...)"""
+    data = request.get_json(silent=True) or {}
+    req_path = (data.get("path") or "").strip()
+    if not req_path:
+        return jsonify({"ok": False, "message": "Đường dẫn file không hợp lệ."}), 400
+
+    resolved = resolve_video_path(req_path)
+    if not resolved or not os.path.isfile(resolved):
+        return jsonify({"ok": False, "message": f"Không tìm thấy file video: {os.path.basename(req_path)}"}), 404
+
+    norm_path = os.path.normpath(resolved)
+
+    try:
+        if sys.platform == "win32":
+            try:
+                os.startfile(norm_path)
+            except Exception:
+                subprocess.Popen(f'cmd.exe /c start "" "{norm_path}"', shell=True)
+            force_bring_window_foreground()
+        elif sys.platform == "darwin":
+            subprocess.Popen(["open", norm_path])
+        else:
+            subprocess.Popen(["xdg-open", norm_path])
+        return jsonify({
+            "ok": True,
+            "path": norm_path.replace("\\", "/"),
+            "message": f"Đã mở file: {os.path.basename(norm_path)}"
+        })
+    except Exception as e:
+        return jsonify({"ok": False, "message": f"Không thể mở file: {e}"}), 500
+
+
+@app.route("/api/fb/probe", methods=["POST"])
+def fb_probe():
+    """Dò tìm các mức chất lượng của video Facebook"""
+    data = request.get_json(silent=True) or {}
+    url = data.get("url", "").strip()
+    if not url:
+        return jsonify({"ok": False, "message": "Vui lòng nhập link video hoặc Reel Facebook."}), 400
+    try:
+        from fb_downloader import probe_facebook_video
+        info = probe_facebook_video(url)
+        return jsonify({"ok": True, "data": info})
+    except Exception as e:
+        return jsonify({"ok": False, "message": str(e)}), 500
+
+
+@app.route("/api/fb/download", methods=["POST"])
+def fb_download():
+    """Tải video Facebook theo chất lượng đã chọn"""
+    data = request.get_json(silent=True) or {}
+    url = data.get("url", "").strip()
+    format_id = data.get("format_id", "best").strip()
+    if not url:
+        return jsonify({"ok": False, "message": "Vui lòng nhập link video Facebook."}), 400
+
+    output_dir = os.path.join(APP_ROOT, "output", "videos")
+    os.makedirs(output_dir, exist_ok=True)
+    try:
+        from fb_downloader import download_facebook_video
+        res = download_facebook_video(url, format_id=format_id, output_dir=output_dir)
+        # Thêm stream_url và absolute path
+        file_name = res.get("file_name", "")
+        res["stream_url"] = f"/api/fb/stream-video/{urllib.parse.quote(file_name)}"
+        res["abs_path"] = os.path.abspath(os.path.join(output_dir, file_name)).replace("\\", "/")
+        return jsonify({"ok": True, "data": res})
+    except Exception as e:
+        return jsonify({"ok": False, "message": str(e)}), 500
+
+
+@app.route("/api/fb/stream-video/<path:filename>")
+def fb_stream_video(filename):
+    """Truyền luồng phát video cho HTML5 Video Player trên giao diện web (hỗ trợ HTTP Range để tua nhanh và xem trực tiếp)"""
+    videos_dir = os.path.abspath(os.path.join(APP_ROOT, "output", "videos"))
+    target_file = os.path.abspath(os.path.join(videos_dir, filename))
+    if not target_file.startswith(videos_dir) or not os.path.isfile(target_file):
+        return jsonify({"ok": False, "message": "Video không tồn tại"}), 404
+
+    ext = os.path.splitext(filename)[1].lower()
+    mimetypes = {
+        ".mp4": "video/mp4",
+        ".webm": "video/webm",
+        ".mkv": "video/x-matroska",
+        ".m4a": "audio/mp4",
+        ".mp3": "audio/mpeg",
+    }
+    mimetype = mimetypes.get(ext, "video/mp4")
+    return send_from_directory(videos_dir, filename, conditional=True, mimetype=mimetype)
+
+
+@app.route("/api/fb/videos", methods=["GET"])
+def fb_list_videos():
+    """Lấy danh sách video Facebook đã tải gần đây"""
+    videos_dir = os.path.join(APP_ROOT, "output", "videos")
+    if not os.path.exists(videos_dir):
+        return jsonify({"ok": True, "data": []})
+
+    items = []
+    for f in os.listdir(videos_dir):
+        if f.endswith((".mp4", ".m4a", ".webm", ".mkv")):
+            f_path = os.path.join(videos_dir, f)
+            st = os.stat(f_path)
+            size_mb = st.st_size / (1024 * 1024)
+            items.append({
+                "name": f,
+                "size": f"{size_mb:.2f} MB",
+                "modified": st.st_mtime,
+                "path": os.path.abspath(f_path),
+                "stream_url": f"/api/fb/stream-video/{urllib.parse.quote(f)}"
+            })
+    items.sort(key=lambda x: x["modified"], reverse=True)
+    return jsonify({"ok": True, "data": items[:25]})
 
 
 if __name__ == "__main__":

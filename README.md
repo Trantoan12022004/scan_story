@@ -23,6 +23,7 @@ Tool Python hỗ trợ tải nội dung truyện và toàn bộ hình ảnh minh
   - Tùy chỉnh khoảng dừng giữa các request (`--delay seconds`) chống chặn IP.
   - Tùy chọn chỉ lấy chữ, bỏ qua ảnh (`--no-images`).
   - Tự động đăng lên CMS (`--publish` hoặc `python publish.py <url>`).
+- **Tải Video & Reels Facebook Đa Chất Lượng**: Dò tìm và tải video từ link Facebook Reel hoặc Facebook Video với đầy đủ các mức chất lượng (1080p Full HD, 720p HD, SD, Audio M4A), tự động gộp âm thanh và hình ảnh qua `ffmpeg`.
 - **Thiết kế dạng Module (Plugin-based)**: Dễ dàng mở rộng thêm parser cho các website truyện mới chỉ bằng cách kế thừa `BaseParser`.
 
 ---
@@ -35,10 +36,24 @@ Chỉ cần chạy lệnh sau, trình duyệt sẽ tự động mở giao diện
 python app.py
 ```
 👉 Truy cập: `http://localhost:5000`
+- Tab **📖 Cào & Đăng Truyện**: Quét, dịch tiếng Anh và đăng truyện lên CMS.
+- Tab **🎬 Tải Reels & Video Facebook**: Dán link Facebook Reel/Video, quét chất lượng và tải nhanh về máy.
 
 ---
 
-### 2. Sử dụng qua dòng lệnh (CLI)
+### 2. Tải Video Reels / Facebook qua dòng lệnh (CLI)
+```bash
+# Phân tích các mức chất lượng và tự động tải chất lượng cao nhất:
+python fb_downloader.py "https://www.facebook.com/reel/1142203028130644"
+
+# Tải định dạng cụ thể (best, hd, sd, bestaudio):
+python fb_downloader.py "https://www.facebook.com/reel/1142203028130644" hd
+```
+File video sẽ được lưu tự động vào thư mục: `output/videos/`.
+
+---
+
+### 3. Cào truyện qua dòng lệnh (CLI)
 
 #### Tải truyện, dịch tiếng Anh và tự động đăng lên CMS:
 ```bash
@@ -49,20 +64,21 @@ hoặc với tài khoản CMS tùy chỉnh:
 python main.py "https://sad.treeiq.biz/blog/story-slug/chapter-1" --publish --cms-url "https://your-cms.com" --cms-user "your_email" --cms-pass "your_password"
 ```
 
-### 2. Chỉ tải truyện về máy (mặc định tự dịch tiếng Anh, không đăng CMS)
+#### Chỉ tải truyện về máy (mặc định tự dịch tiếng Anh, không đăng CMS):
 ```bash
 python main.py "https://intelligence.treeiq.biz/blog/story-slug"
 ```
 
-### 3. Tải truyện giữ nguyên ngôn ngữ gốc (không dịch)
+#### Tải truyện giữ nguyên ngôn ngữ gốc (không dịch):
 ```bash
 python main.py "https://intelligence.treeiq.biz/blog/story-slug" --no-translate
 ```
 
-### 4. Tải theo khoảng chapter cụ thể
+#### Tải theo khoảng chapter cụ thể:
 ```bash
 python main.py "https://sad.treeiq.biz/blog/story-slug/chapter-1" --from 1 --to 5
 ```
+
 
 ---
 
@@ -126,10 +142,10 @@ Tool sẽ tự động nhận diện mã máy hiện tại và kích hoạt sẵ
 Khi người dùng gửi mã máy (HWID) cho bạn, chạy lệnh sau để tạo License Key:
 ```bash
 # Cấp 30 ngày (1 tháng)
-python keygen.py -u "TenNguoiDung" -m "XXXX-XXXX-XXXX" -d 30
+python keygen.py -u "TenNguoiDung" -m "E423-C46C-6B90" -d 30
 
 # Cấp 60 ngày (2 tháng)
-python keygen.py -u "TenNguoiDung" -m "XXXX-XXXX-XXXX" -d 60
+python keygen.py -u "TenNguoiDung" -m "920E-2DA4-DAC5" -d 60
 ```
 Sau đó copy chuỗi `KEY` được tạo gửi cho người dùng.
 
@@ -163,7 +179,7 @@ File `.exe` độc lập đã được biên dịch sẵn tại:
 - **Cách 1**: Click đúp vào file **`build_exe.bat`** để tự động build.
 - **Cách 2**: Chạy lệnh terminal:
   ```bash
-  pyinstaller --noconfirm --onefile --console --name "StoryScraper" --add-data "templates;templates" app.py
+  python build.py
   ```
 
 

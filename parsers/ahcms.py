@@ -4,7 +4,7 @@
 import re
 from urllib.parse import urlparse, urljoin
 from bs4 import BeautifulSoup
-from parsers.base import BaseParser, StoryInfo, ChapterContent
+from parsers.base import BaseParser, StoryInfo, ChapterContent, clean_formatted_text
 
 
 class AHCMSParser(BaseParser):
@@ -178,14 +178,14 @@ class AHCMSParser(BaseParser):
 
                 # Xử lý thẻ <p>
                 if element.name == "p":
-                    text = element.get_text(strip=True)
+                    text = clean_formatted_text(element)
                     if text:
                         paragraphs.append(text)
                         content_elements.append(("text", text))
 
                 # Xử lý heading (h2, h3, h4...)
                 elif element.name in ("h2", "h3", "h4", "h5", "h6"):
-                    text = element.get_text(strip=True)
+                    text = clean_formatted_text(element)
                     if text:
                         paragraphs.append(text)
                         content_elements.append(("heading", text))
@@ -212,7 +212,7 @@ class AHCMSParser(BaseParser):
                     else:
                         # Tìm text và images bên trong div
                         for sub_p in element.find_all("p"):
-                            text = sub_p.get_text(strip=True)
+                            text = clean_formatted_text(sub_p)
                             if text:
                                 paragraphs.append(text)
                                 content_elements.append(("text", text))
@@ -224,7 +224,7 @@ class AHCMSParser(BaseParser):
 
                 # Xử lý blockquote
                 elif element.name == "blockquote":
-                    text = element.get_text(strip=True)
+                    text = clean_formatted_text(element)
                     if text:
                         paragraphs.append(text)
                         content_elements.append(("quote", text))

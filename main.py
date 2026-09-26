@@ -130,6 +130,7 @@ Ví dụ sử dụng:
 Trang web hỗ trợ:
   - *.treeiq.biz (TreeIQ CMS)
   - *.fast2tricks.com (AH CMS)
+  - Hỗ trợ MỌI website truyện khác (Universal Story Parser)
         """
     )
     arg_parser.add_argument("url", help="URL bất kỳ chapter nào của truyện")
@@ -280,19 +281,24 @@ Trang web hỗ trợ:
         progress = f"[{ch_num - from_ch + 1}/{total_to_download}]"
         print(f"📄 {progress} Đang tải Chapter {ch_num}...")
 
-        # Kiểm tra nếu đây là trang đã tải ở bước đầu
-        current_chapter_match = re.search(r"/chapter-(\d+)", url)
-        current_ch_from_url = int(current_chapter_match.group(1)) if current_chapter_match else -1
-
-        # Sử dụng cache nếu URL ban đầu khớp với chapter hiện tại hoặc nếu là truyện 1 chapter (single page)
-        is_cached = (ch_num == current_ch_from_url) or (story_info.is_single_page and ch_num == 1)
-        if is_cached and html:
-            ch_html = html
-            print(f"   ♻ Sử dụng cache từ lần tải đầu")
+        # Kiểm tra nếu đây là trang đã tải ở bước đầu hoặc đã có trong cache của parser
+        ch_html = getattr(parser, "get_cached_html", lambda u: None)(ch_url)
+        if ch_html:
+            print(f"   ♻ Sử dụng cache từ lần quét cấu trúc")
         else:
-            ch_html = downloader.fetch_html(ch_url)
-            if ch_num < to_ch:
-                downloader.wait()
+            current_chapter_match = re.search(r"/(?:chapter|part|chap)-(\d+)", url)
+            current_ch_from_url = int(current_chapter_match.group(1)) if current_chapter_match else -1
+            clean_ch_url = ch_url.split("?")[0].split("#")[0].rstrip("/")
+            clean_init_url = url.split("?")[0].split("#")[0].rstrip("/")
+
+            is_cached = (ch_num == current_ch_from_url) or (clean_ch_url == clean_init_url) or (story_info.is_single_page and ch_num == 1)
+            if is_cached and html:
+                ch_html = html
+                print(f"   ♻ Sử dụng cache từ lần tải đầu")
+            else:
+                ch_html = downloader.fetch_html(ch_url)
+                if ch_num < to_ch:
+                    downloader.wait()
 
         if not ch_html:
             print(f"   ❌ Thất bại!")

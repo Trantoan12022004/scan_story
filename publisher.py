@@ -5,7 +5,7 @@ import re
 import requests
 from bs4 import BeautifulSoup
 from typing import List, Optional
-from parsers.base import StoryInfo, ChapterContent
+from parsers.base import StoryInfo, ChapterContent, markdown_to_html_formatting
 
 
 def split_chapter_by_parts(chapter: ChapterContent) -> List[ChapterContent]:
@@ -108,12 +108,13 @@ class CMSPublisher:
             elem_val = elem_val.strip()
             if not elem_val:
                 continue
+            formatted_val = markdown_to_html_formatting(elem_val)
             if elem_type == "heading":
-                html_parts.append(f'<h2>{elem_val}</h2>')
+                html_parts.append(f'<h2>{formatted_val}</h2>')
             elif elem_type == "quote":
-                html_parts.append(f'<blockquote><p>{elem_val}</p></blockquote>')
+                html_parts.append(f'<blockquote><p>{formatted_val}</p></blockquote>')
             elif elem_type == "text":
-                html_parts.append(f'<p>{elem_val}</p>')
+                html_parts.append(f'<p>{formatted_val}</p>')
 
         return "".join(html_parts)
 

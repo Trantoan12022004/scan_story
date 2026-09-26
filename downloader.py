@@ -43,8 +43,42 @@ class Downloader:
             try:
                 response = self.session.get(url, timeout=30)
                 response.raise_for_status()
-                response.encoding = response.apparent_encoding or "utf-8"
-                return response.text
+                raw_bytes = response.content
+                html_text = None
+
+                # 1. Thử giải mã trực tiếp bằng UTF-8 (chuẩn web hiện đại, tránh charset_normalizer đoán nhầm MacRoman)
+                try:
+                    html_text = raw_bytes.decode("utf-8")
+                except UnicodeDecodeError:
+                    pass
+
+                # 2. Nếu không được, thử charset từ HTTP header nếu không phải default iso-8859-1 / macroman
+                if not html_text:
+                    enc = response.encoding
+                    if enc and enc.lower() not in ("iso-8859-1", "macroman", "ascii"):
+                        try:
+                            html_text = raw_bytes.decode(enc)
+                        except Exception:
+                            pass
+
+                # 3. Thử apparent_encoding nếu không phải MacRoman
+                if not html_text:
+                    app_enc = response.apparent_encoding
+                    if app_enc and app_enc.lower() != "macroman":
+                        try:
+                            html_text = raw_bytes.decode(app_enc)
+                        except Exception:
+                            pass
+
+                # 4. Fallback decode utf-8 với errors="replace"
+                if not html_text:
+                    html_text = raw_bytes.decode("utf-8", errors="replace")
+
+                try:
+                    from parsers.base import fix_mojibake
+                    return fix_mojibake(html_text)
+                except Exception:
+                    return html_text
             except requests.RequestException as e:
                 print(f"  ⚠ Lỗi tải {url} (lần {attempt}/{self.max_retries}): {e}")
                 if attempt < self.max_retries:

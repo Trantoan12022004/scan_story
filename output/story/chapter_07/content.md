@@ -1,0 +1,23 @@
+The rain had settled into a steady, gray drizzle by late afternoon, slicking the asphalt outside the downtown coffee shop where the fluorescent lights hummed with a low, irritating frequency. I sat in a vinyl booth near the back, my heavy dark overcoat draped over the empty seat across from me, a lukewarm paper cup of black coffee cooling between my knuckles. Dale sat three minutes later than our agreed time, pulling the collar of his cheap polyester jacket tight against his throat. He looked around the noisy shop with darting, bloodshot eyes before sliding into the booth opposite me. He didn't order anything. He just reached into his briefcase and slid a thick manila envelope across the Formica table.
+
+"You shouldn't have called me on my cell, Marcus," Dale said, his voice barely rising above the hiss of the espresso machine behind the counter. "Richard's people audit our terminal logs every quarter. If he finds out I walked out with these copies, my professional license is gone by morning, and that's the best-case scenario."
+
+"You're the one who reached out, Dale," I said, keeping my tone flat and controlled as I lifted the flap of the envelope. "You said you had ledger entries that proved Richard wasn't just hiding assets from a messy divorce. Let's see them."
+
+I pulled out a sheaf of photocopied bank statements and internal transfer requests bearing the official letterhead of Richard's public charity foundation. I scanned the columns of numbers, my thumb tracing the dates. The foundation was supposed to fund local youth centers and family support initiatives, a glossy public veneer that bought Richard invitations to every political fundraiser in the county. But the line items told a very different story.
+
+"Look at the November entries," Dale whispered, leaning across the table and pointing a trembling finger at a highlighted row. "Three hundred thousand dollars moved out of the endowment fund into a shell account registered under a dummy LLC. From there, it was broken down into five-figure wire transfers routed straight to Pine Ridge Psychiatric Services."
+
+I stared at the paper. The amount matched the timeline of Elena's sudden, unexplained disappearance from the family home over a year ago. Richard had told the neighbors, the school board, and the social services intake officers that she had suffered a severe nervous breakdown and voluntarily checked herself into a secluded private facility out of state. But these ledgers painted an entirely different picture. It wasn't a voluntary stay. It was a financially engineered disappearance, funded by embezzled charity grants, designed to lock her away permanently while he maintained total control over the household and Lily.
+
+"He used foundation capital to pay for her confinement and silence the attending staff," I said, the cold realization settling heavy in my chest. "He didn't just lock Lily in that basement because she was acting out. He treats people like property to be managed and hidden when they stop serving his public image."
+
+"There's more," Dale said, his hand shaking as he pulled out a final, single-page document. "That clinic isn't licensed for standard psychiatric rehabilitation. It's a private, locked-ward facility that caters to high-net-worth individuals who want family members erased without a paper trail through public courts. If you take this to a standard precinct downtown, Richard's corporate lawyers will bury it in injunctions before you reach the front desk. You need a federal judge or an emergency protective order signed by someone outside his sphere of influence."
+
+I folded the documents carefully and slid them back into the manila envelope, tucking it inside the inner pocket of my coat. I pulled a twenty-dollar bill from my wallet and left it on the table, ignoring the coffee.
+
+"Where are you going?" Dale asked, panic tightening his throat.
+
+"To see Sarah Vance," I said, standing up and pulling my coat back over my shoulders. "She's handling the emergency custody filings. With these ledgers and the bank routing numbers, Richard's financial firewall just cracked wide open. He won't be able to buy his way out of this with a slick press release."
+
+I left the coffee shop through the side exit, stepping out into the damp, cold air of the parking garage. My tires crunched on the wet concrete as I walked to the car, my mind racing through the logistics. The foundation audit was coming up in a month, but we couldn't wait that long. Richard still thought he was untouchable, protected by his charm, his money, and the locked door in the hallway. But the foundation records gave us the leverage we needed to pierce his corporate armor and get to the truth about where Elena had been all this time.

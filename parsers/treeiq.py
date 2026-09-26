@@ -4,7 +4,7 @@
 import re
 from urllib.parse import urlparse, urljoin
 from bs4 import BeautifulSoup
-from parsers.base import BaseParser, StoryInfo, ChapterContent
+from parsers.base import BaseParser, StoryInfo, ChapterContent, clean_formatted_text
 
 
 class TreeIQParser(BaseParser):
@@ -163,14 +163,16 @@ class TreeIQParser(BaseParser):
 
                 # Xử lý thẻ heading (h2, h3, h4, h5, h6)
                 if element.name in ("h2", "h3", "h4", "h5", "h6"):
-                    text = element.get_text(strip=True)
+                    text = clean_formatted_text(element)
                     if text:
                         paragraphs.append(text)
                         content_elements.append(("heading", text))
 
                 # Xử lý thẻ <p>
                 elif element.name == "p":
-                    text = element.get_text(strip=True)
+                    if element.find_parent(["p", "blockquote"]):
+                        continue
+                    text = clean_formatted_text(element)
                     if text:
                         # Kiểm tra nếu text trong <p> bắt đầu bằng ký tự markdown heading như "## PARTE 1"
                         heading_match = re.match(r"^#{1,6}\s+(.+)$", text)
@@ -184,7 +186,7 @@ class TreeIQParser(BaseParser):
 
                 # Xử lý thẻ blockquote
                 elif element.name == "blockquote":
-                    text = element.get_text(strip=True)
+                    text = clean_formatted_text(element)
                     if text:
                         paragraphs.append(text)
                         content_elements.append(("quote", text))

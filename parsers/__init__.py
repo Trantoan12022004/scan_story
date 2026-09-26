@@ -4,8 +4,9 @@
 from urllib.parse import urlparse
 from parsers.treeiq import TreeIQParser
 from parsers.ahcms import AHCMSParser
+from parsers.universal import UniversalParser
 
-# Danh sách parser đã đăng ký
+# Danh sách parser đã đăng ký chuyên biệt cho các CMS cố định
 # Key: tên nhận diện, Value: (parser_class, danh sách domain hoặc pattern)
 PARSER_REGISTRY = [
     (TreeIQParser, ["treeiq.biz"]),
@@ -16,7 +17,8 @@ PARSER_REGISTRY = [
 def detect_parser(url: str):
     """
     Tự động phát hiện parser phù hợp dựa trên domain của URL.
-    Trả về instance của parser nếu tìm thấy, raise Exception nếu không hỗ trợ.
+    - Nếu khớp domain chuyên biệt (TreeIQ, AHCMS): sử dụng parser chuyên biệt tương ứng.
+    - Nếu là bất kỳ website nào khác: tự động sử dụng UniversalParser để cào nội dung.
     """
     parsed = urlparse(url)
     hostname = parsed.hostname or ""
@@ -26,7 +28,13 @@ def detect_parser(url: str):
             if hostname.endswith(domain):
                 return parser_class()
 
-    raise ValueError(
-        f"Không hỗ trợ trang web: {hostname}\n"
-        f"Các trang được hỗ trợ: {', '.join(d for _, domains in PARSER_REGISTRY for d in domains)}"
-    )
+    # Tự động fallback sang UniversalParser cho mọi trang web khác
+    try:
+        import importlib
+        import parsers.universal
+        importlib.reload(parsers.universal)
+        return parsers.universal.UniversalParser()
+    except Exception:
+        return UniversalParser()
+
+

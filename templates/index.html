@@ -931,6 +931,658 @@
       border-radius: 12px;
     }
 
+    /* Segmented Tab Navigation */
+    .nav-tabs-wrapper {
+      background: rgba(17, 24, 39, 0.95);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-tab {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 14px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .nav-tab:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .nav-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    .tab-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #ec4899, #f43f5e);
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* FB Video Downloader UI */
+    .fb-hero-card {
+      background: #0d1527;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .fb-thumb-wrapper {
+      position: relative;
+      width: 160px;
+      height: 220px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #070a12;
+      border: 1px solid var(--border);
+    }
+
+    .fb-thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .fb-thumb-play {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 44px;
+      height: 44px;
+      background: rgba(0, 0, 0, 0.65);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #fff;
+      backdrop-filter: blur(4px);
+    }
+
+    .fb-info-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .fb-video-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .fb-meta-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .fb-badge {
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: #1e293b;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .fb-badge-highlight {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    /* Qualities List */
+    .qualities-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .quality-item {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      transition: all 0.2s;
+    }
+
+    .quality-item:hover {
+      border-color: var(--primary);
+      background: #131d35;
+      transform: translateX(3px);
+    }
+
+    .quality-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .quality-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quality-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .quality-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(52, 211, 153, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(52, 211, 153, 0.3);
+    }
+
+    .quality-subtext {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .btn-download-quality {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+
+    .btn-download-quality:hover {
+      background: linear-gradient(135deg, #0369a1, #1d4ed8);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.45);
+    }
+
+    .btn-download-quality:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Video Preview Player & Realtime Dashboard */
+    .fb-preview-player-card {
+      background: #0d1527;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: var(--radius);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .fb-player-header {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .fb-video-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .fb-badge-primary {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      white-space: nowrap;
+    }
+
+    .fb-video-stage {
+      position: relative;
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 240px;
+    }
+
+    .fb-video-stage video {
+      width: 100%;
+      max-height: 480px;
+      object-fit: contain;
+      background: #000;
+      display: block;
+    }
+
+    /* Bảng hiển thị thời gian Realtime */
+    .fb-realtime-dashboard {
+      background: #080d1a;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .realtime-clock-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .realtime-digits-group {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-family: 'JetBrains Mono', 'Roboto Mono', 'Consolas', monospace;
+    }
+
+    .realtime-clock-icon {
+      font-size: 16px;
+    }
+
+    .realtime-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      letter-spacing: 0.8px;
+    }
+
+    .realtime-clock-val {
+      font-size: 22px;
+      font-weight: 800;
+      color: #38bdf8;
+      text-shadow: 0 0 14px rgba(56, 189, 248, 0.6);
+      min-width: 80px;
+    }
+
+    .realtime-clock-sep {
+      font-size: 16px;
+      color: var(--text-muted);
+    }
+
+    .realtime-clock-total {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .realtime-remaining-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-secondary);
+      margin-left: 6px;
+    }
+
+    .play-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .status-playing {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+    }
+
+    .status-paused {
+      background: rgba(234, 179, 8, 0.15);
+      color: #facc15;
+      border: 1px solid rgba(234, 179, 8, 0.4);
+    }
+
+    .status-ready {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+
+    .status-pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 8px currentColor;
+      animation: pulseDot 1.4s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    /* Scrubber Progress */
+    .realtime-scrubber-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .realtime-scrubber-track {
+      position: relative;
+      flex: 1;
+      height: 8px;
+      background: #1e293b;
+      border-radius: 4px;
+      cursor: pointer;
+      overflow: visible;
+      transition: height 0.15s;
+    }
+
+    .realtime-scrubber-track:hover {
+      height: 10px;
+    }
+
+    .realtime-buffer-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .realtime-fill-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #0284c7, #38bdf8);
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .realtime-thumb-dot {
+      position: absolute;
+      top: 50%;
+      width: 14px;
+      height: 14px;
+      background: #fff;
+      border: 2px solid #38bdf8;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
+      pointer-events: none;
+    }
+
+    .realtime-percent-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      min-width: 38px;
+      text-align: right;
+    }
+
+    /* Actions Bar */
+    .realtime-actions-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .playback-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-ctrl-sub {
+      background: #1e293b;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      padding: 6px 11px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-ctrl-sub:hover {
+      background: #334155;
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .btn-ctrl-main {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #fff;
+      border: none;
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.4);
+    }
+
+    .btn-ctrl-main:hover {
+      background: linear-gradient(135deg, #0369a1, #1d4ed8);
+      transform: translateY(-1px);
+    }
+
+    .playback-speed-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .playback-select {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 5px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .file-action-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-file-action {
+      background: #1e293b;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+    }
+
+    .btn-file-action:hover {
+      background: #334155;
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .btn-file-highlight {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    .btn-file-highlight:hover {
+      background: rgba(56, 189, 248, 0.25);
+      color: #fff;
+    }
+
+    /* Video History Items */
+    .video-history-item {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+
+    .video-history-item:hover {
+      background: #131d35;
+      border-color: rgba(56, 189, 248, 0.35);
+    }
+
+    .video-history-name-col {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .video-history-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .video-history-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .video-history-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .btn-vh-play {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+    }
+
+    .btn-vh-play:hover {
+      background: #38bdf8;
+      color: #0b1120;
+    }
+
+    .btn-vh-file {
+      background: #1e293b;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      padding: 6px 11px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+    }
+
+    .btn-vh-file:hover {
+      background: #334155;
+      color: #fff;
+    }
+
+
+
     @media (max-width: 1024px) {
       .app-container {
         grid-template-columns: 1fr;
@@ -967,8 +1619,21 @@
     </div>
   </header>
 
-  <!-- Banner cảnh báo bản quyền -->
-  <div id="licenseAlertBanner" class="license-alert-banner" style="display: none;">
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs-wrapper">
+    <button class="nav-tab active" id="tabStoryBtn" onclick="switchMainTab('story')">
+      <span>📖 Cào & Đăng Truyện</span>
+    </button>
+    <button class="nav-tab" id="tabFbBtn" onclick="switchMainTab('fb')">
+      <span>🎬 Tải Reels & Video Facebook</span>
+      <span class="tab-badge">Mới</span>
+    </button>
+  </nav>
+
+  <!-- Tab 1: Story Scraper & Auto CMS Publisher -->
+  <div id="storyTabSection">
+    <!-- Banner cảnh báo bản quyền -->
+    <div id="licenseAlertBanner" class="license-alert-banner" style="display: none;">
     <div style="display: flex; align-items: center; gap: 8px;">
       <span>🔒</span>
       <span id="licenseAlertText">Bản quyền chưa được kích hoạt hoặc đã hết hạn. Vui lòng kích hoạt key để tiếp tục sử
@@ -990,10 +1655,10 @@
 
       <!-- Ô nhập URL -->
       <div class="form-group">
-        <label class="form-label" for="storyUrl">URL Truyện (TreeIQ / Fast2Tricks)</label>
+        <label class="form-label" for="storyUrl">URL Truyện (Hỗ trợ mọi website truyện)</label>
         <div class="input-wrapper">
           <input type="text" id="storyUrl" class="input-text"
-            placeholder="https://sad.treeiq.biz/blog/... hoặc https://intelligence.treeiq.biz/blog/..." required>
+            placeholder="Dán link bất kỳ trang truyện nào (feji.io, danhngon.pro, treeiq.biz, fast2tricks.com...)" required>
         </div>
       </div>
 
@@ -1004,7 +1669,7 @@
           <div class="preview-title" id="previewTitle">Tên truyện</div>
           <div class="preview-meta">
             <span id="previewChapters">📄 0 chapters</span>
-            <span id="previewParser">🌐 TreeIQ</span>
+            <span id="previewParser">🌐 Universal</span>
           </div>
         </div>
       </div>
@@ -1171,6 +1836,181 @@
       </div>
     </div>
   </div>
+  </div>
+  <!-- /#storyTabSection -->
+
+  <!-- Tab 2: Facebook Reels & Video Downloader -->
+  <div id="fbTabSection" style="display: none;">
+    <main class="app-container">
+      <!-- Cột trái: Nhập link & Thao tác -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">🎬 Tải Reels & Video Facebook</h2>
+        </div>
+
+        <!-- Ô nhập link Facebook -->
+        <div class="form-group">
+          <label class="form-label" for="fbUrlInput">Link Facebook Reel hoặc Video</label>
+          <div class="input-wrapper">
+            <input type="text" id="fbUrlInput" class="input-text"
+              placeholder="Dán link (ví dụ: https://www.facebook.com/reel/1142203028130644 hoặc fb.watch/...)" required>
+          </div>
+          <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">
+            Hỗ trợ Facebook Reels, Facebook Watch, Video bài viết công khai.
+          </div>
+        </div>
+
+        <!-- Nút dò chất lượng -->
+        <button type="button" class="btn-primary" id="btnProbeFb" onclick="probeFbVideo()">
+          <span>🔍 Quét Các Mức Chất Lượng Video</span>
+        </button>
+
+        <div id="fbProbeLoading" style="display: none; align-items: center; gap: 10px; font-size: 13px; color: var(--primary); padding: 12px; background: rgba(56,189,248,0.1); border-radius: 8px;">
+          <span>⏳</span>
+          <span>Đang phân tích video và dò tìm các định dạng tải về...</span>
+        </div>
+
+        <div id="fbProbeError" class="account-status-badge status-badge-error" style="display: none;"></div>
+
+        <!-- Thư mục lưu trữ & Tùy chọn -->
+        <div style="border-top: 1px solid var(--border); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase;">Thư mục lưu video:</span>
+            <button type="button" class="btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="openOutputFolder('output/videos')">
+              📁 Mở thư mục Video
+            </button>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; background: #0b1120; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);">
+            output/videos/
+          </div>
+        </div>
+
+        <!-- Tải nhanh chất lượng cao nhất -->
+        <button type="button" class="btn-secondary" id="btnQuickBestDownload" style="display: none; justify-content: center; padding: 10px; font-size: 13px;" onclick="downloadFbQuality('best')">
+          ⚡ Tải nhanh Bản Nét Nhất (1080p Full HD)
+        </button>
+      </div>
+
+      <!-- Cột phải: Kết quả dò tìm chất lượng & Video Preview -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">📋 Kết quả phân tích chất lượng</h2>
+          <span id="fbVideoStatusBadge" class="brand-badge" style="display: none;">Sẵn sàng tải</span>
+        </div>
+
+        <!-- Trạng thái chờ link (Empty State) -->
+        <div id="fbEmptyState" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; gap: 12px; color: var(--text-muted);">
+          <div style="font-size: 48px;">🎬</div>
+          <div style="font-size: 15px; font-weight: 600; color: var(--text-secondary);">Chưa có video nào được phân tích</div>
+          <div style="font-size: 13px; max-width: 380px; line-height: 1.5;">
+            Dán đường dẫn Facebook Reel hoặc Video vào ô bên trái rồi bấm <strong>Quét Các Mức Chất Lượng</strong> để xem trước và chọn định dạng tải về.
+          </div>
+        </div>
+
+        <!-- Card xem trước video với Player trực tiếp & Bộ đo thời gian realtime -->
+        <div id="fbPreviewCard" class="fb-preview-player-card" style="display: none;">
+          <!-- Header thông tin video -->
+          <div class="fb-player-header">
+            <div class="fb-video-title-row">
+              <span id="fbVideoSourceBadge" class="fb-badge fb-badge-primary">🌐 Online Preview</span>
+              <div id="fbVideoTitle" class="fb-video-title">Tiêu đề video</div>
+            </div>
+            <div class="fb-meta-badges">
+              <span class="fb-badge fb-badge-highlight"><span id="fbPlatform">Facebook Reel</span></span>
+              <span class="fb-badge">⏱ Thời lượng: <span id="fbDuration">--:--</span></span>
+              <span class="fb-badge">👤 <span id="fbUploader">Facebook</span></span>
+            </div>
+          </div>
+
+          <!-- Video Player trực tiếp -->
+          <div class="fb-video-stage">
+            <video id="fbVideoPlayer" playsinline preload="metadata" controls></video>
+          </div>
+
+          <!-- Bảng điều khiển & Thời gian Realtime dưới Video -->
+          <div class="fb-realtime-dashboard">
+            <!-- Hàng đồng hồ thời gian số lớn và trạng thái realtime -->
+            <div class="realtime-clock-bar">
+              <div class="realtime-digits-group">
+                <span class="realtime-clock-icon">⏱</span>
+                <span class="realtime-label">THỜI GIAN PHÁT:</span>
+                <span id="fbCurrentTime" class="realtime-clock-val">00:00.0</span>
+                <span class="realtime-clock-sep">/</span>
+                <span id="fbTotalTime" class="realtime-clock-total">00:00.0</span>
+                <span id="fbRemainingBadge" class="realtime-remaining-badge">-00:00.0</span>
+              </div>
+              <div id="fbPlayStatusBadge" class="play-status-pill status-ready">
+                <span class="status-pulse-dot"></span>
+                <span id="fbPlayStatusText">SẴN SÀNG</span>
+              </div>
+            </div>
+
+            <!-- Thanh tiến trình phát Realtime (Scrubber) -->
+            <div class="realtime-scrubber-wrapper">
+              <div class="realtime-scrubber-track" id="fbScrubberTrack" onclick="handleScrubberClick(event)" title="Nhấp chuột để tua nhanh tới vị trí mong muốn">
+                <div class="realtime-buffer-bar" id="fbBufferBar" style="width: 0%;"></div>
+                <div class="realtime-fill-bar" id="fbFillBar" style="width: 0%;"></div>
+                <div class="realtime-thumb-dot" id="fbThumbDot" style="left: 0%;"></div>
+              </div>
+              <span class="realtime-percent-text" id="fbPercentText">0%</span>
+            </div>
+
+            <!-- Các nút điều khiển thời gian thực và hành động -->
+            <div class="realtime-actions-bar">
+              <div class="playback-btn-group">
+                <button type="button" class="btn-ctrl-sub" onclick="seekFbVideoRelative(-5)" title="Tua lùi 5 giây">⏪ -5s</button>
+                <button type="button" class="btn-ctrl-main" id="btnTogglePlay" onclick="toggleFbPlay()">▶ Phát</button>
+                <button type="button" class="btn-ctrl-sub" onclick="seekFbVideoRelative(5)" title="Tua tới 5 giây">⏩ +5s</button>
+                <button type="button" class="btn-ctrl-sub" onclick="restartFbVideo()" title="Phát lại từ đầu">⏮ Về đầu</button>
+              </div>
+
+              <div class="playback-speed-group">
+                <span style="font-size: 11.5px; color: var(--text-muted); font-weight: 600;">Tốc độ:</span>
+                <select id="fbPlaybackRate" class="playback-select" onchange="setFbPlaybackRate(this.value)">
+                  <option value="0.5">0.5x</option>
+                  <option value="0.75">0.75x</option>
+                  <option value="1.0" selected>1.0x Chuẩn</option>
+                  <option value="1.25">1.25x</option>
+                  <option value="1.5">1.5x</option>
+                  <option value="2.0">2.0x</option>
+                </select>
+              </div>
+
+              <div class="file-action-buttons">
+                <button type="button" class="btn-file-action" onclick="openOutputFolder('output/videos')" title="Mở thư mục lưu trữ video trên Windows Explorer">
+                  📁 Mở thư mục Video
+                </button>
+                <button type="button" class="btn-file-action btn-file-highlight" id="btnOpenInApp" style="display: none;" onclick="openCurrentVideoFile()" title="Mở video này bằng ứng dụng xem phim trên Windows (VLC, Media Player)">
+                  🖥 Mở video trên máy
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tiến trình tải video -->
+        <div id="fbDownloadProgressBox" style="display: none; background: #0b1120; border: 1px solid var(--primary); border-radius: 8px; padding: 14px; flex-direction: column; gap: 10px; margin-top: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px;">
+            <span id="fbDownloadStatusText" style="color: var(--primary); font-weight: 500;">⏳ Đang tải video về máy...</span>
+            <span id="fbDownloadPercentText" style="color: var(--text-primary); font-weight: 600;">--</span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="fbProgressBarFill" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- Danh sách chất lượng khả dụng -->
+        <div id="fbQualitiesWrapper" style="display: none; margin-top: 10px;">
+          <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">
+            Các định dạng video & âm thanh tìm thấy:
+          </div>
+          <div id="fbQualitiesList" class="qualities-list"></div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+  <!-- /#fbTabSection -->
 
   <!-- Modal Kích Hoạt Bản Quyền -->
   <div id="licenseModal" class="modal-backdrop" style="display: none;">
@@ -1227,6 +2067,8 @@
     </div>
   </div>
 
+
+
   <script>
     // Kết nối SSE để nhận log real-time
     const evtSource = new EventSource("/api/stream-logs");
@@ -1262,6 +2104,10 @@
           previewCard.style.display = "flex";
           previewTitle.innerText = data.title || "Không có tên";
           previewChapters.innerText = `📄 ${data.total_chapters || 1} chapters`;
+          if (data.parser_name) {
+            previewParser.innerText = `🌐 ${data.parser_name.replace(' Parser', '').replace(' (Tự động thích ứng mọi website)', '')}`;
+            previewParser.title = data.parser_name;
+          }
           if (data.cover_image) {
             previewCover.src = data.cover_image;
             previewCover.style.display = "block";
@@ -1633,11 +2479,64 @@
       });
     }
 
+    function showToast(msg, type = "info") {
+      let container = document.getElementById("toastContainer");
+      if (!container) {
+        container = document.createElement("div");
+        container.id = "toastContainer";
+        container.style.cssText = "position: fixed; bottom: 24px; right: 24px; z-index: 99999; display: flex; flex-direction: column; gap: 8px; pointer-events: none;";
+        document.body.appendChild(container);
+      }
+      const toast = document.createElement("div");
+      toast.style.cssText = "background: #0f172a; color: #f8fafc; border: 1px solid #38bdf8; padding: 12px 18px; border-radius: 8px; font-size: 13px; font-weight: 500; box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 8px; pointer-events: auto; animation: fadeIn 0.2s ease;";
+      toast.innerHTML = `<span>${type === 'error' ? '❌' : '✨'}</span><span>${escapeHtml(msg)}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+        toast.style.opacity = "0";
+        toast.style.transform = "translateY(10px)";
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
     function openOutputFolder(path = null) {
+      const targetPath = (path || "output/videos").replace(/\\/g, '/');
       fetch("/api/open-folder", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path: path || currentOutputDir })
+        body: JSON.stringify({ path: targetPath })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.ok) {
+          showToast(res.message || "Đã mở thư mục trên máy tính");
+        } else {
+          showToast(res.message || "Không thể mở thư mục", "error");
+        }
+      })
+      .catch(err => {
+        showToast("Lỗi kết nối khi mở thư mục: " + err, "error");
+      });
+    }
+
+    function openMediaFile(filePath) {
+      if (!filePath) return;
+      const cleanPath = filePath.replace(/\\/g, '/');
+      fetch("/api/open-file", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path: cleanPath })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.ok) {
+          showToast(res.message || "Đang mở video trên máy tính...");
+        } else {
+          showToast(res.message || "Không thể mở file", "error");
+        }
+      })
+      .catch(err => {
+        showToast("Lỗi kết nối khi mở file: " + err, "error");
       });
     }
 
@@ -1674,10 +2573,442 @@
         .replace(/'/g, "&#039;");
     }
 
+    // ==========================================
+    // TAB CHÍNH: STORY SCRAPER VS FACEBOOK REELS
+    // ==========================================
+    let currentFbUrl = "";
+    let currentFbQualities = [];
+    let currentPlayingLocalPath = "";
+    let isVideoScrubbing = false;
+    let animFrameId = null;
+
+    function switchMainTab(tab) {
+      const storyTabBtn = document.getElementById("tabStoryBtn");
+      const fbTabBtn = document.getElementById("tabFbBtn");
+      const storySection = document.getElementById("storyTabSection");
+      const fbSection = document.getElementById("fbTabSection");
+
+      if (tab === "fb") {
+        storyTabBtn.classList.remove("active");
+        fbTabBtn.classList.add("active");
+        storySection.style.display = "none";
+        fbSection.style.display = "block";
+        loadFbHistory();
+        initVideoPlayerEvents();
+      } else {
+        fbTabBtn.classList.remove("active");
+        storyTabBtn.classList.add("active");
+        fbSection.style.display = "none";
+        storySection.style.display = "block";
+        loadHistory();
+      }
+    }
+
+    // ==========================================
+    // LOGIC VIDEO PREVIEW PLAYER & REALTIME RUNNING TIMER
+    // ==========================================
+    function formatRealtime(seconds) {
+      if (isNaN(seconds) || seconds < 0) seconds = 0;
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      const ms = Math.floor((seconds % 1) * 10);
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${ms}`;
+    }
+
+    function initVideoPlayerEvents() {
+      const player = document.getElementById("fbVideoPlayer");
+      if (!player || player._hasEventsAttached) return;
+      player._hasEventsAttached = true;
+
+      const currTimeEl = document.getElementById("fbCurrentTime");
+      const totalTimeEl = document.getElementById("fbTotalTime");
+      const remainEl = document.getElementById("fbRemainingBadge");
+      const fillBar = document.getElementById("fbFillBar");
+      const thumbDot = document.getElementById("fbThumbDot");
+      const pctText = document.getElementById("fbPercentText");
+      const bufferBar = document.getElementById("fbBufferBar");
+      const statusBadge = document.getElementById("fbPlayStatusBadge");
+      const statusText = document.getElementById("fbPlayStatusText");
+      const btnPlay = document.getElementById("btnTogglePlay");
+
+      function updateRealtimeDisplay() {
+        if (!player) return;
+        const cur = player.currentTime || 0;
+        const dur = player.duration || 0;
+
+        if (currTimeEl) currTimeEl.innerText = formatRealtime(cur);
+
+        if (dur > 0) {
+          if (totalTimeEl) totalTimeEl.innerText = formatRealtime(dur);
+          const rem = Math.max(0, dur - cur);
+          if (remainEl) remainEl.innerText = "-" + formatRealtime(rem);
+
+          const pct = Math.min(100, Math.max(0, (cur / dur) * 100));
+          if (!isVideoScrubbing) {
+            if (fillBar) fillBar.style.width = pct + "%";
+            if (thumbDot) thumbDot.style.left = pct + "%";
+            if (pctText) pctText.innerText = Math.round(pct) + "%";
+          }
+        } else {
+          if (remainEl) remainEl.innerText = "--:--";
+          if (pctText) pctText.innerText = "0%";
+        }
+
+        if (player.buffered && player.buffered.length > 0 && dur > 0) {
+          try {
+            const bufEnd = player.buffered.end(player.buffered.length - 1);
+            const bufPct = Math.min(100, (bufEnd / dur) * 100);
+            if (bufferBar) bufferBar.style.width = bufPct + "%";
+          } catch(e) {}
+        }
+
+        if (!player.paused && !player.ended) {
+          animFrameId = requestAnimationFrame(updateRealtimeDisplay);
+        }
+      }
+
+      player.addEventListener("play", () => {
+        if (statusBadge) {
+          statusBadge.className = "play-status-pill status-playing";
+        }
+        if (statusText) statusText.innerText = "ĐANG PHÁT";
+        if (btnPlay) btnPlay.innerHTML = "<span>⏸ Tạm dừng</span>";
+        cancelAnimationFrame(animFrameId);
+        animFrameId = requestAnimationFrame(updateRealtimeDisplay);
+      });
+
+      player.addEventListener("pause", () => {
+        cancelAnimationFrame(animFrameId);
+        updateRealtimeDisplay();
+        if (statusBadge) {
+          statusBadge.className = "play-status-pill status-paused";
+        }
+        if (statusText) statusText.innerText = "TẠM DỪNG";
+        if (btnPlay) btnPlay.innerHTML = "<span>▶ Tiếp tục</span>";
+      });
+
+      player.addEventListener("ended", () => {
+        cancelAnimationFrame(animFrameId);
+        updateRealtimeDisplay();
+        if (statusBadge) {
+          statusBadge.className = "play-status-pill status-ready";
+        }
+        if (statusText) statusText.innerText = "ĐÃ PHÁT XONG";
+        if (btnPlay) btnPlay.innerHTML = "<span>▶ Phát lại</span>";
+      });
+
+      player.addEventListener("timeupdate", () => {
+        if (player.paused) {
+          updateRealtimeDisplay();
+        }
+      });
+
+      player.addEventListener("loadedmetadata", () => {
+        if (totalTimeEl) totalTimeEl.innerText = formatRealtime(player.duration);
+        updateRealtimeDisplay();
+      });
+
+      player.addEventListener("progress", () => {
+        if (player.buffered && player.buffered.length > 0 && player.duration > 0) {
+          try {
+            const bufEnd = player.buffered.end(player.buffered.length - 1);
+            const bufPct = Math.min(100, (bufEnd / player.duration) * 100);
+            if (bufferBar) bufferBar.style.width = bufPct + "%";
+          } catch(e) {}
+        }
+      });
+    }
+
+    function toggleFbPlay() {
+      const player = document.getElementById("fbVideoPlayer");
+      if (!player) return;
+      if (player.paused || player.ended) {
+        player.play().catch(e => console.log("Play error:", e));
+      } else {
+        player.pause();
+      }
+    }
+
+    function seekFbVideoRelative(deltaSec) {
+      const player = document.getElementById("fbVideoPlayer");
+      if (!player) return;
+      player.currentTime = Math.max(0, Math.min((player.duration || 9999), player.currentTime + deltaSec));
+    }
+
+    function restartFbVideo() {
+      const player = document.getElementById("fbVideoPlayer");
+      if (!player) return;
+      player.currentTime = 0;
+      player.play().catch(e => console.log("Play error:", e));
+    }
+
+    function setFbPlaybackRate(rate) {
+      const player = document.getElementById("fbVideoPlayer");
+      if (player) {
+        player.playbackRate = parseFloat(rate) || 1.0;
+      }
+    }
+
+    function handleScrubberClick(event) {
+      const player = document.getElementById("fbVideoPlayer");
+      const track = document.getElementById("fbScrubberTrack");
+      if (!player || !track || !player.duration) return;
+
+      const rect = track.getBoundingClientRect();
+      const clickX = event.clientX - rect.left;
+      const pct = Math.max(0, Math.min(1, clickX / rect.width));
+      player.currentTime = pct * player.duration;
+    }
+
+    function openCurrentVideoFile() {
+      if (!currentPlayingLocalPath) {
+        showToast("Video đang phát là bản trực tuyến, chưa tải về máy", "error");
+        return;
+      }
+      openMediaFile(currentPlayingLocalPath);
+    }
+
+    function playFbPreview(url, title, isLocalFile = false, filePath = "", durationStr = "") {
+      const player = document.getElementById("fbVideoPlayer");
+      const previewCard = document.getElementById("fbPreviewCard");
+      const emptyState = document.getElementById("fbEmptyState");
+      const titleEl = document.getElementById("fbVideoTitle");
+      const sourceBadge = document.getElementById("fbVideoSourceBadge");
+      const btnOpenInApp = document.getElementById("btnOpenInApp");
+
+      if (!player) return;
+      initVideoPlayerEvents();
+
+      if (emptyState) emptyState.style.display = "none";
+      if (previewCard) previewCard.style.display = "flex";
+
+      if (titleEl) titleEl.innerText = title || "Facebook Video";
+      if (durationStr) {
+        const durEl = document.getElementById("fbDuration");
+        if (durEl) durEl.innerText = durationStr;
+      }
+
+      currentPlayingLocalPath = isLocalFile ? (filePath || "").replace(/\\/g, '/') : "";
+
+      if (sourceBadge) {
+        if (isLocalFile) {
+          sourceBadge.className = "fb-badge fb-badge-highlight";
+          sourceBadge.innerText = "💾 Phát từ máy tính (Local)";
+        } else {
+          sourceBadge.className = "fb-badge fb-badge-primary";
+          sourceBadge.innerText = "🌐 Xem trước trực tuyến (Facebook Stream)";
+        }
+      }
+
+      if (btnOpenInApp) {
+        btnOpenInApp.style.display = isLocalFile ? "inline-flex" : "none";
+      }
+
+      player.src = url;
+      player.load();
+      player.play().catch(e => {
+        console.log("Auto-play blocked or waiting for user gesture:", e);
+      });
+
+      previewCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      showToast(isLocalFile ? "▶ Đang phát video từ máy tính" : "🌐 Đang tải xem trước video Facebook...");
+    }
+
+    // ==========================================
+    // LOGIC TẢI REELS & VIDEO FACEBOOK
+    // ==========================================
+    function probeFbVideo() {
+      const urlInput = document.getElementById("fbUrlInput");
+      const url = urlInput ? urlInput.value.trim() : "";
+      if (!url) {
+        alert("Vui lòng nhập link Facebook Reel hoặc Video!");
+        if (urlInput) urlInput.focus();
+        return;
+      }
+
+      currentFbUrl = url;
+      const btnProbe = document.getElementById("btnProbeFb");
+      const loading = document.getElementById("fbProbeLoading");
+      const errorMsg = document.getElementById("fbProbeError");
+      const emptyState = document.getElementById("fbEmptyState");
+      const previewCard = document.getElementById("fbPreviewCard");
+      const qualitiesWrapper = document.getElementById("fbQualitiesWrapper");
+      const statusBadge = document.getElementById("fbVideoStatusBadge");
+      const btnQuick = document.getElementById("btnQuickBestDownload");
+
+      btnProbe.disabled = true;
+      btnProbe.innerHTML = "<span>⏳ Đang dò tìm...</span>";
+      loading.style.display = "flex";
+      errorMsg.style.display = "none";
+
+      fetch("/api/fb/probe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: url })
+      })
+      .then(r => r.json())
+      .then(res => {
+        btnProbe.disabled = false;
+        btnProbe.innerHTML = "<span>🔍 Quét Các Mức Chất Lượng Video</span>";
+        loading.style.display = "none";
+
+        if (!res.ok) {
+          errorMsg.innerText = "❌ " + (res.message || "Không thể phân tích video.");
+          errorMsg.style.display = "flex";
+          return;
+        }
+
+        const data = res.data;
+        currentFbQualities = data.qualities || [];
+
+        // Hiển thị preview card
+        emptyState.style.display = "none";
+        previewCard.style.display = "flex";
+        qualitiesWrapper.style.display = "block";
+        statusBadge.style.display = "inline-block";
+        btnQuick.style.display = "flex";
+
+        document.getElementById("fbVideoTitle").innerText = data.title || "Facebook Reel";
+        document.getElementById("fbDuration").innerText = data.duration || "--:--";
+        document.getElementById("fbUploader").innerText = data.uploader || "Facebook";
+
+        // Khởi tạo player và tự động nạp preview_url nếu có
+        initVideoPlayerEvents();
+        if (data.preview_url) {
+          playFbPreview(data.preview_url, data.title, false, "", data.duration);
+        }
+
+        renderFbQualities(currentFbQualities);
+      })
+      .catch(err => {
+        btnProbe.disabled = false;
+        btnProbe.innerHTML = "<span>🔍 Quét Các Mức Chất Lượng Video</span>";
+        loading.style.display = "none";
+        errorMsg.innerText = "❌ Lỗi kết nối tới server: " + err;
+        errorMsg.style.display = "flex";
+      });
+    }
+
+    function renderFbQualities(qualities) {
+      const container = document.getElementById("fbQualitiesList");
+      container.innerHTML = "";
+
+      if (!qualities || qualities.length === 0) {
+        container.innerHTML = `<div style="color: var(--text-muted); font-size: 13px;">Không tìm thấy định dạng tải về nào.</div>`;
+        return;
+      }
+
+      qualities.forEach((q, idx) => {
+        const item = document.createElement("div");
+        item.className = "quality-item";
+
+        const icon = q.ext === "m4a" ? "🎵" : (q.badge === "1080p" || q.id === "best" ? "🌟" : "🎬");
+        item.innerHTML = `
+          <div class="quality-info">
+            <div class="quality-name-row">
+              <span style="font-size: 16px;">${icon}</span>
+              <span class="quality-name">${escapeHtml(q.label)}</span>
+              ${q.badge ? `<span class="quality-badge">${escapeHtml(q.badge)}</span>` : ""}
+            </div>
+            <div class="quality-subtext">
+              <span>Định dạng: <strong>${escapeHtml(q.ext.toUpperCase())}</strong></span>
+              ${q.resolution ? ` &bull; <span>Độ phân giải: <strong>${escapeHtml(q.resolution)}</strong></span>` : ""}
+              ${q.size && q.size !== "Tự động" ? ` &bull; <span>Dung lượng: <strong>${escapeHtml(q.size)}</strong></span>` : ""}
+              ${q.note ? ` &bull; <span>${escapeHtml(q.note)}</span>` : ""}
+            </div>
+          </div>
+          <button type="button" class="btn-download-quality" id="btnDl_${idx}" onclick="downloadFbQuality('${escapeHtml(q.id)}', 'btnDl_${idx}')">
+            <span>⬇ Tải về</span>
+          </button>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function downloadFbQuality(formatId, btnId = null) {
+      if (!currentFbUrl) {
+        alert("Vui lòng nhập và quét video Facebook trước khi tải!");
+        return;
+      }
+
+      const progressBox = document.getElementById("fbDownloadProgressBox");
+      const statusText = document.getElementById("fbDownloadStatusText");
+      const percentText = document.getElementById("fbDownloadPercentText");
+      const barFill = document.getElementById("fbProgressBarFill");
+
+      let clickedBtn = btnId ? document.getElementById(btnId) : null;
+      if (clickedBtn) {
+        clickedBtn.disabled = true;
+        clickedBtn.innerHTML = "<span>⏳ Đang tải...</span>";
+      }
+
+      progressBox.style.display = "flex";
+      statusText.innerHTML = "⏳ Đang tải video từ Facebook và xử lý âm thanh/hình ảnh...";
+      percentText.innerText = "50%";
+      barFill.style.width = "50%";
+
+      fetch("/api/fb/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url: currentFbUrl,
+          format_id: formatId
+        })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (clickedBtn) {
+          clickedBtn.disabled = false;
+          clickedBtn.innerHTML = "<span>⬇ Tải về</span>";
+        }
+
+        if (res.ok && res.data) {
+          const streamUrl = res.data.stream_url || "";
+          const fileName = res.data.file_name || "";
+          const absPath = (res.data.abs_path || "").replace(/\\/g, '/');
+          window.lastDownloadedVideo = {
+            streamUrl: streamUrl,
+            fileName: fileName,
+            absPath: absPath
+          };
+
+          barFill.style.width = "100%";
+          percentText.innerText = "100%";
+          statusText.innerHTML = `✅ Đã tải thành công <strong>${escapeHtml(fileName)}</strong> (${res.data.file_size})!
+            <button type="button" class="btn-ctrl-main" style="display: inline-flex; margin-left: 10px; padding: 4px 10px; font-size: 12px;" onclick="playFbPreview(window.lastDownloadedVideo.streamUrl, window.lastDownloadedVideo.fileName, true, window.lastDownloadedVideo.absPath)">▶ Xem ngay trên Web</button>
+            <button type="button" class="btn-ctrl-sub" style="display: inline-flex; margin-left: 6px; padding: 4px 10px; font-size: 12px;" onclick="openMediaFile(window.lastDownloadedVideo.absPath)">🖥 Mở trên máy</button>
+          `;
+          showToast("✅ Đã tải xong video: " + fileName);
+          // Tự động nạp video đã tải vào khung preview trên Web
+          if (streamUrl) {
+            playFbPreview(streamUrl, fileName, true, absPath);
+          }
+        } else {
+          barFill.style.width = "0%";
+          percentText.innerText = "Lỗi";
+          statusText.innerHTML = `❌ Lỗi khi tải video: ${escapeHtml(res.message || "Không xác định")}`;
+        }
+      })
+      .catch(err => {
+        if (clickedBtn) {
+          clickedBtn.disabled = false;
+          clickedBtn.innerHTML = "<span>⬇ Tải về</span>";
+        }
+        barFill.style.width = "0%";
+        percentText.innerText = "Lỗi";
+        statusText.innerHTML = `❌ Lỗi kết nối: ${escapeHtml(err.message || err)}`;
+      });
+    }
+
+    function loadFbHistory() {
+      // Đã ẩn phần Lịch sử video theo yêu cầu
+    }
+
     // Khởi tạo ban đầu
     fetchLicenseInfo(true);
     loadAccountSettings();
     loadHistory();
+
   </script>
 </body>
 

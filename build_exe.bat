@@ -10,20 +10,7 @@ echo   ĐANG ĐÓNG GÓI STORY SCRAPER THÀNH FILE EXE (PyInstaller)
 echo ============================================================
 echo.
 
-pyinstaller --noconfirm --onefile --console ^
-  --name "StoryScraper" ^
-  --add-data "templates;templates" ^
-  --hidden-import "parsers" ^
-  --hidden-import "parsers.base" ^
-  --hidden-import "parsers.treeiq" ^
-  --hidden-import "parsers.ahcms" ^
-  --hidden-import "downloader" ^
-  --hidden-import "translator" ^
-  --hidden-import "publisher" ^
-  --hidden-import "license_manager" ^
-  --hidden-import "bs4" ^
-  --hidden-import "lxml" ^
-  app.py
+python build.py
 
 if %ERRORLEVEL% EQU 0 (
     echo.

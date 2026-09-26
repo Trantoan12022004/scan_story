@@ -1,0 +1,1 @@
+Chapter 5 - Shadows in the Master WingBack at the Hudson Valley estate, the morning sun was just beginning to burn through the heavy gray fog rising off the Hudson River. The air was crisp, silent, and bitterly cold.

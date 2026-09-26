@@ -1,0 +1,1 @@
+Chapter 3 - The Ghost of the HarborWhile Marcus and Daniel secured Nathan and Claire in the lower holding cells beneath the study, Dominic retreated to his private communication terminal. The room smelled of ozone and hot electronics as the high-gain satellite dishes locked onto a secure, deep-sea encrypted frequency that hadn't been pinged in over five years.

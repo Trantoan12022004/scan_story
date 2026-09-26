@@ -1,0 +1,1 @@
+Chapter 4 - Blood on the DocksThe Red Hook shipping yards in Brooklyn were a concrete maze of rusted shipping containers, towering cranes, and freezing salt spray blowing off the East River. It was 2:00 AM, and the industrial park looked like a ghost town under the flickering amber glow of sodium-vapor lights.
