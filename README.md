@@ -205,6 +205,151 @@ Hệ thống hỗ trợ đóng gói ra 2 phiên bản chuyên biệt độc lậ
   python build.py --target admin
   ```
 
+---
+
+# 📖 CẨM NANG HƯỚNG DẪN SỬ DỤNG & QUY TRÌNH CẬP NHẬT (ADMIN & USER)
+
+Hệ thống hỗ trợ 2 môi trường vận hành: **Mã nguồn Python (Terminal)** và **File thực thi đóng gói (.exe)**.
+
+---
+
+## 👑 PHẦN I: DÀNH CHO ADMIN (QUẢN TRỊ VIÊN)
+
+### 1. Khởi động ứng dụng chế độ Admin
+
+* **Chạy bằng Terminal (Mã nguồn Python)**:
+  ```bash
+  # Cách 1: Chạy qua cờ --admin
+  python app.py --admin
+
+  # Cách 2: Chạy qua file entry chuyên dụng
+  python entry_admin.py
+  ```
+  👉 Server chạy tại `http://localhost:5000` với huy hiệu **👑 QUẢN TRỊ VIÊN (ADMIN)**, mở khóa toàn bộ tính năng và cấu hình Google Sheets.
+
+* **Chạy bằng File EXE**:
+  - Nhấp đúp vào file `dist/StoryScraper_Admin.exe`.
+  - Được tích hợp sẵn bản quyền SuperAdmin vĩnh viễn, không cần kích hoạt.
+  - Tích hợp nút **📊 Bảng Tính Bản Quyền** trên thanh tiêu đề mở trực tiếp Google Sheets quản trị.
+
+---
+
+### 2. Quy trình phát hành bản cập nhật mới cho người dùng
+
+Khi Admin có code mới hoặc nâng cấp giao diện, thực hiện theo 4 bước sau:
+
+* **Bước 1: Đóng gói lại file `.exe` cho khách hàng**:
+  ```bash
+  # Trên terminal:
+  python build.py --target user
+  # Hoặc nhấp đúp file build_exe.bat và chọn phím 2
+  ```
+  File mới tạo sẽ nằm tại `dist/StoryScraper_User.exe`.
+
+* **Bước 2: Cập nhật số phiên bản vào `version.json`**:
+  Chỉnh sửa file `version.json` với số version mới và mô tả cập nhật:
+  ```json
+  {
+    "version": "2.0.1",
+    "release_date": "2026-09-27",
+    "changelog": "Thêm tính năng cào truyện nâng cao và tối ưu tốc độ tải video",
+    "download_url_user": "https://github.com/Trantoan12022004/scan_story/releases/latest/download/StoryScraper_User.exe",
+    "download_url_admin": "https://github.com/Trantoan12022004/scan_story/releases/latest/download/StoryScraper_Admin.exe"
+  }
+  ```
+
+* **Bước 3: Đẩy mã nguồn lên GitHub**:
+  ```bash
+  git add .
+  git commit -m "Phát hành bản v2.0.1"
+  git push origin main
+  ```
+
+* **Bước 4: Đính kèm file EXE vào GitHub Releases**:
+  1. Vào kho GitHub: `https://github.com/Trantoan12022004/scan_story/releases`
+  2. Bấm **Draft a new release**, đặt tag `v2.0.1`.
+  3. Kéo thả file `dist/StoryScraper_User.exe` vào mục đính kèm tệp (Assets).
+  4. Bấm **Publish release**.
+
+  🎉 **Ngay lập tức**: Tất cả người dùng đang mở `StoryScraper_User.exe` sẽ nhìn thấy banner thông báo có bản cập nhật mới và có thể bấm cập nhật tự động 1-click!
+
+---
+
+### 3. Quản lý bản quyền khách hàng qua Google Sheets
+
+1. Bấm vào nút **📊 Bảng Tính Bản Quyền** trên giao diện Admin để mở trực tiếp Google Sheets.
+2. Thêm dòng mới cho khách hàng:
+   | Mã máy (HWID) | Tên khách | Ngày hết hạn | Trạng thái |
+   |---|---|---|---|
+   | `3FD0-DB7D-FA39` | Anh Toàn | `2026-12-31` | `Active` |
+3. **Khóa khách hàng**: Chỉ cần sửa cột Trạng thái thành `Block` là máy đó sẽ bị ngắt quyền truy cập ngay lập tức.
+
+---
+
+## 👤 PHẦN II: DÀNH CHO USER (KHÁCH HÀNG / NGƯỜI DÙNG CUỐI)
+
+### 1. Khởi động ứng dụng
+
+* **Người dùng dùng file EXE (Phổ biến nhất)**:
+  - Chỉ cần nhấp đúp file **`StoryScraper_User.exe`**.
+  - Trình duyệt sẽ tự động mở trang điều khiển tại `http://localhost:5000`.
+  - Toàn bộ link Google Sheets và tính năng quản trị đã được ẩn hoàn toàn để bảo mật.
+
+* **Người dùng chạy mã nguồn Python**:
+  ```bash
+  python app.py
+  # hoặc:
+  python entry_user.py
+  ```
+
+---
+
+### 2. Kích hoạt bản quyền lần đầu
+
+1. Khi mở ứng dụng, nếu chưa được kích hoạt, tool sẽ hiện thông báo kèm **Mã máy (HWID)** (Ví dụ: `3FD0-DB7D-FA39`).
+2. Bấm **📋 Sao chép mã máy** và gửi mã này cho Admin.
+3. Sau khi Admin báo đã thêm lên Google Sheets:
+   - Người dùng chỉ cần bấm nút **⚡ Kiểm tra kích hoạt online** (hoặc mở lại tool).
+   - Tool sẽ nhận diện tức thì và chuyển trạng thái sang **✅ Bản quyền hợp lệ**.
+
+---
+
+### 3. Cách cập nhật lên phiên bản mới nhất
+
+* **Đối với người dùng file `.exe` (`StoryScraper_User.exe`)**:
+  - Khi Admin phát hành bản mới, ở đầu trang sẽ tự động hiện thông báo màu tím nổi bật:
+    > *🚀 Phát hiện bản cập nhật mới (v2.0.1): '...' - [⚡ Cập nhật ngay]*
+  - Người dùng chỉ cần bấm **⚡ Cập nhật ngay**:
+    1. Tool tự động tải file `.exe` mới ngầm từ GitHub.
+    2. Tự động tắt bản cũ, thay thế bằng file mới và khởi động lại trong 2 giây.
+    3. Trang web tự tải lại, không cần người dùng tải thủ công hay cài đặt lại.
+  - Người dùng cũng có thể bấm nút **🔄 Cập nhật** trên thanh Menu bất kỳ lúc nào để kiểm tra bản mới.
+
+* **Đối với người dùng chạy Terminal (Mã nguồn Python)**:
+  - Bấm nút **⚡ Cập nhật ngay** trên giao diện: Tool sẽ tự động chạy lệnh `git pull origin main` và tự reload trang.
+  - Hoặc mở Terminal gõ:
+    ```bash
+    git pull origin main
+    ```
+
+---
+
+## ⚡ PHẦN III: BẢNG TRA CỨU LỆNH NHANH (CHEAT SHEET)
+
+| Thao tác | Lệnh Terminal (CLI) | File .BAT / File EXE |
+|---|---|---|
+| **Chạy Web UI (Bản User)** | `python app.py` hoặc `python entry_user.py` | Chạy file `StoryScraper_User.exe` |
+| **Chạy Web UI (Bản Admin)** | `python app.py --admin` hoặc `python entry_admin.py` | Chạy file `StoryScraper_Admin.exe` |
+| **Đóng gói cả 2 bản EXE** | `python build.py --target all` | Chạy `build_exe.bat` chọn `1` |
+| **Chỉ đóng gói bản User** | `python build.py --target user` | Chạy `build_exe.bat` chọn `2` |
+| **Chỉ đóng gói bản Admin** | `python build.py --target admin` | Chạy `build_exe.bat` chọn `3` |
+| **Cập nhật code qua Git** | `git pull origin main` | Bấm nút **⚡ Cập nhật ngay** trên Web |
+| **Cào truyện & đăng CMS** | `python publish.py "<url_truyen>"` | Dùng tab **Cào & Đăng Truyện** trên Web |
+| **Tải video/reel Facebook** | `python fb_downloader.py "<url_fb>"` | Dùng tab **Tải Reels & Video FB** trên Web |
+| **Cấp key Admin 10 năm** | `python keygen.py --self -u "Admin"` | Đã tích hợp sẵn trong `StoryScraper_Admin.exe` |
+| **Tạo key offline cho khách**| `python keygen.py -u "Khach" -m "HWID" -d 30` | Dùng nút tạo key trong modal Admin |
+
+
 
 
 
