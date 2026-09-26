@@ -655,10 +655,10 @@ if exist "{new_exe_path}" (
     move /Y "{new_exe_path}" "{current_exe}" >nul 2>&1
 )
 
-:: 3. Khởi động lại ứng dụng mới trong cửa sổ Console mới
-start "" /D "{app_dir}" "{current_exe}"
+:: 3. Khởi động lại ứng dụng độc lập 100% qua Windows Shell (Explorer)
+explorer.exe "{current_exe}"
 
-:: 4. Tự hủy script batch này
+:: 4. Tự hủy script batch này sau 2 giây
 timeout /t 2 /nobreak >nul
 del "%~f0" >nul 2>&1
 exit
@@ -667,12 +667,11 @@ exit
             with open(bat_script_path, "w", encoding="utf-8") as bf:
                 bf.write(bat_content)
 
-            DETACHED_PROCESS = 0x00000008
-            CREATE_NEW_PROCESS_GROUP = 0x00000200
+            CREATE_NO_WINDOW = 0x08000000
             subprocess.Popen(
                 ["cmd.exe", "/c", bat_script_path],
                 cwd=app_dir,
-                creationflags=DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP
+                creationflags=CREATE_NO_WINDOW
             )
 
             threading.Timer(0.8, lambda: os._exit(0)).start()
