@@ -1,1 +1,0 @@
-Chapter 8 - THE WEDDING GUESTS LEARNED THE WRONG LESSONThe story went public.

@@ -1,1 +1,0 @@
-Chapter 24 - WHAT ANNA INHERITED

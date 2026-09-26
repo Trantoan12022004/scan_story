@@ -1,1 +1,0 @@
-Chapter 7 - The Sunrise Over Shaker HeightsThe first rays of golden sunlight crested over the ridge of the Hudson Valley, bathing the grand estate in a warm, amber glow that chased away the lingering shadows of the winter dawn.

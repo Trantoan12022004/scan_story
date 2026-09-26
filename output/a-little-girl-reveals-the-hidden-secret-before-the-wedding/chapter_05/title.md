@@ -1,1 +1,0 @@
-Justice in the Light
