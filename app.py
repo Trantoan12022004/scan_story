@@ -389,7 +389,24 @@ def admin_test_sheet():
     })
 
 
-APP_VERSION = "2.0.0"
+def load_app_version() -> str:
+    """Tự động đọc số phiên bản từ file version.json đóng gói trong EXE hoặc thư mục gốc"""
+    for p in [
+        os.path.join(getattr(sys, '_MEIPASS', ''), 'version.json'),
+        os.path.join(APP_ROOT, 'version.json'),
+    ]:
+        if os.path.isfile(p):
+            try:
+                with open(p, 'r', encoding='utf-8') as f:
+                    v = json.load(f).get('version')
+                    if v:
+                        return str(v).strip()
+            except Exception:
+                pass
+    return "2.0.2"
+
+
+APP_VERSION = load_app_version()
 VERSION_CHECK_URL = "https://raw.githubusercontent.com/Trantoan12022004/scan_story/main/version.json"
 
 
@@ -406,11 +423,55 @@ def check_update_route():
     """Kiểm tra xem có phiên bản hoặc commit mới nào trên GitHub không"""
     is_frozen = getattr(sys, 'frozen', False)
     admin = is_admin_mode()
+    repo = "Trantoan12022004/scan_story"
 
-    # 1. Trường hợp 1: Chạy bằng file EXE độc lập -> Kiểm tra qua version.json trên GitHub
+    # 1. Trường hợp 1: Chạy bằng file EXE độc lập -> Tự động kiểm tra GitHub Releases mới nhất (fallback version.json)
     if is_frozen:
         try:
             import requests
+
+            # 1.1 Thử truy vấn GitHub Releases API trực tiếp
+            try:
+                rel_api = f"https://api.github.com/repos/{repo}/releases/latest"
+                r_rel = requests.get(
+                    rel_api,
+                    headers={
+                        "Accept": "application/vnd.github.v3+json",
+                        "User-Agent": "ScanStory-App"
+                    },
+                    timeout=5
+                )
+                if r_rel.status_code == 200:
+                    rel = r_rel.json()
+                    tag_name = (rel.get("tag_name") or "").lstrip("v")
+                    remote_ver = tag_name or "2.0.0"
+                    has_update = parse_semver(remote_ver) > parse_semver(APP_VERSION)
+
+                    target_asset_name = "StoryScraper_Admin.exe" if admin else "StoryScraper_User.exe"
+                    download_url = ""
+                    for asset in rel.get("assets", []):
+                        if asset.get("name", "").lower() == target_asset_name.lower():
+                            download_url = asset.get("browser_download_url", "")
+                            break
+
+                    if not download_url:
+                        download_url = f"https://github.com/{repo}/releases/latest/download/{target_asset_name}"
+
+                    return jsonify({
+                        "ok": True,
+                        "is_exe": True,
+                        "has_update": has_update,
+                        "local_sha": f"v{APP_VERSION}",
+                        "remote_sha": f"v{remote_ver}",
+                        "commit_message": rel.get("name") or rel.get("body") or f"Bản cập nhật v{remote_ver}",
+                        "commit_date": rel.get("published_at", ""),
+                        "download_url": download_url,
+                        "html_url": rel.get("html_url", f"https://github.com/{repo}/releases")
+                    })
+            except Exception:
+                pass
+
+            # 1.2 Dự phòng: Đọc qua version.json trên GitHub
             resp = requests.get(
                 f"{VERSION_CHECK_URL}?_cb={int(time.time() * 1000)}",
                 timeout=6,
@@ -433,7 +494,7 @@ def check_update_route():
                     "commit_message": info.get("changelog", "Bản cập nhật mới"),
                     "commit_date": info.get("release_date", ""),
                     "download_url": download_url,
-                    "html_url": "https://github.com/Trantoan12022004/scan_story/releases"
+                    "html_url": f"https://github.com/{repo}/releases"
                 })
             elif resp.status_code == 404:
                 return jsonify({
@@ -445,7 +506,7 @@ def check_update_route():
                     "commit_message": "Bạn đang dùng phiên bản mới nhất!",
                     "commit_date": "",
                     "download_url": "",
-                    "html_url": "https://github.com/Trantoan12022004/scan_story/releases"
+                    "html_url": f"https://github.com/{repo}/releases"
                 })
             else:
                 return jsonify({"ok": False, "message": f"Không thể tải thông tin phiên bản mới từ GitHub (HTTP {resp.status_code})."})
@@ -542,6 +603,7 @@ def perform_update_route():
 
         current_exe = os.path.abspath(sys.executable)
         app_dir = os.path.dirname(current_exe)
+        exe_filename = os.path.basename(current_exe)
         new_exe_path = os.path.join(app_dir, "new_update.exe")
 
         try:
@@ -570,22 +632,34 @@ def perform_update_route():
 
         # Tạo script batch phụ để thay thế file EXE sau khi tiến trình hiện tại thoát
         bat_script_path = os.path.join(app_dir, "apply_update.bat")
-        current_pid = os.getpid()
         bat_content = f"""@echo off
 chcp 65001 >nul
+cd /d "{app_dir}"
+
+:: 1. Đóng dứt điểm toàn bộ tiến trình cũ để mở khóa file
 timeout /t 1 /nobreak >nul
-taskkill /F /PID {current_pid} >nul 2>&1
+taskkill /F /IM "{exe_filename}" >nul 2>&1
 timeout /t 1 /nobreak >nul
 
+:: 2. Thay thế file cũ bằng file mới vừa tải về
 :retry_del
-del /F /Q "{current_exe}" >nul 2>&1
 if exist "{current_exe}" (
-    timeout /t 1 /nobreak >nul
-    goto retry_del
+    del /F /Q "{current_exe}" >nul 2>&1
+    if exist "{current_exe}" (
+        timeout /t 1 /nobreak >nul
+        goto retry_del
+    )
 )
 
-move /Y "{new_exe_path}" "{current_exe}" >nul 2>&1
-start "" "{current_exe}"
+if exist "{new_exe_path}" (
+    move /Y "{new_exe_path}" "{current_exe}" >nul 2>&1
+)
+
+:: 3. Khởi động lại ứng dụng mới trong cửa sổ Console mới
+start "" /D "{app_dir}" "{current_exe}"
+
+:: 4. Tự hủy script batch này
+timeout /t 2 /nobreak >nul
 del "%~f0" >nul 2>&1
 exit
 """
@@ -593,15 +667,20 @@ exit
             with open(bat_script_path, "w", encoding="utf-8") as bf:
                 bf.write(bat_content)
 
-            CREATE_NO_WINDOW = 0x08000000
-            subprocess.Popen(["cmd.exe", "/c", bat_script_path], creationflags=CREATE_NO_WINDOW)
+            DETACHED_PROCESS = 0x00000008
+            CREATE_NEW_PROCESS_GROUP = 0x00000200
+            subprocess.Popen(
+                ["cmd.exe", "/c", bat_script_path],
+                cwd=app_dir,
+                creationflags=DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP
+            )
 
-            threading.Timer(1.0, lambda: os._exit(0)).start()
+            threading.Timer(0.8, lambda: os._exit(0)).start()
 
             return jsonify({
                 "ok": True,
                 "is_exe": True,
-                "message": "Đã tải xong bản cập nhật! Ứng dụng sẽ tự động thay thế file và khởi động lại trong 2 giây..."
+                "message": "Đã tải xong bản cập nhật! Ứng dụng đang khởi động lại..."
             })
         except Exception as e:
             return jsonify({

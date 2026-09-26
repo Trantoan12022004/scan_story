@@ -2633,30 +2633,55 @@
       })
         .then(r => r.json())
         .then(res => {
-          if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = "<span>⚡ Cập nhật ngay</span>";
-          }
           if (res.ok) {
-            alert("🎉 " + res.message);
-            if (res.is_exe) {
-              setTimeout(() => { window.location.reload(); }, 3500);
-            } else {
-              window.location.reload();
+            if (btn) {
+              btn.innerHTML = "<span>🚀 Đang khởi động lại ứng dụng...</span>";
             }
+            const banner = document.getElementById("updateAlertBanner");
+            if (banner) {
+              banner.style.display = "flex";
+              const bannerText = document.getElementById("updateAlertText");
+              if (bannerText) {
+                bannerText.innerHTML = "🎉 <strong>" + (res.message || "Đã cập nhật xong!") + "</strong> Trang sẽ tự động tải lại ngay khi ứng dụng khởi động xong.";
+              }
+            }
+            // Tự động kiểm tra server mới mở lại và reload trang sau 3.5 giây
+            setTimeout(() => {
+              let attempts = 0;
+              const pollInterval = setInterval(() => {
+                attempts++;
+                fetch("/api/license-info?_t=" + Date.now())
+                  .then(p => {
+                    if (p.ok) {
+                      clearInterval(pollInterval);
+                      window.location.reload();
+                    }
+                  })
+                  .catch(() => {
+                    if (attempts > 15) {
+                      clearInterval(pollInterval);
+                      window.location.reload();
+                    }
+                  });
+              }, 1200);
+            }, 3000);
           } else {
+            if (btn) {
+              btn.disabled = false;
+              btn.innerHTML = "<span>⚡ Cập nhật ngay</span>";
+            }
             alert("❌ Lỗi khi cập nhật:\n" + (res.message || "Không thể tải mã nguồn mới"));
           }
         })
         .catch(err => {
-          if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = "<span>⚡ Cập nhật ngay</span>";
-          }
           if (isExe) {
-            alert("🚀 Bản cập nhật đang được áp dụng và khởi động lại. Vui lòng chờ vài giây...");
+            if (btn) btn.innerHTML = "<span>🚀 Đang khởi động lại...</span>";
             setTimeout(() => { window.location.reload(); }, 4000);
           } else {
+            if (btn) {
+              btn.disabled = false;
+              btn.innerHTML = "<span>⚡ Cập nhật ngay</span>";
+            }
             alert("❌ Lỗi kết nối khi cập nhật: " + err);
           }
         });
