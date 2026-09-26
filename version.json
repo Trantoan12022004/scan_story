@@ -1,7 +1,7 @@
 {
-  "version": "2.0.4",
+  "version": "2.0.5",
   "release_date": "2026-09-26",
-  "changelog": "Cập nhật hiển thị nguồn bản quyền Online123 và tối ưu tự động cập nhật",
-  "download_url_user": "https://github.com/Trantoan12022004/scan_story/releases/download/v2.0.4/StoryScraper_User.exe",
-  "download_url_admin": "https://github.com/Trantoan12022004/scan_story/releases/download/v2.0.4/StoryScraper_Admin.exe"
+  "changelog": "Mô tả các thay đổi mới của bản 2.0.5 ở đây",
+  "download_url_user": "https://github.com/Trantoan12022004/scan_story/releases/download/v2.0.5/StoryScraper_User.exe",
+  "download_url_admin": "https://github.com/Trantoan12022004/scan_story/releases/download/v2.0.5/StoryScraper_Admin.exe"
 }

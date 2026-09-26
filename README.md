@@ -351,5 +351,78 @@ Khi Admin có code mới hoặc nâng cấp giao diện, thực hiện theo 4 b�
 
 
 
+Dưới đây là hướng dẫn từng bước chi tiết để bạn phát hành **bản Release số 5 (`v2.0.5`)** cho người dùng:
+
+---
+
+### 🚀 QUY TRÌNH PHÁT HÀNH BẢN `v2.0.5` (5 BƯỚC)
+
+#### 🔹 Bước 1: Sửa code hoặc tính năng mong muốn
+Bạn chỉnh sửa code tính năng, giao diện hoặc nội dung trong project `scan_story` như bình thường.
+
+---
+
+#### 🔹 Bước 2: Cập nhật file `version.json` lên phiên bản `2.0.5`
+Mở file [version.json](file:///d:/tools/scan_story/version.json) và sửa thành:
+```json
+{
+  "version": "2.0.5",
+  "release_date": "2026-09-26",
+  "changelog": "Mô tả các thay đổi mới của bản 2.0.5 ở đây",
+  "download_url_user": "https://github.com/Trantoan12022004/scan_story/releases/download/v2.0.5/StoryScraper_User.exe",
+  "download_url_admin": "https://github.com/Trantoan12022004/scan_story/releases/download/v2.0.5/StoryScraper_Admin.exe"
+}
+```
+
+---
+
+#### 🔹 Bước 3: Đóng gói bản EXE mới (Build)
+> ⚠️ **Bắt buộc làm bước này sau khi đã sửa `version.json`**, để số phiên bản `2.0.5` được nhúng trực tiếp vào file EXE.
+
+Mở Terminal tại thư mục `d:\tools\scan_story` và gõ:
+```bash
+python build.py --target user
+```
+*(Hoặc click đúp file [build_exe.bat](file:///d:/tools/scan_story/build_exe.bat) và chọn phím `2`)*.  
+File mới sinh ra sẽ nằm tại: **`dist/StoryScraper_User.exe`**.
+
+---
+
+#### 🔹 Bước 4: Đẩy mã nguồn lên GitHub `main`
+```bash
+git add .
+git commit -m "Phát hành bản v2.0.5"
+git push origin main
+```
+
+---
+
+#### 🔹 Bước 5: Tạo Release `v2.0.5` trên GitHub và tải file EXE lên
+
+Bạn có thể chọn **1 trong 2 cách** sau:
+
+* **Cách 1: Dùng lệnh 1 chạm cực nhanh trên Terminal (Khuyên dùng)**:
+  ```bash
+  gh release create v2.0.5 dist/StoryScraper_User.exe --title "Bản cập nhật v2.0.5" --notes "Cập nhật tính năng mới cho bản 2.0.5"
+  ```
+  *(Lệnh này sẽ tự tạo Release `v2.0.5` trên GitHub và tự đính kèm file `dist/StoryScraper_User.exe` lên chỉ trong 10 giây)*.
+
+* **Cách 2: Làm thủ công trên Web GitHub**:
+  1. Vào kho GitHub: [GitHub Releases scan_story](https://github.com/Trantoan12022004/scan_story/releases)
+  2. Bấm nút **Draft a new release**.
+  3. Tại ô **Choose a tag**: Nhập `v2.0.5` rồi bấm **Create new tag**.
+  4. Tại ô **Release title**: Nhập `Bản cập nhật v2.0.5`.
+  5. Kéo thả file `dist/StoryScraper_User.exe` vào ô đính kèm tệp (**Attach binaries by dropping them here**).
+  6. Bấm **Publish release**.
+
+---
+
+### 🎉 Điều gì sẽ diễn ra phía người dùng?
+- Tất cả người dùng đang mở bản cũ (`v2.0.4` trở về trước) sẽ ngay lập tức nhìn thấy banner tím ở đầu trang:
+  > *🚀 Phát hiện bản cập nhật mới (v2.0.5): 'Cập nhật tính năng mới...' - [⚡ Cập nhật ngay]*
+- Khách bấm **⚡ Cập nhật ngay**: Tool tự tải bản `v2.0.5` về ngầm, tự thay thế file và khởi động lại trong 2 giây. Sau khi mở lên, tool mang đúng số phiên bản `2.0.5` và thông báo cập nhật tự động biến mất!
+
+
+
 
 
