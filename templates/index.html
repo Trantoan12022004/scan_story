@@ -496,8 +496,15 @@
     }
 
     @keyframes bannerSlideDown {
-      from { transform: translateY(-100%); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
 
     .update-banner-content {
@@ -1404,8 +1411,17 @@
     }
 
     @keyframes pulseDot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.8); }
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(0.8);
+      }
     }
 
     /* Scrubber Progress */
@@ -1696,7 +1712,8 @@
       <button type="button" class="btn-update-now" id="btnUpdateNow" onclick="performAppUpdate()">
         <span>⚡ Cập nhật ngay</span>
       </button>
-      <button type="button" class="btn-update-dismiss" onclick="dismissUpdateBanner()" title="Đóng banner này">✕</button>
+      <button type="button" class="btn-update-dismiss" onclick="dismissUpdateBanner()"
+        title="Đóng banner này">✕</button>
     </div>
   </div>
 
@@ -1744,208 +1761,210 @@
   <div id="storyTabSection">
     <!-- Banner cảnh báo bản quyền -->
     <div id="licenseAlertBanner" class="license-alert-banner" style="display: none;">
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <span>🔒</span>
-      <span id="licenseAlertText">Bản quyền chưa được kích hoạt hoặc đã hết hạn. Vui lòng kích hoạt key để tiếp tục sử
-        dụng.</span>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span>🔒</span>
+        <span id="licenseAlertText">Bản quyền chưa được kích hoạt hoặc đã hết hạn. Vui lòng kích hoạt key để tiếp tục sử
+          dụng.</span>
+      </div>
+      <button type="button" class="btn-primary" style="padding: 5px 14px; font-size: 12px;"
+        onclick="openLicenseModal()">
+        🔑 Kích hoạt ngay
+      </button>
     </div>
-    <button type="button" class="btn-primary" style="padding: 5px 14px; font-size: 12px;" onclick="openLicenseModal()">
-      🔑 Kích hoạt ngay
-    </button>
-  </div>
 
-  <!-- Main Grid -->
-  <main class="app-container">
+    <!-- Main Grid -->
+    <main class="app-container">
 
-    <!-- Cột trái: Điều khiển & Cấu hình -->
-    <div class="panel">
-      <div class="panel-header">
-        <h2 class="panel-title">⚙️ Cấu hình tác vụ</h2>
-      </div>
-
-      <!-- Ô nhập URL -->
-      <div class="form-group">
-        <label class="form-label" for="storyUrl">URL Truyện (Hỗ trợ mọi website truyện)</label>
-        <div class="input-wrapper">
-          <input type="text" id="storyUrl" class="input-text"
-            placeholder="Dán link bất kỳ trang truyện nào (feji.io, danhngon.pro, treeiq.biz, fast2tricks.com...)" required>
-        </div>
-      </div>
-
-      <!-- Xem trước truyện sau khi parse -->
-      <div class="preview-card" id="previewCard">
-        <img id="previewCover" class="preview-cover" src="" alt="Cover">
-        <div class="preview-info">
-          <div class="preview-title" id="previewTitle">Tên truyện</div>
-          <div class="preview-meta">
-            <span id="previewChapters">📄 0 chapters</span>
-            <span id="previewParser">🌐 Universal</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tùy chọn Tự động hóa -->
-      <div class="toggles-group">
-        <label class="toggle-item">
-          <div class="toggle-label">
-            <div class="toggle-title">🌐 Tự động dịch sang tiếng Anh</div>
-            <div class="toggle-desc">Dịch title, heading và content toàn bộ chapter</div>
-          </div>
-          <label class="switch">
-            <input type="checkbox" id="translateToggle" checked>
-            <span class="slider"></span>
-          </label>
-        </label>
-
-        <label class="toggle-item">
-          <div class="toggle-label">
-            <div class="toggle-title">🚀 Tự động đăng CMS BlogBio</div>
-            <div class="toggle-desc">Chế độ Chapter mode, chèn cover và tạo liên kết</div>
-          </div>
-          <label class="switch">
-            <input type="checkbox" id="publishToggle" checked>
-            <span class="slider"></span>
-          </label>
-        </label>
-
-        <label class="toggle-item">
-          <div class="toggle-label">
-            <div class="toggle-title">🖼️ Tải hình ảnh minh họa</div>
-            <div class="toggle-desc">Tải ảnh bìa cover và ảnh minh họa trong truyện</div>
-          </div>
-          <label class="switch">
-            <input type="checkbox" id="imagesToggle" checked>
-            <span class="slider"></span>
-          </label>
-        </label>
-      </div>
-
-      <!-- Cấu hình Tài khoản CMS -->
-      <div class="account-card" id="cmsAccountCard">
-        <div class="account-header">
-          <div class="account-title">
-            <span>🔐</span>
-            <span>Tài khoản CMS</span>
-          </div>
-          <button type="button" class="btn-account-test" id="btnTestCms" onclick="testCmsLogin()">
-            ⚡ Kiểm tra kết nối
-          </button>
+      <!-- Cột trái: Điều khiển & Cấu hình -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">⚙️ Cấu hình tác vụ</h2>
         </div>
 
-        <div id="cmsTestStatus" class="account-status-badge" style="display: none;"></div>
-
+        <!-- Ô nhập URL -->
         <div class="form-group">
-          <label class="form-label" for="cmsUrl" style="font-size: 11px;">CMS Base URL</label>
-          <input type="text" id="cmsUrl" class="input-text" style="padding: 9px 12px; font-size: 13px;"
-            value="https://vmnewstoryus.cfx.bz" placeholder="https://vmnewstoryus.cfx.bz"
-            oninput="saveAccountSettings()">
+          <label class="form-label" for="storyUrl">URL Truyện (Hỗ trợ mọi website truyện)</label>
+          <div class="input-wrapper">
+            <input type="text" id="storyUrl" class="input-text"
+              placeholder="Dán link bất kỳ trang truyện nào (feji.io, danhngon.pro, treeiq.biz, fast2tricks.com...)"
+              required>
+          </div>
         </div>
 
-        <div class="grid-2">
-          <div class="form-group">
-            <label class="form-label" for="cmsUser" style="font-size: 11px;">Tài khoản (Email/User)</label>
-            <input type="text" id="cmsUser" class="input-text" style="padding: 9px 12px; font-size: 13px;" value="admin"
-              placeholder="admin" oninput="saveAccountSettings()">
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="cmsPass" style="font-size: 11px;">Mật khẩu</label>
-            <div class="input-wrapper">
-              <input type="password" id="cmsPass" class="input-text"
-                style="padding: 9px 36px 9px 12px; font-size: 13px;" value="Vnpt@123" placeholder="Mật khẩu"
-                oninput="saveAccountSettings()">
-              <button type="button" class="btn-toggle-pw" onclick="togglePasswordVisibility()"
-                title="Ẩn/Hiện mật khẩu">👁️</button>
+        <!-- Xem trước truyện sau khi parse -->
+        <div class="preview-card" id="previewCard">
+          <img id="previewCover" class="preview-cover" src="" alt="Cover">
+          <div class="preview-info">
+            <div class="preview-title" id="previewTitle">Tên truyện</div>
+            <div class="preview-meta">
+              <span id="previewChapters">📄 0 chapters</span>
+              <span id="previewParser">🌐 Universal</span>
             </div>
           </div>
         </div>
 
-        <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 2px;">
-          <label
-            style="display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--text-secondary); cursor: pointer; user-select: none;">
-            <input type="checkbox" id="rememberAccount" checked style="accent-color: var(--primary); cursor: pointer;"
-              onchange="saveAccountSettings()">
-            <span>Ghi nhớ tài khoản trên thiết bị này</span>
+        <!-- Tùy chọn Tự động hóa -->
+        <div class="toggles-group">
+          <label class="toggle-item">
+            <div class="toggle-label">
+              <div class="toggle-title">🌐 Tự động dịch sang tiếng Anh</div>
+              <div class="toggle-desc">Dịch title, heading và content toàn bộ chapter</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="translateToggle" checked>
+              <span class="slider"></span>
+            </label>
           </label>
-          <span style="font-size: 11px; color: var(--text-muted);">Lưu an toàn ở trình duyệt</span>
+
+          <label class="toggle-item">
+            <div class="toggle-label">
+              <div class="toggle-title">🚀 Tự động đăng CMS BlogBio</div>
+              <div class="toggle-desc">Chế độ Chapter mode, chèn cover và tạo liên kết</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="publishToggle" checked>
+              <span class="slider"></span>
+            </label>
+          </label>
+
+          <label class="toggle-item">
+            <div class="toggle-label">
+              <div class="toggle-title">🖼️ Tải hình ảnh minh họa</div>
+              <div class="toggle-desc">Tải ảnh bìa cover và ảnh minh họa trong truyện</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="imagesToggle" checked>
+              <span class="slider"></span>
+            </label>
+          </label>
+        </div>
+
+        <!-- Cấu hình Tài khoản CMS -->
+        <div class="account-card" id="cmsAccountCard">
+          <div class="account-header">
+            <div class="account-title">
+              <span>🔐</span>
+              <span>Tài khoản CMS</span>
+            </div>
+            <button type="button" class="btn-account-test" id="btnTestCms" onclick="testCmsLogin()">
+              ⚡ Kiểm tra kết nối
+            </button>
+          </div>
+
+          <div id="cmsTestStatus" class="account-status-badge" style="display: none;"></div>
+
+          <div class="form-group">
+            <label class="form-label" for="cmsUrl" style="font-size: 11px;">CMS Base URL</label>
+            <input type="text" id="cmsUrl" class="input-text" style="padding: 9px 12px; font-size: 13px;"
+              value="https://vmnewstoryus.cfx.bz" placeholder="https://vmnewstoryus.cfx.bz"
+              oninput="saveAccountSettings()">
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label" for="cmsUser" style="font-size: 11px;">Tài khoản (Email/User)</label>
+              <input type="text" id="cmsUser" class="input-text" style="padding: 9px 12px; font-size: 13px;"
+                value="admin" placeholder="admin" oninput="saveAccountSettings()">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cmsPass" style="font-size: 11px;">Mật khẩu</label>
+              <div class="input-wrapper">
+                <input type="password" id="cmsPass" class="input-text"
+                  style="padding: 9px 36px 9px 12px; font-size: 13px;" value="Vnpt@123" placeholder="Mật khẩu"
+                  oninput="saveAccountSettings()">
+                <button type="button" class="btn-toggle-pw" onclick="togglePasswordVisibility()"
+                  title="Ẩn/Hiện mật khẩu">👁️</button>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 2px;">
+            <label
+              style="display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--text-secondary); cursor: pointer; user-select: none;">
+              <input type="checkbox" id="rememberAccount" checked style="accent-color: var(--primary); cursor: pointer;"
+                onchange="saveAccountSettings()">
+              <span>Ghi nhớ tài khoản trên thiết bị này</span>
+            </label>
+            <span style="font-size: 11px; color: var(--text-muted);">Lưu an toàn ở trình duyệt</span>
+          </div>
+        </div>
+
+        <!-- Giới hạn chapter & delay -->
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label" for="fromChapter">Từ Chapter</label>
+            <input type="number" id="fromChapter" class="input-text" value="1" min="1">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="toChapter">Đến Chapter (0 = Hết)</label>
+            <input type="number" id="toChapter" class="input-text" value="0" min="0">
+          </div>
+        </div>
+
+        <!-- Nút hành động chính -->
+        <button class="btn-primary" id="btnStart" onclick="startProcess()">
+          <span>🚀 Bắt đầu Cào, Dịch & Đăng bài</span>
+        </button>
+
+        <!-- Thanh tiến trình -->
+        <div class="progress-container" id="progressContainer">
+          <div class="progress-header">
+            <span id="progressLabel">Đang xử lý...</span>
+            <span id="progressPercent">0%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
+          </div>
+        </div>
+
+        <!-- Kết quả đăng CMS -->
+        <div class="cms-results-container" id="cmsResultsContainer">
+          <div class="cms-results-title">
+            <span>🎉 Đã đăng thành công lên CMS</span>
+          </div>
+          <div class="cms-posts-list" id="cmsPostsList"></div>
         </div>
       </div>
 
-      <!-- Giới hạn chapter & delay -->
-      <div class="grid-2">
-        <div class="form-group">
-          <label class="form-label" for="fromChapter">Từ Chapter</label>
-          <input type="number" id="fromChapter" class="input-text" value="1" min="1">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="toChapter">Đến Chapter (0 = Hết)</label>
-          <input type="number" id="toChapter" class="input-text" value="0" min="0">
-        </div>
-      </div>
-
-      <!-- Nút hành động chính -->
-      <button class="btn-primary" id="btnStart" onclick="startProcess()">
-        <span>🚀 Bắt đầu Cào, Dịch & Đăng bài</span>
-      </button>
-
-      <!-- Thanh tiến trình -->
-      <div class="progress-container" id="progressContainer">
-        <div class="progress-header">
-          <span id="progressLabel">Đang xử lý...</span>
-          <span id="progressPercent">0%</span>
-        </div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="progressBarFill"></div>
+      <!-- Cột phải: Live Console Terminal -->
+      <div class="panel" style="padding: 0; overflow: hidden;">
+        <div class="terminal-wrapper">
+          <div class="terminal-topbar">
+            <div class="terminal-dots">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <div class="terminal-title">live_terminal.log</div>
+            <div class="terminal-actions">
+              <button class="btn-term-action" onclick="clearTerminal()">Xóa log</button>
+              <button class="btn-term-action" onclick="copyLogs()">Sao chép</button>
+            </div>
+          </div>
+          <div class="terminal-body" id="terminalBody">
+            <div class="log-row">
+              <span class="log-time">[System]</span>
+              <span class="log-msg log-info">Hệ thống sẵn sàng. Nhập link truyện và bấm "Bắt đầu".</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Kết quả đăng CMS -->
-      <div class="cms-results-container" id="cmsResultsContainer">
-        <div class="cms-results-title">
-          <span>🎉 Đã đăng thành công lên CMS</span>
+    </main>
+
+    <!-- Lịch sử truyện đã cào -->
+    <div style="padding: 0 32px 32px 32px; max-width: 1680px; margin: 0 auto; width: 100%;">
+      <div class="history-card">
+        <div class="history-title">
+          <span>📁 Truyện đã cào gần đây</span>
+          <button class="btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="loadHistory()">Làm
+            mới</button>
         </div>
-        <div class="cms-posts-list" id="cmsPostsList"></div>
+        <div class="history-list" id="historyList">
+          <div style="color: var(--text-muted); font-size: 13px;">Đang tải lịch sử...</div>
+        </div>
       </div>
     </div>
-
-    <!-- Cột phải: Live Console Terminal -->
-    <div class="panel" style="padding: 0; overflow: hidden;">
-      <div class="terminal-wrapper">
-        <div class="terminal-topbar">
-          <div class="terminal-dots">
-            <span class="dot dot-red"></span>
-            <span class="dot dot-yellow"></span>
-            <span class="dot dot-green"></span>
-          </div>
-          <div class="terminal-title">live_terminal.log</div>
-          <div class="terminal-actions">
-            <button class="btn-term-action" onclick="clearTerminal()">Xóa log</button>
-            <button class="btn-term-action" onclick="copyLogs()">Sao chép</button>
-          </div>
-        </div>
-        <div class="terminal-body" id="terminalBody">
-          <div class="log-row">
-            <span class="log-time">[System]</span>
-            <span class="log-msg log-info">Hệ thống sẵn sàng. Nhập link truyện và bấm "Bắt đầu".</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- Lịch sử truyện đã cào -->
-  <div style="padding: 0 32px 32px 32px; max-width: 1680px; margin: 0 auto; width: 100%;">
-    <div class="history-card">
-      <div class="history-title">
-        <span>📁 Truyện đã cào gần đây</span>
-        <button class="btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="loadHistory()">Làm
-          mới</button>
-      </div>
-      <div class="history-list" id="historyList">
-        <div style="color: var(--text-muted); font-size: 13px;">Đang tải lịch sử...</div>
-      </div>
-    </div>
-  </div>
   </div>
   <!-- /#storyTabSection -->
 
@@ -1975,7 +1994,8 @@
           <span>🔍 Quét Các Mức Chất Lượng Video</span>
         </button>
 
-        <div id="fbProbeLoading" style="display: none; align-items: center; gap: 10px; font-size: 13px; color: var(--primary); padding: 12px; background: rgba(56,189,248,0.1); border-radius: 8px;">
+        <div id="fbProbeLoading"
+          style="display: none; align-items: center; gap: 10px; font-size: 13px; color: var(--primary); padding: 12px; background: rgba(56,189,248,0.1); border-radius: 8px;">
           <span>⏳</span>
           <span>Đang phân tích video và dò tìm các định dạng tải về...</span>
         </div>
@@ -1983,20 +2003,27 @@
         <div id="fbProbeError" class="account-status-badge status-badge-error" style="display: none;"></div>
 
         <!-- Thư mục lưu trữ & Tùy chọn -->
-        <div style="border-top: 1px solid var(--border); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+        <div
+          style="border-top: 1px solid var(--border); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
           <div style="display: flex; align-items: center; justify-content: space-between;">
-            <span style="font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase;">Thư mục lưu video:</span>
-            <button type="button" class="btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="openOutputFolder('output/videos')">
+            <span
+              style="font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase;">Thư
+              mục lưu video:</span>
+            <button type="button" class="btn-secondary" style="padding: 4px 10px; font-size: 12px;"
+              onclick="openOutputFolder('output/videos')">
               📁 Mở thư mục Video
             </button>
           </div>
-          <div style="font-size: 12px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; background: #0b1120; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);">
+          <div
+            style="font-size: 12px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; background: #0b1120; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);">
             output/videos/
           </div>
         </div>
 
         <!-- Tải nhanh chất lượng cao nhất -->
-        <button type="button" class="btn-secondary" id="btnQuickBestDownload" style="display: none; justify-content: center; padding: 10px; font-size: 13px;" onclick="downloadFbQuality('best')">
+        <button type="button" class="btn-secondary" id="btnQuickBestDownload"
+          style="display: none; justify-content: center; padding: 10px; font-size: 13px;"
+          onclick="downloadFbQuality('best')">
           ⚡ Tải nhanh Bản Nét Nhất (1080p Full HD)
         </button>
       </div>
@@ -2009,11 +2036,14 @@
         </div>
 
         <!-- Trạng thái chờ link (Empty State) -->
-        <div id="fbEmptyState" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; gap: 12px; color: var(--text-muted);">
+        <div id="fbEmptyState"
+          style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; gap: 12px; color: var(--text-muted);">
           <div style="font-size: 48px;">🎬</div>
-          <div style="font-size: 15px; font-weight: 600; color: var(--text-secondary);">Chưa có video nào được phân tích</div>
+          <div style="font-size: 15px; font-weight: 600; color: var(--text-secondary);">Chưa có video nào được phân tích
+          </div>
           <div style="font-size: 13px; max-width: 380px; line-height: 1.5;">
-            Dán đường dẫn Facebook Reel hoặc Video vào ô bên trái rồi bấm <strong>Quét Các Mức Chất Lượng</strong> để xem trước và chọn định dạng tải về.
+            Dán đường dẫn Facebook Reel hoặc Video vào ô bên trái rồi bấm <strong>Quét Các Mức Chất Lượng</strong> để
+            xem trước và chọn định dạng tải về.
           </div>
         </div>
 
@@ -2057,7 +2087,8 @@
 
             <!-- Thanh tiến trình phát Realtime (Scrubber) -->
             <div class="realtime-scrubber-wrapper">
-              <div class="realtime-scrubber-track" id="fbScrubberTrack" onclick="handleScrubberClick(event)" title="Nhấp chuột để tua nhanh tới vị trí mong muốn">
+              <div class="realtime-scrubber-track" id="fbScrubberTrack" onclick="handleScrubberClick(event)"
+                title="Nhấp chuột để tua nhanh tới vị trí mong muốn">
                 <div class="realtime-buffer-bar" id="fbBufferBar" style="width: 0%;"></div>
                 <div class="realtime-fill-bar" id="fbFillBar" style="width: 0%;"></div>
                 <div class="realtime-thumb-dot" id="fbThumbDot" style="left: 0%;"></div>
@@ -2068,10 +2099,13 @@
             <!-- Các nút điều khiển thời gian thực và hành động -->
             <div class="realtime-actions-bar">
               <div class="playback-btn-group">
-                <button type="button" class="btn-ctrl-sub" onclick="seekFbVideoRelative(-5)" title="Tua lùi 5 giây">⏪ -5s</button>
+                <button type="button" class="btn-ctrl-sub" onclick="seekFbVideoRelative(-5)" title="Tua lùi 5 giây">⏪
+                  -5s</button>
                 <button type="button" class="btn-ctrl-main" id="btnTogglePlay" onclick="toggleFbPlay()">▶ Phát</button>
-                <button type="button" class="btn-ctrl-sub" onclick="seekFbVideoRelative(5)" title="Tua tới 5 giây">⏩ +5s</button>
-                <button type="button" class="btn-ctrl-sub" onclick="restartFbVideo()" title="Phát lại từ đầu">⏮ Về đầu</button>
+                <button type="button" class="btn-ctrl-sub" onclick="seekFbVideoRelative(5)" title="Tua tới 5 giây">⏩
+                  +5s</button>
+                <button type="button" class="btn-ctrl-sub" onclick="restartFbVideo()" title="Phát lại từ đầu">⏮ Về
+                  đầu</button>
               </div>
 
               <div class="playback-speed-group">
@@ -2087,10 +2121,13 @@
               </div>
 
               <div class="file-action-buttons">
-                <button type="button" class="btn-file-action" onclick="openOutputFolder('output/videos')" title="Mở thư mục lưu trữ video trên Windows Explorer">
+                <button type="button" class="btn-file-action" onclick="openOutputFolder('output/videos')"
+                  title="Mở thư mục lưu trữ video trên Windows Explorer">
                   📁 Mở thư mục Video
                 </button>
-                <button type="button" class="btn-file-action btn-file-highlight" id="btnOpenInApp" style="display: none;" onclick="openCurrentVideoFile()" title="Mở video này bằng ứng dụng xem phim trên Windows (VLC, Media Player)">
+                <button type="button" class="btn-file-action btn-file-highlight" id="btnOpenInApp"
+                  style="display: none;" onclick="openCurrentVideoFile()"
+                  title="Mở video này bằng ứng dụng xem phim trên Windows (VLC, Media Player)">
                   🖥 Mở video trên máy
                 </button>
               </div>
@@ -2099,9 +2136,11 @@
         </div>
 
         <!-- Tiến trình tải video -->
-        <div id="fbDownloadProgressBox" style="display: none; background: #0b1120; border: 1px solid var(--primary); border-radius: 8px; padding: 14px; flex-direction: column; gap: 10px; margin-top: 10px;">
+        <div id="fbDownloadProgressBox"
+          style="display: none; background: #0b1120; border: 1px solid var(--primary); border-radius: 8px; padding: 14px; flex-direction: column; gap: 10px; margin-top: 10px;">
           <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px;">
-            <span id="fbDownloadStatusText" style="color: var(--primary); font-weight: 500;">⏳ Đang tải video về máy...</span>
+            <span id="fbDownloadStatusText" style="color: var(--primary); font-weight: 500;">⏳ Đang tải video về
+              máy...</span>
             <span id="fbDownloadPercentText" style="color: var(--text-primary); font-weight: 600;">--</span>
           </div>
           <div class="progress-bar-track">
@@ -2111,7 +2150,8 @@
 
         <!-- Danh sách chất lượng khả dụng -->
         <div id="fbQualitiesWrapper" style="display: none; margin-top: 10px;">
-          <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">
+          <div
+            style="font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">
             Các định dạng video & âm thanh tìm thấy:
           </div>
           <div id="fbQualitiesList" class="qualities-list"></div>
@@ -2151,15 +2191,17 @@
               📋 Sao chép mã máy
             </button>
           </div>
-          <div style="font-size: 12px; color: #93c5fd; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); padding: 8px 12px; border-radius: 6px; line-height: 1.5; margin-top: 6px;">
-            💡 <strong>Kích hoạt Online:</strong> Bạn chỉ cần sao chép mã máy ở trên gửi cho Admin. Admin thêm mã máy vào Google Sheets là máy của bạn sẽ được kích hoạt online tức thì!
+          <div
+            style="font-size: 12px; color: #93c5fd; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); padding: 8px 12px; border-radius: 6px; line-height: 1.5; margin-top: 6px;">
+            💡 <strong>Kích hoạt Online:</strong> Bạn chỉ cần sao chép mã máy ở trên gửi cho Admin. Admin thêm mã máy
+            vào Google Sheets là máy của bạn sẽ được kích hoạt online tức thì!
           </div>
         </div>
 
         <!-- Nút kiểm tra trực tiếp Online -->
         <div style="display: flex; gap: 10px; margin-top: 14px;">
-          <button type="button" class="btn-primary" id="btnRefreshLicense" style="flex: 1; padding: 10px; font-size: 13px;"
-            onclick="manualRefreshLicense()">
+          <button type="button" class="btn-primary" id="btnRefreshLicense"
+            style="flex: 1; padding: 10px; font-size: 13px;" onclick="manualRefreshLicense()">
             <span>⚡ Kiểm tra kích hoạt online</span>
           </button>
         </div>
@@ -2169,21 +2211,27 @@
           <span>⚙ Cấu hình Google Sheets (Dành cho Admin)</span>
           <span id="adminSheetConfigIcon">▼</span>
         </div>
-        <div id="adminSheetConfig" style="display: none; padding: 12px; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 6px 6px;">
+        <div id="adminSheetConfig"
+          style="display: none; padding: 12px; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 6px 6px;">
           <div class="form-group" style="margin-bottom: 8px;">
-            <label class="form-label" for="sheetUrlInput" style="font-size: 11px;">URL Google Sheets (Xuất bản CSV hoặc Link Chia sẻ)</label>
-            <input type="text" id="sheetUrlInput" class="input-text" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv"
-              style="font-size: 12px;">
+            <label class="form-label" for="sheetUrlInput" style="font-size: 11px;">URL Google Sheets (Xuất bản CSV hoặc
+              Link Chia sẻ)</label>
+            <input type="text" id="sheetUrlInput" class="input-text"
+              placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv" style="font-size: 12px;">
           </div>
           <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
-            <button type="button" class="btn-secondary" id="btnSaveSheet" style="padding: 6px 12px; font-size: 12px;" onclick="saveSheetUrl()">
+            <button type="button" class="btn-secondary" id="btnSaveSheet" style="padding: 6px 12px; font-size: 12px;"
+              onclick="saveSheetUrl()">
               💾 Lưu URL Google Sheet
             </button>
           </div>
-          <div style="font-size: 11px; color: var(--text-muted); line-height: 1.6; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px;">
+          <div
+            style="font-size: 11px; color: var(--text-muted); line-height: 1.6; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px;">
             <strong>Cách Admin quản lý bản quyền trên Google Sheets:</strong><br>
-            1. Tạo bảng tính Google Sheets gồm các cột: <code>Mã máy (HWID)</code> | <code>Tên khách</code> | <code>Ngày hết hạn (YYYY-MM-DD hoặc Vĩnh viễn)</code> | <code>Trạng thái (Active / Block)</code>.<br>
-            2. Vào <em>Tệp &gt; Chia sẻ &gt; Xuất bản lên web</em> &gt; Chọn định dạng <em>CSV (.csv)</em> &gt; Bấm Xuất bản và sao chép link dán vào ô trên (hoặc chia sẻ link Xem công khai).
+            1. Tạo bảng tính Google Sheets gồm các cột: <code>Mã máy (HWID)</code> | <code>Tên khách</code> |
+            <code>Ngày hết hạn (YYYY-MM-DD hoặc Vĩnh viễn)</code> | <code>Trạng thái (Active / Block)</code>.<br>
+            2. Vào <em>Tệp &gt; Chia sẻ &gt; Xuất bản lên web</em> &gt; Chọn định dạng <em>CSV (.csv)</em> &gt; Bấm Xuất
+            bản và sao chép link dán vào ô trên (hoặc chia sẻ link Xem công khai).
           </div>
         </div>
 
@@ -2192,20 +2240,24 @@
           <span>🔑 Kích hoạt Key offline dự phòng (Nếu không có mạng)</span>
           <span id="offlineKeySectionIcon">▼</span>
         </div>
-        <div id="offlineKeySection" style="display: none; padding: 12px; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 6px 6px;">
+        <div id="offlineKeySection"
+          style="display: none; padding: 12px; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 6px 6px;">
           <div class="form-group" style="margin-bottom: 8px;">
             <label class="form-label" for="licenseKeyInput" style="font-size: 11px;">Nhập License Key offline</label>
-            <textarea id="licenseKeyInput" class="input-text" rows="2" placeholder="Dán chuỗi License Key offline vào đây..."
+            <textarea id="licenseKeyInput" class="input-text" rows="2"
+              placeholder="Dán chuỗi License Key offline vào đây..."
               style="font-family: 'JetBrains Mono', monospace; font-size: 12px; resize: vertical;"></textarea>
           </div>
           <div style="display: flex; justify-content: flex-end;">
-            <button type="button" class="btn-secondary" id="btnSubmitLicense" style="padding: 6px 14px; font-size: 12px;" onclick="submitLicenseKey()">
+            <button type="button" class="btn-secondary" id="btnSubmitLicense"
+              style="padding: 6px 14px; font-size: 12px;" onclick="submitLicenseKey()">
               Kích hoạt Key Offline
             </button>
           </div>
         </div>
 
-        <div id="activateErrorMsg" class="account-status-badge status-badge-error" style="display: none; margin-top: 10px;"></div>
+        <div id="activateErrorMsg" class="account-status-badge status-badge-error"
+          style="display: none; margin-top: 10px;"></div>
       </div>
 
       <div class="modal-footer">
@@ -2815,17 +2867,17 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ path: targetPath })
       })
-      .then(r => r.json())
-      .then(res => {
-        if (res.ok) {
-          showToast(res.message || "Đã mở thư mục trên máy tính");
-        } else {
-          showToast(res.message || "Không thể mở thư mục", "error");
-        }
-      })
-      .catch(err => {
-        showToast("Lỗi kết nối khi mở thư mục: " + err, "error");
-      });
+        .then(r => r.json())
+        .then(res => {
+          if (res.ok) {
+            showToast(res.message || "Đã mở thư mục trên máy tính");
+          } else {
+            showToast(res.message || "Không thể mở thư mục", "error");
+          }
+        })
+        .catch(err => {
+          showToast("Lỗi kết nối khi mở thư mục: " + err, "error");
+        });
     }
 
     function openMediaFile(filePath) {
@@ -2836,17 +2888,17 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ path: cleanPath })
       })
-      .then(r => r.json())
-      .then(res => {
-        if (res.ok) {
-          showToast(res.message || "Đang mở video trên máy tính...");
-        } else {
-          showToast(res.message || "Không thể mở file", "error");
-        }
-      })
-      .catch(err => {
-        showToast("Lỗi kết nối khi mở file: " + err, "error");
-      });
+        .then(r => r.json())
+        .then(res => {
+          if (res.ok) {
+            showToast(res.message || "Đang mở video trên máy tính...");
+          } else {
+            showToast(res.message || "Không thể mở file", "error");
+          }
+        })
+        .catch(err => {
+          showToast("Lỗi kết nối khi mở file: " + err, "error");
+        });
     }
 
     function loadHistory() {
@@ -2968,7 +3020,7 @@
             const bufEnd = player.buffered.end(player.buffered.length - 1);
             const bufPct = Math.min(100, (bufEnd / dur) * 100);
             if (bufferBar) bufferBar.style.width = bufPct + "%";
-          } catch(e) {}
+          } catch (e) { }
         }
 
         if (!player.paused && !player.ended) {
@@ -3023,7 +3075,7 @@
             const bufEnd = player.buffered.end(player.buffered.length - 1);
             const bufPct = Math.min(100, (bufEnd / player.duration) * 100);
             if (bufferBar) bufferBar.style.width = bufPct + "%";
-          } catch(e) {}
+          } catch (e) { }
         }
       });
     }
@@ -3155,47 +3207,47 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: url })
       })
-      .then(r => r.json())
-      .then(res => {
-        btnProbe.disabled = false;
-        btnProbe.innerHTML = "<span>🔍 Quét Các Mức Chất Lượng Video</span>";
-        loading.style.display = "none";
+        .then(r => r.json())
+        .then(res => {
+          btnProbe.disabled = false;
+          btnProbe.innerHTML = "<span>🔍 Quét Các Mức Chất Lượng Video</span>";
+          loading.style.display = "none";
 
-        if (!res.ok) {
-          errorMsg.innerText = "❌ " + (res.message || "Không thể phân tích video.");
+          if (!res.ok) {
+            errorMsg.innerText = "❌ " + (res.message || "Không thể phân tích video.");
+            errorMsg.style.display = "flex";
+            return;
+          }
+
+          const data = res.data;
+          currentFbQualities = data.qualities || [];
+
+          // Hiển thị preview card
+          emptyState.style.display = "none";
+          previewCard.style.display = "flex";
+          qualitiesWrapper.style.display = "block";
+          statusBadge.style.display = "inline-block";
+          btnQuick.style.display = "flex";
+
+          document.getElementById("fbVideoTitle").innerText = data.title || "Facebook Reel";
+          document.getElementById("fbDuration").innerText = data.duration || "--:--";
+          document.getElementById("fbUploader").innerText = data.uploader || "Facebook";
+
+          // Khởi tạo player và tự động nạp preview_url nếu có
+          initVideoPlayerEvents();
+          if (data.preview_url) {
+            playFbPreview(data.preview_url, data.title, false, "", data.duration);
+          }
+
+          renderFbQualities(currentFbQualities);
+        })
+        .catch(err => {
+          btnProbe.disabled = false;
+          btnProbe.innerHTML = "<span>🔍 Quét Các Mức Chất Lượng Video</span>";
+          loading.style.display = "none";
+          errorMsg.innerText = "❌ Lỗi kết nối tới server: " + err;
           errorMsg.style.display = "flex";
-          return;
-        }
-
-        const data = res.data;
-        currentFbQualities = data.qualities || [];
-
-        // Hiển thị preview card
-        emptyState.style.display = "none";
-        previewCard.style.display = "flex";
-        qualitiesWrapper.style.display = "block";
-        statusBadge.style.display = "inline-block";
-        btnQuick.style.display = "flex";
-
-        document.getElementById("fbVideoTitle").innerText = data.title || "Facebook Reel";
-        document.getElementById("fbDuration").innerText = data.duration || "--:--";
-        document.getElementById("fbUploader").innerText = data.uploader || "Facebook";
-
-        // Khởi tạo player và tự động nạp preview_url nếu có
-        initVideoPlayerEvents();
-        if (data.preview_url) {
-          playFbPreview(data.preview_url, data.title, false, "", data.duration);
-        }
-
-        renderFbQualities(currentFbQualities);
-      })
-      .catch(err => {
-        btnProbe.disabled = false;
-        btnProbe.innerHTML = "<span>🔍 Quét Các Mức Chất Lượng Video</span>";
-        loading.style.display = "none";
-        errorMsg.innerText = "❌ Lỗi kết nối tới server: " + err;
-        errorMsg.style.display = "flex";
-      });
+        });
     }
 
     function renderFbQualities(qualities) {
@@ -3264,49 +3316,49 @@
           format_id: formatId
         })
       })
-      .then(r => r.json())
-      .then(res => {
-        if (clickedBtn) {
-          clickedBtn.disabled = false;
-          clickedBtn.innerHTML = "<span>⬇ Tải về</span>";
-        }
+        .then(r => r.json())
+        .then(res => {
+          if (clickedBtn) {
+            clickedBtn.disabled = false;
+            clickedBtn.innerHTML = "<span>⬇ Tải về</span>";
+          }
 
-        if (res.ok && res.data) {
-          const streamUrl = res.data.stream_url || "";
-          const fileName = res.data.file_name || "";
-          const absPath = (res.data.abs_path || "").replace(/\\/g, '/');
-          window.lastDownloadedVideo = {
-            streamUrl: streamUrl,
-            fileName: fileName,
-            absPath: absPath
-          };
+          if (res.ok && res.data) {
+            const streamUrl = res.data.stream_url || "";
+            const fileName = res.data.file_name || "";
+            const absPath = (res.data.abs_path || "").replace(/\\/g, '/');
+            window.lastDownloadedVideo = {
+              streamUrl: streamUrl,
+              fileName: fileName,
+              absPath: absPath
+            };
 
-          barFill.style.width = "100%";
-          percentText.innerText = "100%";
-          statusText.innerHTML = `✅ Đã tải thành công <strong>${escapeHtml(fileName)}</strong> (${res.data.file_size})!
+            barFill.style.width = "100%";
+            percentText.innerText = "100%";
+            statusText.innerHTML = `✅ Đã tải thành công <strong>${escapeHtml(fileName)}</strong> (${res.data.file_size})!
             <button type="button" class="btn-ctrl-main" style="display: inline-flex; margin-left: 10px; padding: 4px 10px; font-size: 12px;" onclick="playFbPreview(window.lastDownloadedVideo.streamUrl, window.lastDownloadedVideo.fileName, true, window.lastDownloadedVideo.absPath)">▶ Xem ngay trên Web</button>
             <button type="button" class="btn-ctrl-sub" style="display: inline-flex; margin-left: 6px; padding: 4px 10px; font-size: 12px;" onclick="openMediaFile(window.lastDownloadedVideo.absPath)">🖥 Mở trên máy</button>
           `;
-          showToast("✅ Đã tải xong video: " + fileName);
-          // Tự động nạp video đã tải vào khung preview trên Web
-          if (streamUrl) {
-            playFbPreview(streamUrl, fileName, true, absPath);
+            showToast("✅ Đã tải xong video: " + fileName);
+            // Tự động nạp video đã tải vào khung preview trên Web
+            if (streamUrl) {
+              playFbPreview(streamUrl, fileName, true, absPath);
+            }
+          } else {
+            barFill.style.width = "0%";
+            percentText.innerText = "Lỗi";
+            statusText.innerHTML = `❌ Lỗi khi tải video: ${escapeHtml(res.message || "Không xác định")}`;
           }
-        } else {
+        })
+        .catch(err => {
+          if (clickedBtn) {
+            clickedBtn.disabled = false;
+            clickedBtn.innerHTML = "<span>⬇ Tải về</span>";
+          }
           barFill.style.width = "0%";
           percentText.innerText = "Lỗi";
-          statusText.innerHTML = `❌ Lỗi khi tải video: ${escapeHtml(res.message || "Không xác định")}`;
-        }
-      })
-      .catch(err => {
-        if (clickedBtn) {
-          clickedBtn.disabled = false;
-          clickedBtn.innerHTML = "<span>⬇ Tải về</span>";
-        }
-        barFill.style.width = "0%";
-        percentText.innerText = "Lỗi";
-        statusText.innerHTML = `❌ Lỗi kết nối: ${escapeHtml(err.message || err)}`;
-      });
+          statusText.innerHTML = `❌ Lỗi kết nối: ${escapeHtml(err.message || err)}`;
+        });
     }
 
     function loadFbHistory() {
