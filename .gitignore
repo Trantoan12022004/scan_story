@@ -75,3 +75,5 @@ Thumbs.db
 
 # Project specific
 output/
+.license_cache
+license_config.json

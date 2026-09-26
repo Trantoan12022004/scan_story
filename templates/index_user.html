@@ -1707,7 +1707,7 @@
       <div>
         <div style="display: flex; align-items: center; gap: 8px;">
           <h1 class="brand-title">Story Scraper & Publisher</h1>
-          <span class="brand-badge">Auto CMS</span>
+          <span class="brand-badge">v2.0 Khách hàng</span>
         </div>
       </div>
     </div>
@@ -2164,29 +2164,6 @@
           </button>
         </div>
 
-        <!-- Phần cấu hình URL Google Sheet (Dành cho Admin) -->
-        <div class="collapsible-header" onclick="toggleCollapsible('adminSheetConfig')">
-          <span>⚙ Cấu hình Google Sheets (Dành cho Admin)</span>
-          <span id="adminSheetConfigIcon">▼</span>
-        </div>
-        <div id="adminSheetConfig" style="display: none; padding: 12px; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 6px 6px;">
-          <div class="form-group" style="margin-bottom: 8px;">
-            <label class="form-label" for="sheetUrlInput" style="font-size: 11px;">URL Google Sheets (Xuất bản CSV hoặc Link Chia sẻ)</label>
-            <input type="text" id="sheetUrlInput" class="input-text" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv"
-              style="font-size: 12px;">
-          </div>
-          <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
-            <button type="button" class="btn-secondary" id="btnSaveSheet" style="padding: 6px 12px; font-size: 12px;" onclick="saveSheetUrl()">
-              💾 Lưu URL Google Sheet
-            </button>
-          </div>
-          <div style="font-size: 11px; color: var(--text-muted); line-height: 1.6; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px;">
-            <strong>Cách Admin quản lý bản quyền trên Google Sheets:</strong><br>
-            1. Tạo bảng tính Google Sheets gồm các cột: <code>Mã máy (HWID)</code> | <code>Tên khách</code> | <code>Ngày hết hạn (YYYY-MM-DD hoặc Vĩnh viễn)</code> | <code>Trạng thái (Active / Block)</code>.<br>
-            2. Vào <em>Tệp &gt; Chia sẻ &gt; Xuất bản lên web</em> &gt; Chọn định dạng <em>CSV (.csv)</em> &gt; Bấm Xuất bản và sao chép link dán vào ô trên (hoặc chia sẻ link Xem công khai).
-          </div>
-        </div>
-
         <!-- Phần nhập Key Offline (Dự phòng) -->
         <div class="collapsible-header" onclick="toggleCollapsible('offlineKeySection')">
           <span>🔑 Kích hoạt Key offline dự phòng (Nếu không có mạng)</span>
@@ -2413,7 +2390,7 @@
         btnRefresh.innerHTML = "<span>⏳ Đang kiểm tra...</span>";
       }
 
-      fetch("/api/license-info")
+      fetch("/api/license-info?_t=" + Date.now())
         .then(r => r.json())
         .then(res => {
           if (btnRefresh && showFeedback) {

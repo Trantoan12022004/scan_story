@@ -62,9 +62,16 @@ def emit_event(event_type: str, message: str = "", data: dict = None):
                 subscribers.remove(q)
 
 
+def is_admin_mode() -> bool:
+    """Kiểm tra ứng dụng đang chạy ở chế độ Admin hay User"""
+    return ("--admin" in sys.argv) or (os.environ.get("STORY_APP_MODE", "").lower() == "admin")
+
+
 @app.route("/")
 def index():
-    return render_template("index.html")
+    if is_admin_mode():
+        return render_template("index_admin.html")
+    return render_template("index_user.html")
 
 
 @app.route("/api/stream-logs")
@@ -309,9 +316,171 @@ def test_cms():
 
 @app.route("/api/license-info")
 def get_license_info():
-    """Lấy thông tin trạng thái bản quyền hiện tại và mã máy"""
-    info = LicenseManager.check_current_license()
-    return jsonify({"ok": True, "data": info})
+    """Lấy thông tin trạng thái bản quyền hiện tại, mã máy và cấu hình Sheet"""
+    admin = is_admin_mode()
+    info = LicenseManager.check_current_license(is_admin_mode=admin)
+    sheet_url = LicenseManager.get_sheet_url() if admin else ""
+    sheet_web_url = LicenseManager.get_sheet_web_url() if admin else ""
+    return jsonify({
+        "ok": True,
+        "is_admin": admin,
+        "data": info,
+        "sheet_url": sheet_url,
+        "sheet_web_url": sheet_web_url
+    })
+
+
+@app.route("/api/config-sheet", methods=["POST"])
+def config_sheet():
+    """Cấu hình URL Google Sheets để quản lý bản quyền online (Chỉ dành cho Admin)"""
+    if not is_admin_mode():
+        return jsonify({"ok": False, "message": "Chức năng chỉ dành riêng cho Quản trị viên."}), 403
+    data = request.json or {}
+    sheet_url = (data.get("sheet_url") or "").strip()
+    LicenseManager.set_sheet_url(sheet_url)
+    info = LicenseManager.check_current_license(is_admin_mode=True)
+    return jsonify({
+        "ok": True,
+        "message": "Đã lưu cấu hình Google Sheets thành công!",
+        "data": info,
+        "sheet_url": LicenseManager.get_sheet_url(),
+        "sheet_web_url": LicenseManager.get_sheet_web_url()
+    })
+
+
+@app.route("/api/admin/generate-key", methods=["POST"])
+def admin_generate_key():
+    """Tạo License Key Offline dự phòng cấp cho khách (Chỉ dành cho Admin)"""
+    if not is_admin_mode():
+        return jsonify({"ok": False, "message": "Chức năng chỉ dành riêng cho Quản trị viên."}), 403
+    data = request.json or {}
+    user = (data.get("user") or "").strip()
+    hwid = (data.get("hwid") or "").strip()
+    days = int(data.get("days") or 30)
+    if not user or not hwid:
+        return jsonify({"ok": False, "message": "Vui lòng nhập Tên khách hàng và Mã máy (HWID)."}), 400
+    try:
+        from keygen import generate_key
+        key, expire_date = generate_key(user, hwid, days)
+        return jsonify({
+            "ok": True,
+            "message": "Đã tạo License Key thành công!",
+            "key": key,
+            "user": user,
+            "hwid": hwid.upper(),
+            "expires": expire_date,
+            "days": days
+        })
+    except Exception as e:
+        return jsonify({"ok": False, "message": f"Lỗi tạo key: {str(e)}"}), 500
+
+
+@app.route("/api/admin/test-sheet", methods=["POST"])
+def admin_test_sheet():
+    """Kiểm tra kết nối và dữ liệu trả về từ Google Sheets (Chỉ dành cho Admin)"""
+    if not is_admin_mode():
+        return jsonify({"ok": False, "message": "Chức năng chỉ dành riêng cho Quản trị viên."}), 403
+    data = request.json or {}
+    sheet_url = (data.get("sheet_url") or "").strip()
+    res = LicenseManager.check_online_sheet(sheet_url or None)
+    return jsonify({
+        "ok": True,
+        "data": res
+    })
+
+
+@app.route("/api/check-update")
+def check_update_route():
+    """Kiểm tra xem có commit mới nào trên GitHub repo chính không"""
+    repo = "Trantoan12022004/scan_story"
+    branch = "main"
+
+    # 1. Lấy SHA của commit hiện tại trên máy local
+    local_sha = ""
+    try:
+        local_sha = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=APP_ROOT,
+            stderr=subprocess.DEVNULL,
+            timeout=5
+        ).decode().strip()
+    except Exception as e:
+        return jsonify({
+            "ok": False,
+            "message": f"Không thể đọc mã commit git cục bộ: {str(e)}"
+        })
+
+    # 2. Truy vấn GitHub API lấy thông tin commit mới nhất trên branch main
+    api_url = f"https://api.github.com/repos/{repo}/commits/{branch}"
+    try:
+        import requests
+        resp = requests.get(
+            api_url,
+            headers={
+                "Accept": "application/vnd.github.v3+json",
+                "User-Agent": "ScanStory-App"
+            },
+            timeout=7
+        )
+        if resp.status_code != 200:
+            return jsonify({
+                "ok": False,
+                "message": f"GitHub API trả về mã lỗi: {resp.status_code}"
+            })
+
+        commit_data = resp.json()
+        remote_sha = commit_data.get("sha", "")
+        commit_info = commit_data.get("commit", {})
+        commit_msg = (commit_info.get("message") or "").split("\n")[0]
+        commit_date = commit_info.get("author", {}).get("date", "")
+        html_url = commit_data.get("html_url", "")
+
+        has_update = (local_sha[:10].lower() != remote_sha[:10].lower())
+
+        return jsonify({
+            "ok": True,
+            "has_update": has_update,
+            "local_sha": local_sha[:7],
+            "remote_sha": remote_sha[:7],
+            "commit_message": commit_msg,
+            "commit_date": commit_date,
+            "html_url": html_url
+        })
+    except Exception as e:
+        return jsonify({
+            "ok": False,
+            "message": f"Lỗi kết nối GitHub API: {str(e)}"
+        })
+
+
+@app.route("/api/perform-update", methods=["POST"])
+def perform_update_route():
+    """Thực hiện lệnh git pull origin main để tự động cập nhật mã nguồn mới nhất"""
+    try:
+        proc = subprocess.run(
+            ["git", "pull", "origin", "main"],
+            cwd=APP_ROOT,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            timeout=40
+        )
+        output_text = proc.stdout.strip() if proc.stdout else ""
+        if proc.returncode == 0:
+            return jsonify({
+                "ok": True,
+                "message": f"Cập nhật thành công từ GitHub!\n{output_text}"
+            })
+        else:
+            return jsonify({
+                "ok": False,
+                "message": f"Lỗi khi cập nhật (mã lỗi {proc.returncode}):\n{output_text}"
+            }), 500
+    except Exception as e:
+        return jsonify({
+            "ok": False,
+            "message": f"Không thể thực hiện cập nhật: {str(e)}"
+        }), 500
 
 
 @app.route("/api/activate-license", methods=["POST"])
@@ -343,7 +512,8 @@ def start_process():
     global is_processing
 
     # Kiểm tra bản quyền trước khi cho phép chạy
-    lic = LicenseManager.check_current_license()
+    admin_mode = is_admin_mode()
+    lic = LicenseManager.check_current_license(is_admin_mode=admin_mode)
     if not lic.get("valid"):
         return jsonify({
             "ok": False,
@@ -634,6 +804,15 @@ def fb_probe():
 @app.route("/api/fb/download", methods=["POST"])
 def fb_download():
     """Tải video Facebook theo chất lượng đã chọn"""
+    admin_mode = is_admin_mode()
+    lic = LicenseManager.check_current_license(is_admin_mode=admin_mode)
+    if not lic.get("valid"):
+        return jsonify({
+            "ok": False,
+            "message": f"Lỗi bản quyền: {lic.get('message')}",
+            "license_required": True
+        }), 403
+
     data = request.get_json(silent=True) or {}
     url = data.get("url", "").strip()
     format_id = data.get("format_id", "best").strip()
@@ -698,14 +877,19 @@ def fb_list_videos():
     return jsonify({"ok": True, "data": items[:25]})
 
 
-if __name__ == "__main__":
-    port = 5000
+def start_server(port: int = 5000):
+    admin = is_admin_mode()
+    mode_name = "QUẢN TRỊ VIÊN (ADMIN)" if admin else "NGƯỜI DÙNG (USER)"
     url = f"http://localhost:{port}"
-    print(f"\n{'=' * 60}")
-    print(f"📖 STORY SCRAPER & CMS PUBLISHER - WEB UI")
-    print(f"{'=' * 60}")
+    print(f"\n{'=' * 65}")
+    print(f"📖 STORY SCRAPER & CMS PUBLISHER - [{mode_name}]")
+    print(f"{'=' * 65}")
     print(f"🚀 Server đang chạy tại: {url}")
     print(f"Nhấn Ctrl+C để dừng server.\n")
-    # Tự động mở trình duyệt sau 1 giây
+    # Tự động mở trình duyệt sau 1.2 giây
     threading.Timer(1.2, lambda: webbrowser.open(url)).start()
     app.run(host="0.0.0.0", port=port, debug=False)
+
+
+if __name__ == "__main__":
+    start_server()

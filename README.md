@@ -134,53 +134,70 @@ python keygen.py --self
 ```
 Hoặc tùy chỉnh tên Admin:
 ```bash
-python keygen.py --self -u "TenCuaBan"
+python keygen.py --self -u "anhtonton"
 ```
 Tool sẽ tự động nhận diện mã máy hiện tại và kích hoạt sẵn vào file `.license` (hạn dùng 10 năm).
 
-#### B. Cấp License Key cho người dùng khác (theo tháng):
-Khi người dùng gửi mã máy (HWID) cho bạn, chạy lệnh sau để tạo License Key:
-```bash
-# Cấp 30 ngày (1 tháng)
-python keygen.py -u "TenNguoiDung" -m "E423-C46C-6B90" -d 30
-
-# Cấp 60 ngày (2 tháng)
-python keygen.py -u "TenNguoiDung" -m "920E-2DA4-DAC5" -d 60
-```
-Sau đó copy chuỗi `KEY` được tạo gửi cho người dùng.
-
----
-
-### 2. Dành cho Người dùng (Kích hoạt tool)
-- **Cách 1 (Trên Web UI)**: Mở `http://localhost:5000` -> Bấm vào huy hiệu Bản quyền ở góc trên -> Dán Key vào và bấm **Kích hoạt**.
-- **Cách 2 (Trên dòng lệnh CLI)**:
-  ```bash
-  python main.py "<story_url>" --license-key "<KEY_DO_ADMIN_CAP>"
-  ```
-- **Cách 3**: Lưu trực tiếp chuỗi key vào file `.license` trong thư mục tool.
+### 1. Quản lý Bản quyền Online qua Google Sheets (Khuyên dùng)
+Admin không cần tạo key thủ công hay gửi mã cho từng máy nữa:
+1. **Thiết lập bảng tính Google Sheets:**
+   - Dòng 1 đặt 4 cột: `Mã máy (HWID)` | `Tên khách` | `Ngày hết hạn` | `Trạng thái`
+   - Nhập thông tin khách hàng, ví dụ:
+     - `3FD0-DB7D-FA39` | `Toàn Admin` | `2026-12-31` *(hoặc `Vĩnh viễn`)* | `Active`
+     - Khi muốn khóa máy nào, chỉ cần đổi trạng thái sang `Block`.
+2. **Lấy link xuất bản CSV:**
+   - Trên Google Sheets: Vào menu **Tệp (File)** > **Chia sẻ (Share)** > **Xuất bản lên web (Publish to the web)**.
+   - Tại ô **Web page**, chuyển sang chọn **`Comma-separated values (.csv)`**.
+   - Bấm nút **Publish** > Bấm **OK** xác nhận.
+   - Sao chép đường link xuất hiện.
+3. **Cấu hình vào Tool:**
+   - Trên giao diện Web: Bấm vào huy hiệu **Bản quyền** ở góc trên > Mở mục **⚙ Cấu hình Google Sheets (Dành cho Admin)** > Dán link vào và bấm **Lưu URL Google Sheet**.
+   - Phía người dùng chỉ cần mở tool hoặc bấm **⚡ Kiểm tra kích hoạt online** là máy tự động kích hoạt tức thì.
 
 ---
 
-## 📦 Đóng gói File EXE cho Người dùng (Không cần cài Python)
+### 2. Tự động Cập nhật Code mới từ GitHub
+- Khi có commit mới được đẩy lên GitHub (`Trantoan12022004/scan_story`):
+  - Phía người dùng sẽ tự động thấy một banner thông báo nổi bật ở đầu trang:  
+    *🚀 "Phát hiện bản cập nhật mới trên GitHub (abc1234): '...'"*
+  - Người dùng chỉ cần bấm nút **⚡ Cập nhật ngay**, tool sẽ tự động chạy `git pull origin main` và tự động tải lại trang.
+  - Người dùng cũng có thể chủ động bấm nút **🔄 Cập nhật** trên thanh Header để kiểm tra bản mới bất kỳ lúc nào.
 
-File `.exe` độc lập đã được biên dịch sẵn tại:
-👉 **`dist/StoryScraper.exe`** (Dung lượng ~13MB)
+---
 
-### Cách gửi cho người dùng:
-1. Bạn chỉ cần copy duy nhất **1 file `StoryScraper.exe`** trong thư mục `dist/` gửi cho người dùng (qua Zalo, Telegram, Google Drive,...).
-2. Người dùng nhận file chỉ cần **click đúp vào `StoryScraper.exe`** để sử dụng (tự động bật server và tự mở trình duyệt web `http://localhost:5000`).
-3. Khi người dùng mở lần đầu:
-   - Tool sẽ báo chưa kích hoạt và hiển thị **Mã máy (HWID)**.
-   - Người dùng copy mã máy gửi cho bạn.
-   - Bạn dùng `keygen.py` tạo key cấp cho họ.
-   - Khi kích hoạt xong, file `.license` và thư mục truyện `output/` sẽ tự động sinh ra ngay bên cạnh file `StoryScraper.exe`.
+### 3. Cấp License Key Offline (Dự phòng cho máy không có mạng)
+- Admin dùng lệnh: `python keygen.py -u "TenKhach" -m "HWID" -d 30`
+- Người dùng dán key vào mục **Kích hoạt Key offline dự phòng** trong Modal bản quyền.
 
-### Cách build lại file EXE sau khi chỉnh sửa code:
-- **Cách 1**: Click đúp vào file **`build_exe.bat`** để tự động build.
+---
+
+## 📦 Đóng gói 2 Phiên Bản File EXE Độc Lập
+
+Hệ thống hỗ trợ đóng gói ra 2 phiên bản chuyên biệt độc lập:
+1. 👉 **`dist/StoryScraper_User.exe`** (Dành cho Khách hàng):
+   - Giao diện sạch sẽ, giấu kín toàn bộ cấu hình Admin và URL Google Sheets.
+   - Nhúng sẵn Google Sheets quản lý bản quyền, khách chỉ cần sao chép mã máy (HWID) gửi cho Admin và bấm **⚡ Kiểm tra kích hoạt online**.
+   - Khóa toàn bộ tính năng cào truyện & tải video nếu chưa được Admin duyệt trên Sheets.
+2. 👉 **`dist/StoryScraper_Admin.exe`** (Dành riêng cho Quản trị viên):
+   - Toàn quyền truy cập vĩnh viễn (SuperAdmin).
+   - Nút mở trực tiếp Google Sheets quản trị để thêm/sửa khách hàng.
+   - Panel cấu hình URL Google Sheets & nút kiểm tra kết nối Sheets.
+   - Tích hợp công cụ tạo License Key Offline trực tiếp trên Web UI.
+
+### Cách build file EXE:
+- **Cách 1 (Khuyên dùng)**: Click đúp vào file **`build_exe.bat`** để chọn phiên bản cần build (Phím 1: Cả 2 bản, Phím 2: Bản User, Phím 3: Bản Admin).
 - **Cách 2**: Chạy lệnh terminal:
   ```bash
-  python build.py
+  # Build cả 2 phiên bản cùng lúc:
+  python build.py --target all
+
+  # Hoặc chỉ build bản User gửi khách hàng:
+  python build.py --target user
+
+  # Hoặc chỉ build bản Admin:
+  python build.py --target admin
   ```
+
 
 
 

@@ -8,6 +8,15 @@ from typing import List, Optional
 from parsers.base import StoryInfo, ChapterContent, markdown_to_html_formatting
 
 
+def generate_slug(text: str) -> str:
+    """Tạo slug chuẩn SEO từ tiêu đề văn bản"""
+    import unicodedata
+    text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8')
+    text = re.sub(r'[^\w\s-]', '', text).strip().lower()
+    slug = re.sub(r'[-\s]+', '-', text)
+    return slug[:120].strip('-')
+
+
 def split_chapter_by_parts(chapter: ChapterContent) -> List[ChapterContent]:
     """
     Nếu một chapter chứa nhiều phần (ví dụ: 'PART 1: ...', 'PART 2: ...'),
@@ -44,7 +53,7 @@ def split_chapter_by_parts(chapter: ChapterContent) -> List[ChapterContent]:
 class CMSPublisher:
     """Quản lý đăng nhập và đăng bài viết lên CMS BlogBio (Laravel REST API)"""
 
-    def __init__(self, base_url: str = "https://vmnewstoryus.cfx.bz", username: str = "admin", password: str = "admin123"):
+    def __init__(self, base_url: str = "https://vmnewstoryus.cfx.bz", username: str = "admin", password: str = "Vnpt@123"):
         self.base_url = base_url.rstrip("/")
         self.username = username
         self.password = password
@@ -120,7 +129,8 @@ class CMSPublisher:
 
     def publish_story(self, story_info: StoryInfo, chapters: List[ChapterContent], skip_intro: bool = True) -> Optional[list]:
         """
-        Đăng bài viết với Content mode = Chapter qua API /admin/api/v1/posts/chapter-batch.
+        Đăng các chapter theo dạng Standalone Posts và liên kết chuỗi next_chapter & prev_chapter.
+        Giúp mỗi chapter hiển thị đúng tiêu đề riêng của nó, không bị dính tiêu đề chương 1.
         """
         if not self.csrf_token:
             if not self.login():
@@ -131,7 +141,30 @@ class CMSPublisher:
         for ch in chapters:
             resolved_chapters.extend(split_chapter_by_parts(ch))
 
-        api_url = f"{self.base_url}/admin/api/v1/posts/chapter-batch"
+        if not resolved_chapters:
+            return None
+
+        # 1. Dự tính trước slug duy nhất cho từng chapter để liên kết Next/Prev
+        chapter_slugs = []
+        seen_slugs = set()
+        for idx, ch in enumerate(resolved_chapters, 1):
+            base_slug = generate_slug(ch.title)
+            # Nếu slug quá ngắn hoặc chỉ là chapter-X, thêm story slug để tránh trùng
+            if len(base_slug.split('-')) <= 2 and story_info.slug:
+                base_slug = f"{story_info.slug}-{base_slug}"
+            if not base_slug:
+                base_slug = f"chapter-{idx}"
+
+            slug_candidate = base_slug
+            counter = 1
+            while slug_candidate in seen_slugs:
+                slug_candidate = f"{base_slug}-{counter}"
+                counter += 1
+
+            seen_slugs.add(slug_candidate)
+            chapter_slugs.append(slug_candidate)
+
+        api_url = f"{self.base_url}/admin/api/v1/posts"
         api_headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -140,38 +173,43 @@ class CMSPublisher:
         }
 
         cover_url = story_info.cover_image or ""
+        created_posts = []
 
-        # Chuẩn bị danh sách chapters
-        chapters_payload = []
-        for ch in resolved_chapters:
+        # 2. Đăng lần lượt từng chapter với liên kết prev_chapter và next_chapter
+        total = len(resolved_chapters)
+        for idx, ch in enumerate(resolved_chapters):
+            current_slug = chapter_slugs[idx]
+            prev_slug = chapter_slugs[idx - 1] if idx > 0 else None
+            next_slug = chapter_slugs[idx + 1] if idx < total - 1 else None
+
             ch_desc = self.build_chapter_description(cover_url, ch)
-            chapters_payload.append({
+
+            payload = {
                 "title": ch.title,
+                "slug": current_slug,
                 "image": cover_url,
-                "description": ch_desc
-            })
+                "description": ch_desc,
+                "series_id": None,          # Không đưa vào Series để tránh bị theme đè tiêu đề Series lên H1
+                "prev_chapter": prev_slug,   # Nối chương trước
+                "next_chapter": next_slug,   # Nối chương tiếp theo
+                "is_active": True,
+                "is_home": True,
+                "is_top": (idx == 0)         # Chỉ đưa chapter đầu lên top
+            }
 
-        payload = {
-            "title": story_info.title,
-            "image": cover_url,
-            "skip_intro": skip_intro,
-            "is_active": True,
-            "is_home": True,
-            "is_top": True,
-            "chapters": chapters_payload
-        }
+            try:
+                r = self.session.post(api_url, json=payload, headers=api_headers, timeout=30)
+                res_data = r.json()
+                if r.status_code in (200, 201) and res_data.get("ok"):
+                    post_data = res_data.get("data", {})
+                    created_posts.append(post_data)
+                    print(f"  ✅ Đã tạo [{idx+1}/{total}]: {ch.title[:50]} (Next: {next_slug or 'Hết'})")
+                else:
+                    print(f"  ❌ Lỗi tạo chapter {ch.title[:30]}: {res_data.get('message')}")
+                    if "errors" in res_data:
+                        print(f"     Chi tiết lỗi: {res_data.get('errors')}")
+            except Exception as e:
+                print(f"  ❌ Lỗi khi gửi request: {e}")
 
-        try:
-            r = self.session.post(api_url, json=payload, headers=api_headers, timeout=60)
-            res_data = r.json()
-            if r.status_code in (200, 201) and res_data.get("ok"):
-                created_posts = res_data.get("data", [])
-                return created_posts
-            else:
-                print(f"  ❌ Lỗi tạo bài viết ({r.status_code}): {res_data.get('message')}")
-                if "errors" in res_data:
-                    print(f"     Chi tiết lỗi: {res_data.get('errors')}")
-                return None
-        except Exception as e:
-            print(f"  ❌ Lỗi kết nối API CMS: {e}")
-            return None
+        return created_posts if created_posts else None
+

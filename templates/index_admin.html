@@ -1703,15 +1703,18 @@
   <!-- Header -->
   <header>
     <div class="brand">
-      <div class="brand-icon">📖</div>
+      <div class="brand-icon" style="background: linear-gradient(135deg, #f59e0b, #ef4444); box-shadow: 0 0 16px rgba(245, 158, 11, 0.4);">👑</div>
       <div>
         <div style="display: flex; align-items: center; gap: 8px;">
           <h1 class="brand-title">Story Scraper & Publisher</h1>
-          <span class="brand-badge">Auto CMS</span>
+          <span class="brand-badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.45); font-weight: 700;">👑 QUẢN TRỊ VIÊN (ADMIN)</span>
         </div>
       </div>
     </div>
     <div class="header-actions">
+      <button class="btn-secondary" style="border-color: #fbbf24; color: #fbbf24; font-weight: 600;" onclick="openGoogleSheetAdmin()" title="Mở bảng tính Google Sheets quản lý bản quyền trên trình duyệt">
+        📊 Bảng Tính Bản Quyền
+      </button>
       <div id="licenseBadge" class="license-badge license-badge-loading" onclick="openLicenseModal()"
         title="Bấm để xem thông tin bản quyền">
         <span class="license-dot"></span>
@@ -2128,15 +2131,15 @@
       <div class="modal-header">
         <div class="modal-title">
           <span>🔑</span>
-          <span>Bản quyền Story Scraper</span>
+          <span>Bảng Quản Trị Hệ Thống & Bản Quyền (ADMIN)</span>
         </div>
         <button type="button" class="btn-modal-close" onclick="closeLicenseModal()">✕</button>
       </div>
 
       <div class="modal-body">
         <!-- Thông báo trạng thái -->
-        <div id="modalLicenseStatus" class="account-status-badge status-badge-success">
-          Đang kiểm tra trạng thái bản quyền...
+        <div id="modalLicenseStatus" class="account-status-badge status-badge-success" style="background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #fbbf24; font-weight: 600;">
+          👑 Bạn đang sử dụng phiên bản Quản Trị Viên (Admin) - Toàn quyền truy cập vĩnh viễn
         </div>
 
         <!-- Khối hiển thị Machine ID -->
@@ -2156,11 +2159,15 @@
           </div>
         </div>
 
-        <!-- Nút kiểm tra trực tiếp Online -->
+        <!-- Nút kiểm tra và mở Sheet của Admin -->
         <div style="display: flex; gap: 10px; margin-top: 14px;">
-          <button type="button" class="btn-primary" id="btnRefreshLicense" style="flex: 1; padding: 10px; font-size: 13px;"
-            onclick="manualRefreshLicense()">
-            <span>⚡ Kiểm tra kích hoạt online</span>
+          <button type="button" class="btn-primary" id="btnOpenSheetAdmin" style="flex: 1; padding: 10px; font-size: 13px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; font-weight: 600;"
+            onclick="openGoogleSheetAdmin()">
+            <span>📊 Mở Google Sheets Quản Lý Bản Quyền</span>
+          </button>
+          <button type="button" class="btn-secondary" id="btnTestSheetConn" style="padding: 10px 14px; font-size: 13px;"
+            onclick="testSheetConnection()">
+            <span>⚡ Kiểm tra kết nối Sheets</span>
           </button>
         </div>
 
@@ -2184,6 +2191,47 @@
             <strong>Cách Admin quản lý bản quyền trên Google Sheets:</strong><br>
             1. Tạo bảng tính Google Sheets gồm các cột: <code>Mã máy (HWID)</code> | <code>Tên khách</code> | <code>Ngày hết hạn (YYYY-MM-DD hoặc Vĩnh viễn)</code> | <code>Trạng thái (Active / Block)</code>.<br>
             2. Vào <em>Tệp &gt; Chia sẻ &gt; Xuất bản lên web</em> &gt; Chọn định dạng <em>CSV (.csv)</em> &gt; Bấm Xuất bản và sao chép link dán vào ô trên (hoặc chia sẻ link Xem công khai).
+          </div>
+        </div>
+
+        
+        <!-- Phần Công Cụ Cấp License Key Offline Cho Khách Hàng (Dành cho Admin) -->
+        <div class="collapsible-header" onclick="toggleCollapsible('adminKeygenSection')">
+          <span>🔑 Công cụ Cấp License Key Offline Cho Khách Hàng</span>
+          <span id="adminKeygenSectionIcon">▼</span>
+        </div>
+        <div id="adminKeygenSection" style="display: none; padding: 14px; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 6px 6px;">
+          <div style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 10px;">
+            💡 Tạo License Key mã hóa gắn với Machine ID của khách hàng để kích hoạt khi máy khách không có mạng.
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" style="font-size: 11px;">Tên khách hàng / Đội ngũ</label>
+              <input type="text" id="kgUser" class="input-text" placeholder="Ví dụ: NguyenVanA" style="font-size: 12px;">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" style="font-size: 11px;">Số ngày sử dụng</label>
+              <input type="number" id="kgDays" class="input-text" value="30" min="1" max="3650" style="font-size: 12px;">
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label class="form-label" style="font-size: 11px;">Mã máy khách gửi (HWID)</label>
+            <input type="text" id="kgHwid" class="input-text" placeholder="Dán HWID dạng XXXX-XXXX-XXXX của khách vào đây..." style="font-size: 12px; font-family: 'JetBrains Mono', monospace;">
+          </div>
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+            <button type="button" class="btn-primary" style="padding: 7px 16px; font-size: 12px; background: linear-gradient(135deg, #10b981, #059669); border: none;" onclick="generateCustomerKey()">
+              ⚡ Tạo License Key
+            </button>
+          </div>
+          <div id="keygenResultBox" style="display: none; background: #070a12; border: 1px solid #10b981; border-radius: 6px; padding: 10px; margin-top: 10px;">
+            <div style="font-size: 11px; font-weight: 600; color: #34d399; margin-bottom: 4px;">✅ ĐÃ TẠO KEY THÀNH CÔNG:</div>
+            <textarea id="kgOutputKey" class="input-text" rows="3" readonly style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; resize: none; background: #000; color: #a7f3d0; margin-bottom: 6px;"></textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span id="kgExpiryInfo" style="font-size: 11.5px; color: var(--text-muted);"></span>
+              <button type="button" class="btn-secondary" id="btnCopyKeygen" style="padding: 5px 12px; font-size: 11.5px;" onclick="copyGeneratedKey()">
+                📋 Sao chép Key gửi khách
+              </button>
+            </div>
           </div>
         </div>
 
@@ -2413,7 +2461,7 @@
         btnRefresh.innerHTML = "<span>⏳ Đang kiểm tra...</span>";
       }
 
-      fetch("/api/license-info")
+      fetch("/api/license-info?_t=" + Date.now())
         .then(r => r.json())
         .then(res => {
           if (btnRefresh && showFeedback) {
@@ -2426,6 +2474,7 @@
             document.getElementById("displayHwid").innerText = currentHwid || "Không xác định";
 
             // Điền URL Sheet vào ô cấu hình nếu có
+            if (res.sheet_web_url) { currentSheetWebUrl = res.sheet_web_url; }
             if (res.sheet_url && document.getElementById("sheetUrlInput")) {
               document.getElementById("sheetUrlInput").value = res.sheet_url;
             }
@@ -3311,6 +3360,77 @@
 
     function loadFbHistory() {
       // Đã ẩn phần Lịch sử video theo yêu cầu
+    }
+
+    
+    let currentSheetWebUrl = "https://docs.google.com/spreadsheets/d/1WKYyFFyURvMXY5pgzlJw_S56sBxrHEqYEdyMfMFgMNA/edit?usp=sharing";
+
+    function openGoogleSheetAdmin() {
+      const url = currentSheetWebUrl || "https://docs.google.com/spreadsheets/d/1WKYyFFyURvMXY5pgzlJw_S56sBxrHEqYEdyMfMFgMNA/edit?usp=sharing";
+      window.open(url, "_blank");
+    }
+
+    function testSheetConnection() {
+      const urlInput = document.getElementById("sheetUrlInput");
+      const url = (urlInput ? urlInput.value : "").trim();
+      showToast("⏳ Đang kiểm tra kết nối Google Sheets...", "info");
+      fetch("/api/admin/test-sheet", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sheet_url: url })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.ok && res.data) {
+          alert("📊 KẾT QUẢ KIỂM TRA GOOGLE SHEETS:\n\n" +
+                "• Trạng thái: " + (res.data.valid ? "✅ Hợp lệ (ACTIVE)" : "⚠️ " + (res.data.code || "NOT_ACTIVE")) + "\n" +
+                "• Thông báo: " + res.data.message + "\n" +
+                "• Mã máy test: " + (res.data.hwid || "N/A"));
+        } else {
+          alert("❌ Lỗi kiểm tra: " + (res.message || "Không xác định"));
+        }
+      })
+      .catch(err => alert("❌ Lỗi kết nối: " + err));
+    }
+
+    function generateCustomerKey() {
+      const user = (document.getElementById("kgUser").value || "").trim();
+      const hwid = (document.getElementById("kgHwid").value || "").trim();
+      const days = (document.getElementById("kgDays").value || "").trim() || "30";
+
+      if (!user || !hwid) {
+        alert("Vui lòng điền cả Tên khách và Mã máy (HWID)!");
+        return;
+      }
+
+      fetch("/api/admin/generate-key", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user: user, hwid: hwid, days: parseInt(days) })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.ok) {
+          document.getElementById("keygenResultBox").style.display = "block";
+          document.getElementById("kgOutputKey").value = res.key;
+          document.getElementById("kgExpiryInfo").innerText = `Hạn dùng: ${res.expires} (${res.days} ngày) - Cấp cho: ${res.user}`;
+          showToast("✅ Đã tạo License Key thành công!");
+        } else {
+          alert("❌ Lỗi: " + (res.message || "Không thể tạo key"));
+        }
+      })
+      .catch(err => alert("❌ Lỗi kết nối: " + err));
+    }
+
+    function copyGeneratedKey() {
+      const key = document.getElementById("kgOutputKey").value;
+      if (!key) return;
+      navigator.clipboard.writeText(key).then(() => {
+        const btn = document.getElementById("btnCopyKeygen");
+        const orig = btn.innerHTML;
+        btn.innerHTML = "✅ Đã sao chép!";
+        setTimeout(() => { btn.innerHTML = orig; }, 2000);
+      });
     }
 
     // Khởi tạo ban đầu
