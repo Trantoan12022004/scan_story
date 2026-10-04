@@ -6,7 +6,7 @@ import sys
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QIcon
 from qfluentwidgets import (
-    SplitFluentWindow, FluentIcon, NavigationItemPosition,
+    FluentWindow, FluentIcon, NavigationItemPosition,
     setTheme, Theme, setThemeColor
 )
 
@@ -19,7 +19,7 @@ from ban_win.ui.settings import SettingsPage
 
 APP_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-class MainWindow(SplitFluentWindow):
+class MainWindow(FluentWindow):
     def __init__(self):
         super().__init__()
         self.init_window()
@@ -35,13 +35,27 @@ class MainWindow(SplitFluentWindow):
         self.init_navigation()
 
     def init_window(self):
-        self.setWindowTitle("Scan Story & Video Studio Pro - Windows Edition")
+        # Tắt Mica effect để tránh xung đột nền đen khi nhúng Chromium QWebEngineView trên Windows
+        self.setMicaEffectEnabled(False)
+        self.setWindowTitle("Scan Story & Video Studio Pro")
         self.resize(1280, 820)
         self.setMinimumSize(1040, 680)
 
         # Cài đặt màu chủ đạo & giao diện Sáng mặc định
         setTheme(Theme.LIGHT)
         setThemeColor("#6366f1")
+
+        # Cấu hình thanh điều hướng đồng nhất Light Mode, chống lỗi nền đen khi nhúng WebEngine
+        self.navigationInterface.setExpandWidth(220)
+        self.navigationInterface.setStyleSheet("""
+            NavigationInterface, NavigationPanel, [menu=false], [menu=true] {
+                background-color: #f8fafc;
+            }
+            QScrollArea, #scrollWidget, #qt_scrollarea_viewport {
+                background-color: #f8fafc;
+                border: none;
+            }
+        """)
 
         # Cài đặt icon nếu có
         icon_path = os.path.join(APP_DIR, "assets", "app_icon.ico")

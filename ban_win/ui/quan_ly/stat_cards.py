@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QLabel
 from qfluentwidgets import CardWidget, SubtitleLabel, CaptionLabel, BodyLabel, IconWidget, FluentIcon
 
 class StatCard(CardWidget):
-    clicked = Signal(str)
+    filterClicked = Signal(str)
 
     def __init__(self, key: str, title: str, count: int, icon: FluentIcon, color_accent: str, parent=None):
         super().__init__(parent)
@@ -57,7 +57,7 @@ class StatCard(CardWidget):
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
-            self.clicked.emit(self.key)
+            self.filterClicked.emit(self.key)
         super().mousePressEvent(event)
 
 
@@ -75,10 +75,10 @@ class StatCardsWidget(QWidget):
         self.card_file = StatCard("has_file", "File sẵn sàng", 0, FluentIcon.FOLDER, "#06b6d4", self)
         self.card_post = StatCard("post_done", "Đã hoàn thành", 0, FluentIcon.SEND, "#f59e0b", self)
 
-        self.card_total.clicked.connect(self.filterRequested.emit)
-        self.card_done.clicked.connect(self.filterRequested.emit)
-        self.card_file.clicked.connect(self.filterRequested.emit)
-        self.card_post.clicked.connect(self.filterRequested.emit)
+        self.card_total.filterClicked.connect(self.filterRequested.emit)
+        self.card_done.filterClicked.connect(self.filterRequested.emit)
+        self.card_file.filterClicked.connect(self.filterRequested.emit)
+        self.card_post.filterClicked.connect(self.filterRequested.emit)
 
         layout.addWidget(self.card_total)
         layout.addWidget(self.card_done)
