@@ -1681,6 +1681,526 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* ========================================== */
+    /* FB VIDEO DOWNLOAD PATH & COPY STYLES       */
+    /* ========================================== */
+    .fb-download-success-box {
+      background: linear-gradient(180deg, #0d1a2d 0%, #08111d 100%);
+      border: 1px solid #10b981;
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .fb-success-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .fb-success-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #34d399;
+    }
+
+    .fb-success-icon {
+      font-size: 18px;
+    }
+
+    .fb-badge-green {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .fb-path-wrapper {
+      background: #060a12;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .fb-path-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .fb-path-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .fb-path-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .fb-path-input-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .fb-path-input {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: #090e1a;
+      border: 1px solid var(--border);
+      color: #38bdf8;
+      padding: 8px 12px;
+      border-radius: 6px;
+      flex: 1;
+      width: 100%;
+    }
+
+    .btn-copy-path {
+      padding: 8px 16px;
+      font-size: 12.5px;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 600;
+    }
+
+    .btn-copy-path.copied {
+      background: #10b981 !important;
+      border-color: #10b981 !important;
+      color: #fff !important;
+    }
+
+    .fb-success-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .btn-gemini-jump {
+      background: linear-gradient(135deg, #8b5cf6, #3b82f6) !important;
+      border: none !important;
+      color: #fff !important;
+      font-weight: 600;
+      font-size: 12.5px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+      cursor: pointer;
+    }
+
+    .fb-player-path-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #070c17;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 10px;
+      margin-top: 8px;
+    }
+
+    .fb-player-path-label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .fb-path-input-sm {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      background: transparent;
+      border: none;
+      color: #38bdf8;
+      flex: 1;
+      outline: none;
+    }
+
+    .btn-copy-sm {
+      padding: 4px 8px;
+      font-size: 11px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    /* ========================================== */
+    /* GEMINI TAB & PROMPT MANAGER STYLES         */
+    /* ========================================== */
+    .gemini-layout-grid {
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      gap: 20px;
+      align-items: stretch;
+      min-height: calc(100vh - 180px);
+    }
+
+    @media (max-width: 1200px) {
+      .gemini-layout-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .gemini-prompt-col {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .gemini-webview-col {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 720px;
+    }
+
+    .gemini-video-context {
+      background: #090f1d;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .gemini-context-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .gemini-context-icon {
+      font-size: 20px;
+    }
+
+    .gemini-context-info {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .gemini-context-name {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .gemini-context-path {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #a78bfa;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .gemini-context-btns {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-text-action {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 11.5px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .btn-text-action:hover {
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    .btn-text-danger {
+      color: #f87171;
+    }
+
+    .btn-text-danger:hover {
+      background: rgba(248, 113, 113, 0.1);
+    }
+
+    .gemini-prompt-editor {
+      width: 100%;
+      min-height: 380px;
+      flex: 1;
+      background: #070a12;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: #e2e8f0;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .gemini-prompt-editor:focus {
+      border-color: #8b5cf6;
+      box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+    }
+
+    .prompt-action-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .btn-copy-prompt-glow {
+      background: linear-gradient(135deg, #7c3aed 0%, #2563eb 100%) !important;
+      border: none !important;
+      color: #fff !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.5px;
+      padding: 12px !important;
+      font-size: 13.5px !important;
+      box-shadow: 0 4px 18px rgba(124, 58, 237, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-copy-prompt-glow:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(124, 58, 237, 0.5);
+    }
+
+    .gemini-browser-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #090f1d;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .gemini-address-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #050811;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 12px;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .gemini-ssl-badge {
+      font-size: 11px;
+      color: #34d399;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .gemini-url-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .gemini-toolbar-btns {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .btn-toolbar-item {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+
+    .btn-toolbar-item:hover {
+      background: #334155;
+      border-color: var(--primary);
+    }
+
+    .btn-highlight-popup {
+      background: linear-gradient(135deg, rgba(139,92,246,0.25), rgba(59,130,246,0.25));
+      border-color: #8b5cf6;
+      color: #c4b5fd;
+      font-weight: 600;
+    }
+
+    .btn-highlight-popup:hover {
+      background: linear-gradient(135deg, rgba(139,92,246,0.4), rgba(59,130,246,0.4));
+      border-color: #a78bfa;
+      color: #fff;
+    }
+
+    .gemini-workflow-steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: rgba(56, 189, 248, 0.05);
+      border: 1px dashed rgba(56, 189, 248, 0.25);
+      border-radius: 8px;
+      padding: 8px 14px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
+    }
+
+    .wf-step {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .wf-num {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #38bdf8;
+      color: #050811;
+      font-weight: 700;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wf-arrow {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .gemini-iframe-container {
+      position: relative;
+      flex: 1;
+      min-height: 600px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #070a12;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .gemini-iframe-container iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 600px;
+      flex: 1;
+      border: none;
+      background: #fff;
+    }
+
+    .gemini-iframe-notice {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid #8b5cf6;
+      border-radius: 10px;
+      padding: 14px 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      z-index: 10;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .notice-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .notice-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .notice-icon {
+      font-size: 18px;
+    }
+
+    .notice-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #c4b5fd;
+    }
+
+    .notice-desc {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+    }
+
+    .notice-desc code {
+      font-family: 'JetBrains Mono', monospace;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    .gemini-blocked-banner {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 
@@ -1738,6 +2258,14 @@
       <span>🎬 Tải Reels & Video Facebook</span>
       <span class="tab-badge">Mới</span>
     </button>
+    <button class="nav-tab" id="tabGeminiBtn" onclick="switchMainTab('gemini')">
+      <span>✨ Gemini AI Phân Tích Video</span>
+      <span class="tab-badge" style="background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: #fff;">AI Studio</span>
+    </button>
+    <a href="/quan-ly" class="nav-tab" style="text-decoration: none;" title="Trang quản lý tiến độ tạo video và đăng bài Google Sheets">
+      <span>📊 Quản Lý Tiến Độ Video & Đăng Bài</span>
+      <span class="tab-badge" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff;">Google Sheets</span>
+    </a>
   </nav>
 
   <!-- Tab 1: Story Scraper & Auto CMS Publisher -->
@@ -2095,6 +2623,15 @@
                 </button>
               </div>
             </div>
+
+            <!-- Hàng hiển thị đường dẫn video trên máy khi phát local -->
+            <div id="fbPlayerPathRow" class="fb-player-path-row" style="display: none;">
+              <span class="fb-player-path-label">📁 File máy:</span>
+              <input type="text" id="fbPlayerPathInput" class="input-text fb-path-input-sm" readonly onclick="this.select()" />
+              <button type="button" class="btn-secondary btn-copy-sm" id="btnCopyPlayerPath" onclick="copyPlayerVideoPath()">
+                <span>📋 Sao chép path</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -2106,6 +2643,43 @@
           </div>
           <div class="progress-bar-track">
             <div class="progress-bar-fill" id="fbProgressBarFill" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- Hộp hiển thị kết quả sau khi tải xong kèm Path và nút Sao chép -->
+        <div id="fbDownloadSuccessCard" class="fb-download-success-box" style="display: none;">
+          <div class="fb-success-header">
+            <div class="fb-success-title">
+              <span class="fb-success-icon">✅</span>
+              <span id="fbSuccessStatusTitle">Đã tải video thành công về máy tính!</span>
+            </div>
+            <span id="fbSuccessFileSizeBadge" class="brand-badge fb-badge-green">-- MB</span>
+          </div>
+
+          <div class="fb-path-wrapper">
+            <div class="fb-path-label-row">
+              <span class="fb-path-label">📁 Đường dẫn file video trên máy:</span>
+              <span class="fb-path-sub">(Click nút bên phải để sao chép đường dẫn)</span>
+            </div>
+            <div class="fb-path-input-group">
+              <input type="text" id="fbDownloadedPathInput" class="input-text fb-path-input" readonly value="" placeholder="C:\path\to\video.mp4" onclick="this.select()" />
+              <button type="button" class="btn-primary btn-copy-path" id="btnCopyDownloadedPath" onclick="copyDownloadedVideoPath()">
+                <span id="btnCopyDownloadedPathIcon">📋</span>
+                <span id="btnCopyDownloadedPathText">Sao chép path</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="fb-success-actions">
+            <button type="button" class="btn-secondary" onclick="openOutputFolder(window.lastDownloadedVideo ? window.lastDownloadedVideo.absPath : 'output/videos')">
+              📁 Mở thư mục Video
+            </button>
+            <button type="button" class="btn-secondary" onclick="openCurrentDownloadedFile()">
+              🖥 Mở bằng ứng dụng máy
+            </button>
+            <button type="button" class="btn-gemini-jump" onclick="switchToGeminiWithVideo()">
+              ✨ Sang Tab Gemini Phân Tích Ngay
+            </button>
           </div>
         </div>
 
@@ -2121,6 +2695,149 @@
     </main>
   </div>
   <!-- /#fbTabSection -->
+
+  <!-- Tab 3: Gemini AI Video Analyzer & Prompt Manager -->
+  <div id="geminiTabSection" style="display: none;">
+    <main class="app-container gemini-layout-grid">
+      <!-- Cột trái: Hộp thoại Prompt Mẫu & Quản lý Prompt -->
+      <div class="panel gemini-prompt-col">
+        <div class="panel-header">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 18px;">📝</span>
+            <h2 class="panel-title">Hộp Thoại Prompt Mẫu</h2>
+          </div>
+          <span class="brand-badge" style="background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(59,130,246,0.2)); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.3);">
+            Gemini Format
+          </span>
+        </div>
+
+        <!-- Video Context Card: Hiển thị video vừa tải để tiện tham chiếu -->
+        <div id="geminiVideoContextCard" class="gemini-video-context" style="display: none;">
+          <div class="gemini-context-header">
+            <span class="gemini-context-icon">🎬</span>
+            <div class="gemini-context-info">
+              <div class="gemini-context-name" id="geminiActiveVideoName">Chưa có video</div>
+              <div class="gemini-context-path" id="geminiActiveVideoPath">--</div>
+            </div>
+          </div>
+          <div class="gemini-context-btns">
+            <button type="button" class="btn-secondary btn-sm" onclick="copyGeminiActiveVideoPath()">
+              📋 Sao chép Path
+            </button>
+            <button type="button" class="btn-secondary btn-sm" onclick="insertPathToPrompt()">
+              ➕ Chèn Path vào Prompt
+            </button>
+            <button type="button" class="btn-secondary btn-sm" onclick="openOutputFolder(window.lastDownloadedVideo ? window.lastDownloadedVideo.absPath : 'output/videos')">
+              📁 Thư mục
+            </button>
+          </div>
+        </div>
+
+        <!-- Selector chọn mẫu prompt -->
+        <div class="form-group" style="margin-bottom: 12px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+            <label class="form-label" for="promptSelect" style="margin-bottom: 0;">Chọn mẫu prompt:</label>
+            <div style="display: flex; gap: 6px;">
+              <button type="button" class="btn-text-action" onclick="createNewPromptTemplate()" title="Tạo mẫu prompt mới">
+                ➕ Thêm mới
+              </button>
+              <button type="button" class="btn-text-action" onclick="resetDefaultPrompt()" title="Khôi phục mẫu mặc định">
+                🔄 Khôi phục
+              </button>
+              <button type="button" class="btn-text-action btn-text-danger" id="btnDeletePrompt" onclick="deleteCurrentPromptTemplate()" title="Xóa mẫu đang chọn" style="display: none;">
+                🗑 Xóa
+              </button>
+            </div>
+          </div>
+          <select id="promptSelect" class="input-select" onchange="handlePromptSelectChange(this.value)">
+            <!-- Rendered by JS -->
+          </select>
+        </div>
+
+        <!-- Ô soạn thảo Prompt mẫu -->
+        <div class="form-group" style="flex: 1; display: flex; flex-direction: column; margin-bottom: 12px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+            <label class="form-label" for="promptTextarea" style="margin-bottom: 0;">Nội dung Prompt:</label>
+            <div style="font-size: 11px; color: var(--text-muted);">
+              <span id="promptCharCount">0</span> ký tự &bull; <span id="promptWordCount">0</span> từ
+            </div>
+          </div>
+          <textarea id="promptTextarea" class="gemini-prompt-editor" placeholder="Nhập prompt mẫu..." spellcheck="false" oninput="updatePromptStats()"></textarea>
+        </div>
+
+        <!-- Các nút thao tác với Prompt -->
+        <div class="prompt-action-grid">
+          <button type="button" class="btn-primary btn-copy-prompt-glow" id="btnCopyPrompt" onclick="copyActivePrompt()">
+            <span id="btnCopyPromptIcon">📋</span>
+            <span id="btnCopyPromptText">SAO CHÉP PROMPT NÀY</span>
+          </button>
+          <button type="button" class="btn-secondary" id="btnCopyPromptWithPath" onclick="copyPromptWithVideoPath()" title="Sao chép toàn bộ Prompt kèm theo đường dẫn video trên máy">
+            📎 Sao chép Kèm Path Video
+          </button>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn-secondary" style="flex: 1;" onclick="saveActivePromptChanges()">
+              💾 Lưu Thay Đổi
+            </button>
+            <button type="button" class="btn-secondary" style="flex: 1;" onclick="openGeminiPopup()">
+              🚀 Mở Gemini Cửa Sổ Riêng
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cột phải: Webview Gemini AI & Thanh điều khiển -->
+      <div class="panel gemini-webview-col">
+        <!-- Banner giải thích lỗi từ chối kết nối và cách mở khóa -->
+        <div class="gemini-blocked-banner">
+          <div style="display: flex; align-items: flex-start; gap: 10px;">
+            <span style="font-size: 20px;">⚠️</span>
+            <div style="flex: 1;">
+              <div style="font-size: 13px; font-weight: 700; color: #f59e0b; margin-bottom: 4px;">
+                Lưu ý nếu khung webview báo "gemini.google.com đã từ chối kết nối"
+              </div>
+              <div style="font-size: 12px; line-height: 1.55; color: #cbd5e1;">
+                Google mặc định chặn tất cả website bên ngoài nhúng trang tài khoản vào iframe (<code>X-Frame-Options: SAMEORIGIN</code>).<br>
+                <strong>Cách khắc phục để mở ngay trên cùng trang web này:</strong>
+                <ul style="margin: 6px 0 0 16px; padding: 0;">
+                  <li><strong>Cách 1 (Mở khóa Iframe):</strong> Cài tiện ích Chrome 
+                    <a href="https://chromewebstore.google.com/detail/ignore-x-frame-options/ammkbmfgriadimchnlliakealojbflac" target="_blank" style="color: #38bdf8; text-decoration: underline; font-weight: 600;">Ignore X-Frame-Options ↗</a> 
+                    (tiện ích này sẽ gỡ lệnh chặn của Google, sau đó bạn bấm <em>🔄 Tải lại</em> là webview sẽ tải bình thường).
+                  </li>
+                  <li><strong>Cách 2:</strong> Bấm nút <strong>🖥️ Mở Cửa Sổ Riêng</strong> bên dưới để mở Gemini song song như một ứng dụng độc lập.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toolbar thanh địa chỉ trình duyệt -->
+        <div class="gemini-browser-toolbar">
+          <div class="gemini-address-bar">
+            <span class="gemini-ssl-badge">🔒 Bảo mật</span>
+            <span class="gemini-url-display">https://gemini.google.com/app</span>
+          </div>
+
+          <div class="gemini-toolbar-btns">
+            <button type="button" class="btn-toolbar-item btn-highlight-popup" onclick="openGeminiPopup()" title="Mở Gemini trong cửa sổ độc lập (Tối ưu nhất, không bị hạn chế iframe)">
+              <span>🖥️ Mở Cửa Sổ Riêng</span>
+            </button>
+            <button type="button" class="btn-toolbar-item" onclick="openGeminiNewTab()" title="Mở Gemini trên tab trình duyệt mới">
+              <span>🌐 Mở Tab Mới</span>
+            </button>
+            <button type="button" class="btn-toolbar-item" onclick="reloadGeminiIframe()" title="Tải lại Webview">
+              <span>🔄 Tải lại</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Khung Webview Iframe -->
+        <div class="gemini-iframe-container">
+          <iframe id="geminiIframe" src="https://gemini.google.com/app" allow="camera; microphone; clipboard-read; clipboard-write; web-share" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
+        </div>
+      </div>
+    </main>
+  </div>
+  <!-- /#geminiTabSection -->
 
   <!-- Modal Kích Hoạt Bản Quyền -->
   <div id="licenseModal" class="modal-backdrop" style="display: none;">
@@ -2907,23 +3624,25 @@
     let animFrameId = null;
 
     function switchMainTab(tab) {
-      const storyTabBtn = document.getElementById("tabStoryBtn");
-      const fbTabBtn = document.getElementById("tabFbBtn");
-      const storySection = document.getElementById("storyTabSection");
-      const fbSection = document.getElementById("fbTabSection");
+      const tabs = [
+        { id: "story", btn: "tabStoryBtn", section: "storyTabSection" },
+        { id: "fb", btn: "tabFbBtn", section: "fbTabSection" },
+        { id: "gemini", btn: "tabGeminiBtn", section: "geminiTabSection" }
+      ];
+
+      tabs.forEach(t => {
+        const btn = document.getElementById(t.btn);
+        const sec = document.getElementById(t.section);
+        if (btn) btn.classList.toggle("active", t.id === tab);
+        if (sec) sec.style.display = (t.id === tab) ? "block" : "none";
+      });
 
       if (tab === "fb") {
-        storyTabBtn.classList.remove("active");
-        fbTabBtn.classList.add("active");
-        storySection.style.display = "none";
-        fbSection.style.display = "block";
         loadFbHistory();
         initVideoPlayerEvents();
+      } else if (tab === "gemini") {
+        initGeminiTab();
       } else {
-        fbTabBtn.classList.remove("active");
-        storyTabBtn.classList.add("active");
-        fbSection.style.display = "none";
-        storySection.style.display = "block";
         loadHistory();
       }
     }
@@ -3114,6 +3833,18 @@
 
       currentPlayingLocalPath = isLocalFile ? (filePath || "").replace(/\\/g, '/') : "";
 
+      // Hiển thị hoặc ẩn hàng đường dẫn file máy trong khung phát video
+      const playerPathRow = document.getElementById("fbPlayerPathRow");
+      const playerPathInput = document.getElementById("fbPlayerPathInput");
+      if (playerPathRow && playerPathInput) {
+        if (isLocalFile && filePath) {
+          playerPathRow.style.display = "flex";
+          playerPathInput.value = filePath;
+        } else {
+          playerPathRow.style.display = "none";
+        }
+      }
+
       if (sourceBadge) {
         if (isLocalFile) {
           sourceBadge.className = "fb-badge fb-badge-highlight";
@@ -3159,6 +3890,9 @@
       const qualitiesWrapper = document.getElementById("fbQualitiesWrapper");
       const statusBadge = document.getElementById("fbVideoStatusBadge");
       const btnQuick = document.getElementById("btnQuickBestDownload");
+      const successCard = document.getElementById("fbDownloadSuccessCard");
+
+      if (successCard) successCard.style.display = "none";
 
       btnProbe.disabled = true;
       btnProbe.innerHTML = "<span>⏳ Đang dò tìm...</span>";
@@ -3259,6 +3993,9 @@
       const statusText = document.getElementById("fbDownloadStatusText");
       const percentText = document.getElementById("fbDownloadPercentText");
       const barFill = document.getElementById("fbProgressBarFill");
+      const successCard = document.getElementById("fbDownloadSuccessCard");
+
+      if (successCard) successCard.style.display = "none";
 
       let clickedBtn = btnId ? document.getElementById(btnId) : null;
       if (clickedBtn) {
@@ -3290,22 +4027,37 @@
           const streamUrl = res.data.stream_url || "";
           const fileName = res.data.file_name || "";
           const absPath = (res.data.abs_path || "").replace(/\\/g, '/');
+          const localPath = res.data.local_path || (res.data.abs_path || "").replace(/\//g, '\\');
           window.lastDownloadedVideo = {
             streamUrl: streamUrl,
             fileName: fileName,
-            absPath: absPath
+            absPath: absPath,
+            localPath: localPath,
+            fileSize: res.data.file_size || ""
           };
 
           barFill.style.width = "100%";
           percentText.innerText = "100%";
           statusText.innerHTML = `✅ Đã tải thành công <strong>${escapeHtml(fileName)}</strong> (${res.data.file_size})!
-            <button type="button" class="btn-ctrl-main" style="display: inline-flex; margin-left: 10px; padding: 4px 10px; font-size: 12px;" onclick="playFbPreview(window.lastDownloadedVideo.streamUrl, window.lastDownloadedVideo.fileName, true, window.lastDownloadedVideo.absPath)">▶ Xem ngay trên Web</button>
+            <button type="button" class="btn-ctrl-main" style="display: inline-flex; margin-left: 10px; padding: 4px 10px; font-size: 12px;" onclick="playFbPreview(window.lastDownloadedVideo.streamUrl, window.lastDownloadedVideo.fileName, true, window.lastDownloadedVideo.localPath)">▶ Xem ngay trên Web</button>
             <button type="button" class="btn-ctrl-sub" style="display: inline-flex; margin-left: 6px; padding: 4px 10px; font-size: 12px;" onclick="openMediaFile(window.lastDownloadedVideo.absPath)">🖥 Mở trên máy</button>
           `;
-          showToast("✅ Đã tải xong video: " + fileName);
+
+          // Cập nhật thẻ hiển thị đường dẫn video trên máy và nút sao chép
+          const successCard = document.getElementById("fbDownloadSuccessCard");
+          const pathInput = document.getElementById("fbDownloadedPathInput");
+          const sizeBadge = document.getElementById("fbSuccessFileSizeBadge");
+          if (pathInput) pathInput.value = localPath;
+          if (sizeBadge) sizeBadge.innerText = res.data.file_size || "-- MB";
+          if (successCard) successCard.style.display = "flex";
+
+          // Cập nhật context card bên tab Gemini AI
+          updateGeminiVideoContext(window.lastDownloadedVideo);
+
+          showToast("✅ Đã tải xong: " + fileName);
           // Tự động nạp video đã tải vào khung preview trên Web
           if (streamUrl) {
-            playFbPreview(streamUrl, fileName, true, absPath);
+            playFbPreview(streamUrl, fileName, true, localPath);
           }
         } else {
           barFill.style.width = "0%";
@@ -3326,6 +4078,397 @@
 
     function loadFbHistory() {
       // Đã ẩn phần Lịch sử video theo yêu cầu
+    }
+
+    // ==========================================
+    // SAO CHÉP VÀ THAO TÁC ĐƯỜNG DẪN VIDEO
+    // ==========================================
+    function copyTextToClipboard(text, successToast = "Đã sao chép!") {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast("📋 " + successToast);
+        }).catch(() => {
+          fallbackCopyText(text, successToast);
+        });
+      } else {
+        fallbackCopyText(text, successToast);
+      }
+    }
+
+    function fallbackCopyText(text, successToast) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      textArea.style.top = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        showToast("📋 " + successToast);
+      } catch (err) {
+        console.error("Lỗi sao chép:", err);
+      }
+      document.body.removeChild(textArea);
+    }
+
+    function copyDownloadedVideoPath() {
+      const input = document.getElementById("fbDownloadedPathInput");
+      const path = (input && input.value) ? input.value : (window.lastDownloadedVideo ? window.lastDownloadedVideo.localPath : "");
+      if (!path) {
+        showToast("⚠️ Chưa có đường dẫn video nào để sao chép!", "error");
+        return;
+      }
+      copyTextToClipboard(path, "Đã sao chép đường dẫn video vào bộ nhớ tạm!");
+      const btn = document.getElementById("btnCopyDownloadedPath");
+      const btnText = document.getElementById("btnCopyDownloadedPathText");
+      const btnIcon = document.getElementById("btnCopyDownloadedPathIcon");
+      if (btn) {
+        btn.classList.add("copied");
+        if (btnText) btnText.innerText = "Đã sao chép!";
+        if (btnIcon) btnIcon.innerText = "✅";
+        setTimeout(() => {
+          btn.classList.remove("copied");
+          if (btnText) btnText.innerText = "Sao chép path";
+          if (btnIcon) btnIcon.innerText = "📋";
+        }, 2000);
+      }
+    }
+
+    function copyPlayerVideoPath() {
+      const input = document.getElementById("fbPlayerPathInput");
+      const path = (input && input.value) ? input.value : "";
+      if (!path) {
+        showToast("⚠️ Chưa có đường dẫn video nào!", "error");
+        return;
+      }
+      copyTextToClipboard(path, "Đã sao chép đường dẫn video!");
+      const btn = document.getElementById("btnCopyPlayerPath");
+      if (btn) {
+        btn.innerHTML = "<span>✅ Đã chép</span>";
+        setTimeout(() => {
+          btn.innerHTML = "<span>📋 Sao chép path</span>";
+        }, 2000);
+      }
+    }
+
+    function openCurrentDownloadedFile() {
+      const path = window.lastDownloadedVideo ? window.lastDownloadedVideo.absPath : currentPlayingLocalPath;
+      if (!path) {
+        showToast("⚠️ Không tìm thấy file video để mở!", "error");
+        return;
+      }
+      openMediaFile(path);
+    }
+
+    function switchToGeminiWithVideo() {
+      switchMainTab('gemini');
+      if (window.lastDownloadedVideo) {
+        updateGeminiVideoContext(window.lastDownloadedVideo);
+      }
+    }
+
+    function updateGeminiVideoContext(videoInfo) {
+      const card = document.getElementById("geminiVideoContextCard");
+      const nameEl = document.getElementById("geminiActiveVideoName");
+      const pathEl = document.getElementById("geminiActiveVideoPath");
+      if (!card) return;
+      if (videoInfo && (videoInfo.fileName || videoInfo.localPath)) {
+        card.style.display = "flex";
+        if (nameEl) nameEl.innerText = videoInfo.fileName || "Video Facebook";
+        if (pathEl) pathEl.innerText = videoInfo.localPath || videoInfo.absPath || "";
+      }
+    }
+
+    function copyGeminiActiveVideoPath() {
+      const pathEl = document.getElementById("geminiActiveVideoPath");
+      const path = pathEl ? pathEl.innerText : (window.lastDownloadedVideo ? window.lastDownloadedVideo.localPath : "");
+      if (!path || path === "--") {
+        showToast("⚠️ Chưa có đường dẫn video để sao chép!", "error");
+        return;
+      }
+      copyTextToClipboard(path, "Đã sao chép đường dẫn video!");
+    }
+
+    function insertPathToPrompt() {
+      const pathEl = document.getElementById("geminiActiveVideoPath");
+      const path = pathEl ? pathEl.innerText : (window.lastDownloadedVideo ? window.lastDownloadedVideo.localPath : "");
+      if (!path || path === "--") {
+        showToast("⚠️ Chưa có video nào đang chọn!", "error");
+        return;
+      }
+      const textarea = document.getElementById("promptTextarea");
+      if (!textarea) return;
+      const insertText = `Đường dẫn video trên máy: ${path}\n\n`;
+      textarea.value = insertText + textarea.value;
+      updatePromptStats();
+      showToast("➕ Đã chèn đường dẫn video vào đầu prompt!");
+    }
+
+    // ==========================================
+    // LOGIC TAB GEMINI AI & HỘP THOẠI PROMPT MẪU
+    // ==========================================
+    const DEFAULT_GEMINI_PROMPT_CONTENT = `từ video tôi gửi sau đây hãy phân tích cho tôi theo format này nhé 
+Create a 15-second cinematic realistic video.
+Keep the same characters, faces, clothing, location, lighting, and key objects consistent in every shot.   
+Use subtle natural acting, realistic facial micro-expressions, slow eye movement, small pauses before speaking, natural breathing, restrained emotions, and cinematic realism.
+Avoid repeated generic dialogue. Avoid exaggerated crying, avoid sudden screaming, avoid cartoon-like reactions, avoid unnatural mouth movement, avoid fast body movements, avoid overacting.
+Character consistency:
+Sarah: Caucasian woman in her early 30s, shoulder-length brown hair, bruised left cheek with soup stains dripping down her chin, neck, and stained ivory cable-knit sweater, wearing a delicate gold necklace.   
+Husband: Mid-30s Caucasian man, short neat dark hair, clean-shaven, dark green textured knit sweater, tense and evasive expression.   
+Mother-in-law (Mrs. Harrington): Mid-60s elegant Caucasian woman, styled silver hair, gold chain necklace, wearing a sophisticated fitted red long-sleeve dress, composed yet condescending demeanor.   
+The Father: Imposing older man (around late 60s/70s), weathered tough facial features, gray hair, wearing a heavy black overcoat over a dark turtleneck, accompanied by suited bodyguards.   
+Key objects: Bowl of spilled soup on the dining table, modern smartphone, grand Harrington mansion illuminated in winter night.   
+Structure the video in shots:
+[0s - 3s] Medium shot: Sarah sits at the lavish Christmas dinner table with soup spilled across her front and an injury on her face. She glares at her husband with restrained fury while he avoids taking her side.   
+Character dialogue: Sarah firmly: “Say something.”
+   
+Character dialogue: Husband defensively: “You shouldn’t have provoked her.”
+   
+[3s - 6s] Close-up to Medium close-up: Sarah wipes her face slightly, pulls out her smartphone, and begins dialing. The mother-in-law smirks smugly with crossed arms.   
+Character dialogue: Mother-in-law condescendingly: “Who are you calling?”
+   
+Character dialogue: Husband panicked: “Sarah, don’t!”
+   
+[6s - 9s] Close-up: Sarah holds the phone to her ear, her voice trembling but resolute.   
+Character dialogue: Sarah into phone: “Dad, they crossed the line.”
+   
+Character dialogue: Father (over phone): “Are you still inside the Harrington house?”
+   
+Character dialogue: Sarah: “Yes.”
+   
+[9s - 12s] Wide exterior shot cut to Interior reaction shot: The exterior of the lavish snow-covered Harrington mansion shudders under a loud impact. Cut quickly to the dining room as the family freezes in sudden dread.   
+Character dialogue: Husband in panic: “Mom, what did you do?”
+   
+[12s - 15s] Low-angle tracking shot to Close-up: The front doors swing wide open as Sarah’s powerful father walks into the foyer with armed bodyguards in dark suits. Cut to the mother-in-law’s face draining of color, completely paralyzed with fear.   
+Character dialogue: The Father in a low, menacing voice: “Who touched my daughter?”`;
+
+    let geminiPrompts = [
+      {
+        id: "cinematic_15s",
+        name: "🎬 Kịch bản 15s Cinematic Realism (Mẫu chuẩn)",
+        content: DEFAULT_GEMINI_PROMPT_CONTENT
+      }
+    ];
+    let currentPromptId = "cinematic_15s";
+    let isGeminiTabInitialized = false;
+
+    function initGeminiTab() {
+      if (!isGeminiTabInitialized) {
+        loadPromptTemplates();
+        isGeminiTabInitialized = true;
+      }
+      if (window.lastDownloadedVideo) {
+        updateGeminiVideoContext(window.lastDownloadedVideo);
+      }
+    }
+
+    function loadPromptTemplates() {
+      fetch("/api/prompts")
+        .then(r => r.json())
+        .then(res => {
+          if (res.ok && Array.isArray(res.data) && res.data.length > 0) {
+            geminiPrompts = res.data;
+          } else {
+            try {
+              const cached = localStorage.getItem("story_gemini_prompts");
+              if (cached) geminiPrompts = JSON.parse(cached);
+            } catch(e) {}
+          }
+          renderPromptSelectOptions();
+        })
+        .catch(() => {
+          try {
+            const cached = localStorage.getItem("story_gemini_prompts");
+            if (cached) geminiPrompts = JSON.parse(cached);
+          } catch(e) {}
+          renderPromptSelectOptions();
+        });
+    }
+
+    function renderPromptSelectOptions() {
+      const select = document.getElementById("promptSelect");
+      if (!select) return;
+      select.innerHTML = "";
+      geminiPrompts.forEach(p => {
+        const opt = document.createElement("option");
+        opt.value = p.id;
+        opt.innerText = p.name;
+        if (p.id === currentPromptId) opt.selected = true;
+        select.appendChild(opt);
+      });
+      if (!geminiPrompts.some(p => p.id === currentPromptId) && geminiPrompts.length > 0) {
+        currentPromptId = geminiPrompts[0].id;
+        select.value = currentPromptId;
+      }
+      displayActivePrompt();
+    }
+
+    function displayActivePrompt() {
+      const prompt = geminiPrompts.find(p => p.id === currentPromptId) || geminiPrompts[0];
+      const textarea = document.getElementById("promptTextarea");
+      const btnDelete = document.getElementById("btnDeletePrompt");
+      if (textarea && prompt) {
+        textarea.value = prompt.content;
+        updatePromptStats();
+      }
+      if (btnDelete) {
+        btnDelete.style.display = (prompt && prompt.id !== "cinematic_15s") ? "inline-block" : "none";
+      }
+    }
+
+    function handlePromptSelectChange(val) {
+      currentPromptId = val;
+      displayActivePrompt();
+    }
+
+    function updatePromptStats() {
+      const textarea = document.getElementById("promptTextarea");
+      const charEl = document.getElementById("promptCharCount");
+      const wordEl = document.getElementById("promptWordCount");
+      if (!textarea) return;
+      const val = textarea.value;
+      if (charEl) charEl.innerText = val.length;
+      if (wordEl) {
+        const words = val.trim() ? val.trim().split(/\s+/).length : 0;
+        wordEl.innerText = words;
+      }
+    }
+
+    function copyActivePrompt() {
+      const textarea = document.getElementById("promptTextarea");
+      if (!textarea) return;
+      const content = textarea.value;
+      if (!content) {
+        showToast("⚠️ Nội dung prompt đang trống!");
+        return;
+      }
+      copyTextToClipboard(content, "Đã sao chép Prompt mẫu vào bộ nhớ tạm!");
+      const btn = document.getElementById("btnCopyPrompt");
+      const btnText = document.getElementById("btnCopyPromptText");
+      const btnIcon = document.getElementById("btnCopyPromptIcon");
+      if (btn) {
+        if (btnText) btnText.innerText = "ĐÃ SAO CHÉP PROMPT!";
+        if (btnIcon) btnIcon.innerText = "✅";
+        setTimeout(() => {
+          if (btnText) btnText.innerText = "SAO CHÉP PROMPT NÀY";
+          if (btnIcon) btnIcon.innerText = "📋";
+        }, 2000);
+      }
+    }
+
+    function copyPromptWithVideoPath() {
+      const textarea = document.getElementById("promptTextarea");
+      if (!textarea) return;
+      let text = textarea.value;
+      const videoPath = (window.lastDownloadedVideo && window.lastDownloadedVideo.localPath) 
+        ? window.lastDownloadedVideo.localPath 
+        : (currentPlayingLocalPath || "");
+      if (videoPath) {
+        text = `Đường dẫn video trên máy tính: ${videoPath}\n\n` + text;
+      }
+      copyTextToClipboard(text, videoPath ? "Đã sao chép Prompt kèm đường dẫn video!" : "Đã sao chép Prompt (chưa có video tải về)");
+    }
+
+    function saveActivePromptChanges() {
+      const textarea = document.getElementById("promptTextarea");
+      if (!textarea) return;
+      const activePrompt = geminiPrompts.find(p => p.id === currentPromptId);
+      if (!activePrompt) return;
+      activePrompt.content = textarea.value;
+      savePromptsToServer();
+    }
+
+    function savePromptsToServer() {
+      try {
+        localStorage.setItem("story_gemini_prompts", JSON.stringify(geminiPrompts));
+      } catch(e) {}
+      fetch("/api/prompts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompts: geminiPrompts })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.ok) {
+          showToast("✅ Đã lưu prompt mẫu thành công!");
+        } else {
+          showToast("⚠️ Đã lưu trên máy (lỗi server: " + res.message + ")");
+        }
+      })
+      .catch(() => {
+        showToast("✅ Đã lưu prompt vào bộ nhớ tạm trình duyệt");
+      });
+    }
+
+    function createNewPromptTemplate() {
+      const name = prompt("Nhập tên cho mẫu Prompt mới:", "Mẫu phân tích " + (geminiPrompts.length + 1));
+      if (!name || !name.trim()) return;
+      const newId = "prompt_" + Date.now();
+      geminiPrompts.push({
+        id: newId,
+        name: name.trim(),
+        content: DEFAULT_GEMINI_PROMPT_CONTENT
+      });
+      currentPromptId = newId;
+      renderPromptSelectOptions();
+      savePromptsToServer();
+      showToast("➕ Đã tạo mẫu prompt mới!");
+    }
+
+    function resetDefaultPrompt() {
+      if (!confirm("Bạn có chắc chắn muốn khôi phục nội dung mẫu này về định dạng Cinematic 15s chuẩn ban đầu?")) return;
+      const activePrompt = geminiPrompts.find(p => p.id === currentPromptId);
+      if (activePrompt) {
+        activePrompt.content = DEFAULT_GEMINI_PROMPT_CONTENT;
+        displayActivePrompt();
+        savePromptsToServer();
+        showToast("🔄 Đã khôi phục prompt về mẫu chuẩn!");
+      }
+    }
+
+    function deleteCurrentPromptTemplate() {
+      if (currentPromptId === "cinematic_15s") {
+        alert("Không thể xóa mẫu mặc định!");
+        return;
+      }
+      if (!confirm("Bạn có chắc muốn xóa mẫu prompt này?")) return;
+      geminiPrompts = geminiPrompts.filter(p => p.id !== currentPromptId);
+      currentPromptId = geminiPrompts[0] ? geminiPrompts[0].id : "cinematic_15s";
+      renderPromptSelectOptions();
+      savePromptsToServer();
+      showToast("🗑 Đã xóa mẫu prompt!");
+    }
+
+    function openGeminiPopup() {
+      const w = 1120;
+      const h = 880;
+      const left = Math.max(0, (window.screen.width - w) / 2);
+      const top = Math.max(0, (window.screen.height - h) / 2);
+      window.open(
+        'https://gemini.google.com/app',
+        'GeminiWorkspaceWindow',
+        `width=${w},height=${h},top=${top},left=${left},resizable=yes,scrollbars=yes,status=no,toolbar=no,menubar=no,location=yes`
+      );
+      showToast("🚀 Đang mở cửa sổ Gemini độc lập...");
+    }
+
+    function openGeminiNewTab() {
+      window.open('https://gemini.google.com/app', '_blank');
+    }
+
+    function reloadGeminiIframe() {
+      const iframe = document.getElementById("geminiIframe");
+      if (iframe) {
+        iframe.src = iframe.src;
+        showToast("🔄 Đang tải lại khung Gemini...");
+      }
+    }
+
+    function dismissGeminiNotice() {
+      const notice = document.getElementById("geminiIframeNotice");
+      if (notice) notice.style.display = "none";
     }
 
     // Khởi tạo ban đầu

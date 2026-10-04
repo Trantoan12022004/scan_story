@@ -12,6 +12,7 @@ import subprocess
 import webbrowser
 import urllib.parse
 from urllib.parse import urlparse, urljoin
+import requests
 from flask import Flask, render_template, request, Response, jsonify, send_from_directory
 
 # Fix encoding cho Windows console
@@ -1060,10 +1061,12 @@ def fb_download():
     try:
         from fb_downloader import download_facebook_video
         res = download_facebook_video(url, format_id=format_id, output_dir=output_dir)
-        # Thêm stream_url và absolute path
+        # Thêm stream_url, absolute path và local native path
         file_name = res.get("file_name", "")
+        native_path = os.path.normpath(os.path.abspath(os.path.join(output_dir, file_name)))
         res["stream_url"] = f"/api/fb/stream-video/{urllib.parse.quote(file_name)}"
-        res["abs_path"] = os.path.abspath(os.path.join(output_dir, file_name)).replace("\\", "/")
+        res["abs_path"] = native_path.replace("\\", "/")
+        res["local_path"] = native_path
         return jsonify({"ok": True, "data": res})
     except Exception as e:
         return jsonify({"ok": False, "message": str(e)}), 500
@@ -1102,18 +1105,274 @@ def fb_list_videos():
             f_path = os.path.join(videos_dir, f)
             st = os.stat(f_path)
             size_mb = st.st_size / (1024 * 1024)
+            native_path = os.path.normpath(os.path.abspath(f_path))
             items.append({
                 "name": f,
                 "size": f"{size_mb:.2f} MB",
                 "modified": st.st_mtime,
-                "path": os.path.abspath(f_path),
+                "path": native_path.replace("\\", "/"),
+                "local_path": native_path,
                 "stream_url": f"/api/fb/stream-video/{urllib.parse.quote(f)}"
             })
     items.sort(key=lambda x: x["modified"], reverse=True)
     return jsonify({"ok": True, "data": items[:25]})
 
 
-def start_server(port: int = 5000):
+DEFAULT_SAMPLE_PROMPT = """từ video tôi gửi sau đây hãy phân tích cho tôi theo format này nhé 
+Create a 15-second cinematic realistic video.
+Keep the same characters, faces, clothing, location, lighting, and key objects consistent in every shot.   
+Use subtle natural acting, realistic facial micro-expressions, slow eye movement, small pauses before speaking, natural breathing, restrained emotions, and cinematic realism.
+Avoid repeated generic dialogue. Avoid exaggerated crying, avoid sudden screaming, avoid cartoon-like reactions, avoid unnatural mouth movement, avoid fast body movements, avoid overacting.
+Character consistency:
+Sarah: Caucasian woman in her early 30s, shoulder-length brown hair, bruised left cheek with soup stains dripping down her chin, neck, and stained ivory cable-knit sweater, wearing a delicate gold necklace.   
+Husband: Mid-30s Caucasian man, short neat dark hair, clean-shaven, dark green textured knit sweater, tense and evasive expression.   
+Mother-in-law (Mrs. Harrington): Mid-60s elegant Caucasian woman, styled silver hair, gold chain necklace, wearing a sophisticated fitted red long-sleeve dress, composed yet condescending demeanor.   
+The Father: Imposing older man (around late 60s/70s), weathered tough facial features, gray hair, wearing a heavy black overcoat over a dark turtleneck, accompanied by suited bodyguards.   
+Key objects: Bowl of spilled soup on the dining table, modern smartphone, grand Harrington mansion illuminated in winter night.   
+Structure the video in shots:
+[0s - 3s] Medium shot: Sarah sits at the lavish Christmas dinner table with soup spilled across her front and an injury on her face. She glares at her husband with restrained fury while he avoids taking her side.   
+Character dialogue: Sarah firmly: “Say something.”
+   
+Character dialogue: Husband defensively: “You shouldn’t have provoked her.”
+   
+[3s - 6s] Close-up to Medium close-up: Sarah wipes her face slightly, pulls out her smartphone, and begins dialing. The mother-in-law smirks smugly with crossed arms.   
+Character dialogue: Mother-in-law condescendingly: “Who are you calling?”
+   
+Character dialogue: Husband panicked: “Sarah, don’t!”
+   
+[6s - 9s] Close-up: Sarah holds the phone to her ear, her voice trembling but resolute.   
+Character dialogue: Sarah into phone: “Dad, they crossed the line.”
+   
+Character dialogue: Father (over phone): “Are you still inside the Harrington house?”
+   
+Character dialogue: Sarah: “Yes.”
+   
+[9s - 12s] Wide exterior shot cut to Interior reaction shot: The exterior of the lavish snow-covered Harrington mansion shudders under a loud impact. Cut quickly to the dining room as the family freezes in sudden dread.   
+Character dialogue: Husband in panic: “Mom, what did you do?”
+   
+[12s - 15s] Low-angle tracking shot to Close-up: The front doors swing wide open as Sarah’s powerful father walks into the foyer with armed bodyguards in dark suits. Cut to the mother-in-law’s face draining of color, completely paralyzed with fear.   
+Character dialogue: The Father in a low, menacing voice: “Who touched my daughter?”"""
+
+DEFAULT_PROMPTS = [
+    {
+        "id": "cinematic_15s",
+        "name": "🎬 Kịch bản 15s Cinematic Realism (Mẫu chuẩn)",
+        "content": DEFAULT_SAMPLE_PROMPT
+    }
+]
+
+
+@app.route("/api/prompts", methods=["GET", "POST"])
+def api_prompts():
+    """Lấy hoặc lưu danh sách prompt mẫu phân tích video AI"""
+    prompts_file = os.path.join(APP_ROOT, "prompts.json")
+
+    if request.method == "POST":
+        data = request.get_json(silent=True) or {}
+        prompts = data.get("prompts")
+        if not isinstance(prompts, list):
+            return jsonify({"ok": False, "message": "Dữ liệu prompt không hợp lệ."}), 400
+        try:
+            with open(prompts_file, "w", encoding="utf-8") as f:
+                json.dump(prompts, f, ensure_ascii=False, indent=2)
+            return jsonify({"ok": True, "message": "Đã lưu danh sách prompt mẫu thành công!"})
+        except Exception as e:
+            return jsonify({"ok": False, "message": f"Không thể lưu file prompt: {e}"}), 500
+
+    # GET
+    if os.path.isfile(prompts_file):
+        try:
+            with open(prompts_file, "r", encoding="utf-8") as f:
+                saved = json.load(f)
+                if isinstance(saved, list) and len(saved) > 0:
+                    return jsonify({"ok": True, "data": saved})
+        except Exception:
+            pass
+
+    # Nếu chưa có file prompts.json, ghi mặc định ra file
+    try:
+        with open(prompts_file, "w", encoding="utf-8") as f:
+            json.dump(DEFAULT_PROMPTS, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass
+
+    return jsonify({"ok": True, "data": DEFAULT_PROMPTS})
+
+
+# ==========================================
+# TRANG & API QUẢN LÝ TIẾN ĐỘ VIDEO & ĐĂNG BÀI
+# ==========================================
+import quan_ly_manager
+
+
+@app.route("/quan-ly")
+@app.route("/quản lý")
+@app.route("/quanly")
+def quan_ly_page():
+    """Giao diện quản lý tiến độ tạo video và đăng bài"""
+    return render_template("quan_ly.html")
+
+
+@app.route("/api/quan-ly/data", methods=["GET"])
+def api_quan_ly_data():
+    """Lấy danh sách bản ghi quản lý kèm metadata kiểm tra file video"""
+    try:
+        force = request.args.get("force", "0") in ("1", "true", "True")
+        data = quan_ly_manager.get_data_with_meta(force_sheet_sync=force)
+        return jsonify({"ok": True, "data": data})
+    except Exception as e:
+        return jsonify({"ok": False, "message": str(e)}), 500
+
+
+@app.route("/api/quan-ly/push-to-sheet", methods=["POST"])
+def api_quan_ly_push_to_sheet():
+    """Đẩy dữ liệu từ web lên Google Sheets qua Apps Script Webhook"""
+    data = request.get_json(silent=True) or {}
+    webhook_url = data.get("webhook_url", "")
+    res = quan_ly_manager.push_to_google_sheet(webhook_url)
+    return jsonify(res)
+
+
+@app.route("/api/quan-ly/config", methods=["GET", "POST"])
+def api_quan_ly_config():
+    """Lấy hoặc lưu cấu hình đồng bộ Google Sheets / Webhook"""
+    if request.method == "POST":
+        data = request.get_json(silent=True) or {}
+        quan_ly_manager.save_quan_ly_config(data)
+        return jsonify({"ok": True, "message": "Đã lưu cấu hình đồng bộ thành công!"})
+    return jsonify({"ok": True, "data": quan_ly_manager.load_quan_ly_config()})
+
+
+@app.route("/api/quan-ly/sync", methods=["POST"])
+def api_quan_ly_sync():
+    """Đồng bộ dữ liệu từ Google Sheets"""
+    data = request.get_json(silent=True) or {}
+    overwrite_all = bool(data.get("overwrite_all", False))
+    try:
+        res = quan_ly_manager.sync_with_google_sheet(overwrite_all=overwrite_all)
+        res_with_meta = quan_ly_manager.get_data_with_meta()
+        return jsonify({
+            "ok": True,
+            "message": res["message"],
+            "data": res_with_meta
+        })
+    except Exception as e:
+        return jsonify({"ok": False, "message": f"Lỗi đồng bộ Google Sheet: {e}"}), 500
+
+
+@app.route("/api/quan-ly/update-field", methods=["POST"])
+def api_quan_ly_update_field():
+    """Cập nhật 1 trường dữ liệu của 1 dòng theo STT"""
+    data = request.get_json(silent=True) or {}
+    stt = data.get("stt")
+    field = data.get("field")
+    value = data.get("value")
+    if not stt or not field:
+        return jsonify({"ok": False, "message": "Thiếu STT hoặc tên trường cần cập nhật"}), 400
+    res = quan_ly_manager.update_row_field(stt, field, value)
+    return jsonify(res)
+
+
+@app.route("/api/quan-ly/upsert-row", methods=["POST"])
+def api_quan_ly_upsert_row():
+    """Thêm mới hoặc sửa toàn bộ 1 dòng"""
+    data = request.get_json(silent=True) or {}
+    res = quan_ly_manager.upsert_full_row(data)
+    return jsonify(res)
+
+
+@app.route("/api/quan-ly/delete-row", methods=["POST"])
+def api_quan_ly_delete_row():
+    """Xóa 1 dòng theo STT"""
+    data = request.get_json(silent=True) or {}
+    stt = data.get("stt")
+    if not stt:
+        return jsonify({"ok": False, "message": "Thiếu STT cần xóa"}), 400
+    res = quan_ly_manager.delete_row(stt)
+    return jsonify(res)
+
+
+@app.route("/api/quan-ly/extract-frame", methods=["POST"])
+def api_quan_ly_extract_frame():
+    """Lấy Frame đầu tiên / thumbnail từ link Reels"""
+    data = request.get_json(silent=True) or {}
+    stt = data.get("stt", "")
+    url = data.get("url", "")
+    if not url:
+        return jsonify({"ok": False, "message": "Vui lòng nhập link Facebook Reel bài gốc"}), 400
+    res = quan_ly_manager.extract_frame_from_reel(stt, url)
+    return jsonify(res)
+
+
+@app.route("/api/quan-ly/generate-content", methods=["POST"])
+def api_quan_ly_generate_content():
+    """Tự động tạo Content từ Bài gốc + Báo mới"""
+    data = request.get_json(silent=True) or {}
+    stt = data.get("stt", "")
+    bai_goc = data.get("bai_goc", "")
+    bao_moi = data.get("bao_moi", "")
+    if not bai_goc:
+        return jsonify({"ok": False, "message": "Thiếu link bài gốc Facebook Reel"}), 400
+    res = quan_ly_manager.auto_generate_content(stt, bai_goc, bao_moi)
+    return jsonify(res)
+
+
+@app.route("/api/quan-ly/frame/<path:filename>")
+def api_quan_ly_serve_frame(filename):
+    """Phục vụ ảnh frame đã tải về"""
+    from flask import send_from_directory
+    frames_dir = quan_ly_manager.FRAMES_DIR
+    return send_from_directory(frames_dir, filename)
+
+
+@app.route("/api/quan-ly/export-csv")
+def api_quan_ly_export_csv():
+    """Tải file CSV dữ liệu quản lý"""
+    from flask import Response
+    rows = quan_ly_manager.load_quan_ly_data()
+    csv_str = quan_ly_manager.generate_export_csv(rows)
+    return Response(
+        csv_str,
+        mimetype="text/csv; charset=utf-8",
+        headers={"Content-Disposition": "attachment; filename=quan_ly_video_dang_bai.csv"}
+    )
+
+
+@app.route("/api/quan-ly/export-tsv")
+def api_quan_ly_export_tsv():
+    """Lấy chuỗi TSV để sao chép vào Clipboard dán trực tiếp Google Sheets"""
+    rows = quan_ly_manager.load_quan_ly_data()
+    tsv_str = quan_ly_manager.generate_export_tsv(rows)
+    return jsonify({"ok": True, "tsv": tsv_str})
+
+
+@app.route("/api/quan-ly/open-video", methods=["POST"])
+def api_quan_ly_open_video():
+    """Mở file video hoặc thư mục chứa video trên Windows Explorer"""
+    data = request.get_json(silent=True) or {}
+    video_path = data.get("path", "").strip('\"\'')
+    if not video_path:
+        return jsonify({"ok": False, "message": "Đường dẫn video trống"}), 400
+
+    clean_path = os.path.normpath(video_path)
+    if os.path.isfile(clean_path):
+        import subprocess
+        subprocess.Popen(f'explorer /select,"{clean_path}"')
+        return jsonify({"ok": True, "message": f"Đã mở vị trí file: {clean_path}"})
+    elif os.path.isdir(clean_path):
+        import subprocess
+        subprocess.Popen(f'explorer "{clean_path}"')
+        return jsonify({"ok": True, "message": f"Đã mở thư mục: {clean_path}"})
+    else:
+        parent_dir = os.path.dirname(clean_path)
+        if os.path.isdir(parent_dir):
+            import subprocess
+            subprocess.Popen(f'explorer "{parent_dir}"')
+            return jsonify({"ok": True, "message": f"File chưa có, đã mở thư mục: {parent_dir}"})
+        return jsonify({"ok": False, "message": f"Đường dẫn không tồn tại: {clean_path}"}), 404
+
+
+def start_server(port: int = 5001):
     admin = is_admin_mode()
     mode_name = "QUẢN TRỊ VIÊN (ADMIN)" if admin else "NGƯỜI DÙNG (USER)"
     url = f"http://localhost:{port}"

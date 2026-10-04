@@ -1,0 +1,3071 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản Lý Tiến Độ Tạo Video & Đăng Bài | Story Scraper</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #070b14;
+      --bg-secondary: #0d1424;
+      --bg-card: #111a2e;
+      --bg-card-hover: #15223c;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-focus: #8b5cf6;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-purple: #8b5cf6;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-yellow: #f59e0b;
+      --accent-red: #ef4444;
+      --accent-cyan: #06b6d4;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+      --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #23304c;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334466;
+    }
+
+    /* Header */
+    header {
+      background: rgba(13, 20, 36, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon-box {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(59, 130, 246, 0.25));
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
+    }
+
+    .brand-subtitle {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 8px 14px;
+      border-radius: 7px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      text-decoration: none;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #8b5cf6, #6366f1);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+    }
+
+    .btn-secondary {
+      background: #131d35;
+      color: var(--text-primary);
+      border-color: var(--border-color);
+    }
+    .btn-secondary:hover {
+      background: #1b2848;
+      border-color: rgba(255,255,255,0.18);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      box-shadow: 0 3px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-sheet {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.35);
+      color: #34d399;
+    }
+    .btn-sheet:hover {
+      background: rgba(16, 185, 129, 0.22);
+      border-color: #34d399;
+    }
+
+    .btn-sm {
+      padding: 4px 9px;
+      font-size: 11.5px;
+      border-radius: 5px;
+    }
+
+    .btn-icon {
+      padding: 6px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      background: #15223c;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-icon:hover {
+      background: #23345a;
+      color: var(--text-primary);
+    }
+
+    /* Container */
+    .main-container {
+      max-width: 1750px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 18px 24px 60px 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Stat Cards */
+    .stat-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+    }
+    .stat-card:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 255, 255, 0.22);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+    .stat-card.active-filter {
+      border-color: #8b5cf6 !important;
+      background: rgba(139, 92, 246, 0.15) !important;
+      box-shadow: 0 0 16px rgba(139, 92, 246, 0.35) !important;
+    }
+    .stat-card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+    }
+    .stat-card.purple::after { background: var(--accent-purple); }
+    .stat-card.green::after { background: var(--accent-green); }
+    .stat-card.blue::after { background: var(--accent-blue); }
+    .stat-card.yellow::after { background: var(--accent-yellow); }
+    .stat-card.red::after { background: var(--accent-red); }
+
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .stat-icon.purple { background: rgba(139, 92, 246, 0.15); color: #c4b5fd; }
+    .stat-icon.green { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; }
+    .stat-icon.blue { background: rgba(59, 130, 246, 0.15); color: #93c5fd; }
+    .stat-icon.yellow { background: rgba(245, 158, 11, 0.15); color: #fde047; }
+    .stat-icon.red { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+
+    .stat-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .stat-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-top: 2px;
+    }
+    .stat-desc {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* Section Tabs & View Controls */
+    .control-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .tabs-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .main-section-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: #111a2e;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover {
+      background: #182440;
+      color: var(--text-primary);
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(59, 130, 246, 0.25));
+      border-color: #8b5cf6;
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(139, 92, 246, 0.3);
+    }
+
+    .tab-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-secondary);
+    }
+    .tab-btn.active .tab-badge {
+      background: #8b5cf6;
+      color: #fff;
+    }
+
+    /* Filters Row */
+    .filters-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-input-wrap {
+      flex: 1;
+      min-width: 240px;
+      position: relative;
+    }
+    .search-input-wrap span {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .search-input {
+      width: 100%;
+      background: #090f1d;
+      border: 1px solid var(--border-color);
+      border-radius: 7px;
+      padding: 8px 12px 8px 34px;
+      color: var(--text-primary);
+      font-size: 12.5px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .search-input:focus {
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+    }
+
+    .filter-select {
+      background: #090f1d;
+      border: 1px solid var(--border-color);
+      border-radius: 7px;
+      padding: 8px 12px;
+      color: var(--text-primary);
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+    }
+    .filter-select:focus {
+      border-color: var(--accent-purple);
+    }
+
+    /* Table Container */
+    .table-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      max-height: calc(100vh - 360px);
+      min-height: 480px;
+      position: relative;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      text-align: left;
+    }
+
+    thead th {
+      background: #0b1222;
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding: 12px 14px;
+      border-bottom: 2px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      white-space: nowrap;
+    }
+
+    thead th.group-header-1 {
+      background: #111e38;
+      color: #c4b5fd;
+      border-bottom: 2px solid #8b5cf6;
+      text-align: center;
+    }
+    thead th.group-header-2 {
+      background: #0f2434;
+      color: #67e8f9;
+      border-bottom: 2px solid #06b6d4;
+      text-align: center;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: background 0.15s ease;
+      height: 38px;
+      max-height: 38px;
+    }
+    tbody tr:hover {
+      background: #142038;
+    }
+
+    td {
+      padding: 3px 8px;
+      height: 38px;
+      max-height: 38px;
+      vertical-align: middle;
+      color: #cbd5e1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-sizing: border-box;
+      font-size: 12px;
+    }
+
+    /* Single line flex container inside cells */
+    .cell-flex-nowrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      width: 100%;
+      height: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+    }
+
+    .cell-link-text {
+      color: #38bdf8;
+      text-decoration: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 140px;
+      font-size: 11.5px;
+    }
+    .cell-link-text:hover {
+      text-decoration: underline;
+      color: #7dd3fc;
+    }
+
+    .btn-mini-icon {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+      border-radius: 4px;
+      padding: 2px 5px;
+      font-size: 11px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .btn-mini-icon:hover {
+      background: rgba(139, 92, 246, 0.3);
+      color: #fff;
+      border-color: #8b5cf6;
+    }
+
+    /* Specific Columns & Sticky STT */
+    .col-stt {
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: #38bdf8;
+      width: 50px;
+      text-align: center;
+    }
+
+    .col-sticky-stt {
+      position: sticky;
+      left: 0;
+      z-index: 5;
+      background: #0d1424;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    thead th.col-sticky-stt {
+      z-index: 15;
+      background: #0b1222;
+      border-right: 1px solid rgba(255, 255, 255, 0.14);
+    }
+    tbody tr:hover td.col-sticky-stt {
+      background: #142038;
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+      line-height: 1.2;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+    .badge-status:hover {
+      filter: brightness(1.2);
+      transform: scale(1.03);
+      box-shadow: 0 0 10px rgba(139, 92, 246, 0.35);
+    }
+
+    /* Video Status Pills */
+    .status-video-xong {
+      background: rgba(16, 185, 129, 0.18);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .status-video-dang-tao {
+      background: rgba(245, 158, 11, 0.18);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+    .status-video-xong-bao {
+      background: rgba(6, 182, 212, 0.18);
+      color: #38bdf8;
+      border: 1px solid rgba(6, 182, 212, 0.4);
+    }
+    .status-video-lay {
+      background: rgba(168, 85, 247, 0.18);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.4);
+    }
+    .status-video-khong-tao {
+      background: rgba(239, 68, 68, 0.18);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+    .status-video-tu-choi {
+      background: rgba(100, 116, 139, 0.2);
+      color: #94a3b8;
+      border: 1px solid rgba(100, 116, 139, 0.4);
+    }
+
+    /* Post Status Pills */
+    .status-post-chua {
+      background: rgba(245, 158, 11, 0.18);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+    .status-post-hoan-thanh {
+      background: rgba(16, 185, 129, 0.22);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.5);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
+    }
+    .status-post-dang-bai {
+      background: rgba(59, 130, 246, 0.22);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.5);
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.2);
+    }
+
+    /* Status Quick Popover Menu */
+    .status-quick-menu {
+      position: fixed;
+      z-index: 10000;
+      background: #0d1527;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 9px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.85);
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 175px;
+      backdrop-filter: blur(12px);
+      animation: statusMenuFade 0.15s ease-out;
+    }
+    @keyframes statusMenuFade {
+      from { opacity: 0; transform: translateY(-4px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .status-quick-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text-primary);
+      transition: all 0.15s;
+    }
+    .status-quick-item:hover {
+      background: rgba(255, 255, 255, 0.09);
+    }
+    .status-quick-item.active {
+      background: rgba(139, 92, 246, 0.25);
+      color: #c4b5fd;
+      border: 1px solid rgba(139, 92, 246, 0.35);
+    }
+
+    /* Copy Button Success State */
+    .btn-mini-icon.copied-success {
+      background: rgba(16, 185, 129, 0.3) !important;
+      color: #34d399 !important;
+      border-color: #10b981 !important;
+    }
+
+    /* Row Updated Flash Animation */
+    @keyframes rowUpdatedFlash {
+      0% { background-color: rgba(139, 92, 246, 0.45); }
+      100% { background-color: transparent; }
+    }
+    .row-updated-flash {
+      animation: rowUpdatedFlash 1.6s ease-out;
+    }
+
+    /* Link cell single line */
+    .link-cell {
+      max-width: 170px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 11.5px;
+    }
+
+    /* Frame mini thumbnail */
+    .frame-mini-box {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+    .frame-mini-thumb {
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      object-fit: cover;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      display: block;
+      transition: all 0.15s ease;
+    }
+    .frame-mini-thumb:hover {
+      border-color: #38bdf8;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+      transform: scale(1.08);
+    }
+
+    /* Global Floating Frame Zoom Popup */
+    #globalFrameZoom {
+      display: none;
+      position: fixed;
+      z-index: 99999;
+      pointer-events: none;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.9);
+      border: 2px solid #8b5cf6;
+      background: #0b1222;
+      opacity: 0;
+      transform: scale(0.96);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+    #globalFrameZoom.visible {
+      display: block;
+      opacity: 1;
+      transform: scale(1);
+    }
+    #globalFrameZoom img {
+      width: 240px;
+      height: 240px;
+      object-fit: cover;
+      display: block;
+      background: #000;
+    }
+    #globalFrameZoom .zoom-caption {
+      background: rgba(11, 18, 34, 0.96);
+      color: #cbd5e1;
+      font-size: 11px;
+      padding: 5px 8px;
+      text-align: center;
+      font-weight: 600;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 240px;
+    }
+
+    /* Mini Badges for single line */
+    .badge-mini-merged {
+      background: rgba(16, 185, 129, 0.18);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .badge-mini-loading {
+      background: rgba(56, 189, 248, 0.18);
+      color: #38bdf8;
+      border: 1px dashed rgba(56, 189, 248, 0.5);
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+      animation: contentPulse 1.4s infinite;
+    }
+    @keyframes contentPulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; filter: brightness(1.2); }
+      100% { opacity: 0.6; }
+    }
+
+    /* Sync Indicator */
+    .sync-status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      color: #cbd5e1;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 4px 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .sync-status-indicator:hover {
+      border-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+    }
+    .sync-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      display: inline-block;
+      animation: syncDotPulse 2s infinite ease-in-out;
+    }
+    @keyframes syncDotPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    /* Content & Text preview single-line */
+    .text-preview-cell {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 11.5px;
+      line-height: 1.3;
+      color: #cbd5e1;
+      cursor: pointer;
+      max-width: 220px;
+    }
+    .text-preview-cell:hover {
+      color: #fff;
+    }
+
+    /* Video file badge single line */
+    .video-file-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .video-file-ready {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+    .video-file-missing {
+      background: rgba(245, 158, 11, 0.12);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+    .modal-card {
+      background: #0d1424;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      max-width: 680px;
+      width: 100%;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      max-height: 90vh;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .modal-close-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #c4b5fd;
+    }
+    .form-input, .form-textarea, .form-select {
+      background: #060913;
+      border: 1px solid var(--border-color);
+      border-radius: 7px;
+      padding: 9px 12px;
+      color: var(--text-primary);
+      font-size: 13px;
+      outline: none;
+      font-family: inherit;
+    }
+    .form-textarea {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.5;
+      resize: vertical;
+      min-height: 140px;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+    }
+
+    /* Toast */
+    #toastContainer {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .toast {
+      background: #111a2e;
+      border: 1px solid #8b5cf6;
+      border-radius: 8px;
+      padding: 12px 18px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastSlide 0.25s ease;
+    }
+    @keyframes toastSlide {
+      from { transform: translateX(50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Lightbox Modal */
+    #lightboxModal img {
+      max-width: 90vw;
+      max-height: 85vh;
+      border-radius: 8px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-brand">
+      <a href="/" class="btn btn-secondary btn-sm" title="Quay lại giao diện cào & tải video">
+        <span>⬅️ Về Trang Chủ</span>
+      </a>
+      <div class="brand-icon-box">📊</div>
+      <div>
+        <div class="brand-title">Quản Lý Tiến Độ Tạo Video & Đăng Bài</div>
+        <div class="brand-subtitle">
+          <span>Dữ liệu đồng bộ Google Sheets</span>
+          <span>•</span>
+          <span id="headerRowCountText">0 dòng</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Chỉ báo trạng thái kết nối Sheet -->
+      <div class="sync-status-indicator" id="syncStatusBadge" onclick="triggerSyncFromSheet(false)" title="Bấm để đồng bộ ngay lập tức với Google Sheets">
+        <span class="sync-dot"></span>
+        <span id="syncStatusText">Sheets: Đang kiểm tra...</span>
+      </div>
+
+      <a href="https://docs.google.com/spreadsheets/d/1t4nyagzl-ySljwSK6nSxXPFttv11Vx-az2exQ9pKBuA/edit?usp=sharing"
+         target="_blank" class="btn btn-sheet" title="Mở trang Google Sheets trực tiếp">
+        <span>📊 Mở Sheet</span>
+        <span>↗</span>
+      </a>
+
+      <button type="button" class="btn btn-secondary" onclick="triggerSyncFromSheet(false)" id="btnSyncSheet" title="Đồng bộ cập nhật mới từ Google Sheets">
+        <span id="btnSyncIcon">🔄</span>
+        <span>Đồng bộ Sheet</span>
+      </button>
+
+      <button type="button" class="btn btn-primary" onclick="quickCopyPushToSheet()" title="Sao chép toàn bộ bảng cập nhật và mở Google Sheet để dán (Ctrl+V vào A1)">
+        <span>📋 Đẩy Vào Sheet (1-Click)</span>
+      </button>
+
+      <button type="button" class="btn btn-secondary" onclick="openConfigSyncModal()" title="Cấu hình đồng bộ 2 chiều qua Google Apps Script Webhook">
+        <span>⚙️ Đồng Bộ Tự Động</span>
+      </button>
+
+      <button type="button" class="btn btn-secondary" onclick="exportCsvFile()" title="Tải file CSV mở trên Excel">
+        <span>💾 Xuất CSV</span>
+      </button>
+
+      <button type="button" class="btn btn-secondary" onclick="openAddRowModal()">
+        <span>➕ Thêm Dòng</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="main-container">
+
+    <!-- Thống kê nhanh (Stat Cards) - Bấm vào thẻ để lọc nhanh -->
+    <div class="stat-cards-grid">
+      <div class="stat-card purple" id="statCardTotal" onclick="filterByStat('total')" title="Bấm để xem toàn bộ danh sách">
+        <div class="stat-icon purple">🎬</div>
+        <div class="stat-info">
+          <div class="stat-label">Tổng Số Hàng</div>
+          <div class="stat-value" id="statTotalRows">0</div>
+          <div class="stat-desc">Dữ liệu trên hệ thống (Bấm: Xem tất cả)</div>
+        </div>
+      </div>
+
+      <div class="stat-card green" id="statCardVideoDone" onclick="filterByStat('video_done')" title="Bấm để lọc chỉ các dòng 'Xong video'">
+        <div class="stat-icon green">✅</div>
+        <div class="stat-info">
+          <div class="stat-label">Video Đã Xong</div>
+          <div class="stat-value" id="statVideoDone">0</div>
+          <div class="stat-desc">Trạng thái: Xong video (Bấm: Lọc)</div>
+        </div>
+      </div>
+
+      <div class="stat-card blue" id="statCardFileReady" onclick="filterByStat('file_ready')" title="Bấm để lọc chỉ các dòng đã có file video trong máy">
+        <div class="stat-icon blue">💾</div>
+        <div class="stat-info">
+          <div class="stat-label">File Video Đã Có Sẵn</div>
+          <div class="stat-value" id="statVideoFilesReady">0</div>
+          <div class="stat-desc">Đã tìm thấy trong máy (Bấm: Lọc)</div>
+        </div>
+      </div>
+
+      <div class="stat-card yellow" id="statCardPostDone" onclick="filterByStat('post_done')" title="Bấm để lọc các bài viết đã hoàn thành hoặc đang đăng bài">
+        <div class="stat-icon yellow">🚀</div>
+        <div class="stat-info">
+          <div class="stat-label">Đã Hoàn Thành Đăng</div>
+          <div class="stat-value" id="statPostDone">0</div>
+          <div class="stat-desc">Có cả Content & Link Video (Bấm: Lọc)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thanh Điều Khiển & Phân Chia 2 Mục -->
+    <div class="control-panel">
+      <!-- 2 Mục lớn theo yêu cầu -->
+      <div class="tabs-row">
+        <div class="main-section-tabs">
+          <button type="button" class="tab-btn active" id="tabBtnMode1" onclick="switchSectionView('mode1')">
+            <span>🎬 MỤC 1: QUẢN LÝ TẠO VIDEO</span>
+            <span class="tab-badge" id="badgeMode1Count">0</span>
+          </button>
+          <button type="button" class="tab-btn" id="tabBtnMode2" onclick="switchSectionView('mode2')">
+            <span>🚀 MỤC 2: QUẢN LÝ ĐĂNG BÀI</span>
+            <span class="tab-badge" id="badgeMode2Count">0</span>
+          </button>
+          <button type="button" class="tab-btn" id="tabBtnAll" onclick="switchSectionView('all')">
+            <span>📊 BẢNG TỔNG HỢP (TẤT CẢ CỘT)</span>
+          </button>
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="batchAutoFillVideoPaths()" title="Tự động điền link video theo STT vào các ô trống">
+            <span>⚡ Điền Link Video theo STT</span>
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="batchGenerateContent()" title="Tự động lấy content từ Reels và ghép Báo mới">
+            <span>✨ Tự Tạo Content Hàng Loạt</span>
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="batchExtractFrames()" title="Tự động lấy frame đầu tiên cho các video chưa có">
+            <span>📸 Lấy Frame Hàng Loạt</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bộ lọc và tìm kiếm -->
+      <div class="filters-row">
+        <div class="search-input-wrap">
+          <span>🔍</span>
+          <input type="text" id="searchInput" class="search-input" placeholder="Tìm theo STT, link Facebook, báo mới, prompt..." oninput="applyFilters()">
+        </div>
+
+        <select id="filterVideoStatus" class="filter-select" onchange="applyFilters()">
+          <option value="">-- Tất cả trạng thái video --</option>
+          <option value="Xong video">Xong video</option>
+          <option value="Đang tạo video">Đang tạo video</option>
+          <option value="Xong báo">Xong báo</option>
+          <option value="Lấy video">Lấy video</option>
+          <option value="không tạo được">không tạo được</option>
+          <option value="bị từ chối">bị từ chối</option>
+        </select>
+
+        <select id="filterPostStatus" class="filter-select" onchange="applyFilters()">
+          <option value="">-- Tất cả trạng thái đăng bài --</option>
+          <option value="chưa hoàn thành">chưa hoàn thành</option>
+          <option value="hoàn thành">hoàn thành</option>
+          <option value="đăng bài">đăng bài</option>
+        </select>
+
+        <select id="filterFileReady" class="filter-select" onchange="applyFilters()">
+          <option value="">-- Kiểm tra file trên máy --</option>
+          <option value="ready">✅ Đã có file video trong máy</option>
+          <option value="missing">⚠️ Chưa có file video</option>
+        </select>
+
+        <button type="button" class="btn btn-secondary btn-sm" onclick="resetFilters()">
+          <span>✕ Bỏ lọc</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Bảng Dữ Liệu -->
+    <div class="table-container">
+      <div class="table-scroll">
+        <table id="mainTable">
+          <thead>
+            <tr id="tableHeaderRow">
+              <!-- Render linh hoạt qua JS tùy theo viewMode (Mục 1, Mục 2, hoặc Toàn bộ) -->
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr>
+              <td colspan="12" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                Đang tải dữ liệu từ máy chủ...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal Chỉnh sửa / Thêm mới Row -->
+  <div id="rowEditModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title" id="rowEditModalTitle">✏️ Chỉnh Sửa Bản Ghi</div>
+        <button type="button" class="modal-close-btn" onclick="closeModal('rowEditModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">STT *</label>
+            <input type="text" id="modalStt" class="form-input" style="font-weight: 700; font-family: monospace;">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Trạng Thái Video</label>
+            <select id="modalTrangThaiVideo" class="form-select">
+              <option value="Xong video">Xong video</option>
+              <option value="Đang tạo video">Đang tạo video</option>
+              <option value="Xong báo">Xong báo</option>
+              <option value="Lấy video">Lấy video</option>
+              <option value="không tạo được">không tạo được</option>
+              <option value="bị từ chối">bị từ chối</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Bài Gốc (Link Reels)</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="modalBaiGoc" class="form-input" style="flex: 1;" placeholder="https://www.facebook.com/reel/...">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="modalFetchFrame()" title="Lấy ảnh frame từ link này">📸 Lấy Frame</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Prompt Video</label>
+          <textarea id="modalPromptVideo" class="form-textarea" rows="3" placeholder="Nhập prompt mô tả tạo video..."></textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Báo Gốc (Link)</label>
+            <input type="text" id="modalBaoGoc" class="form-input" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Báo Mới (Link)</label>
+            <input type="text" id="modalBaoMoi" class="form-input" placeholder="https://...">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <label class="form-label">Content (Bài viết ghép báo mới)</label>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="modalAutoGenerateContent()">
+              ✨ Tự Động Tạo Content
+            </button>
+          </div>
+          <textarea id="modalContent" class="form-textarea" rows="4" placeholder="Nội dung bài viết..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Link Video Trên Máy</label>
+          <input type="text" id="modalLinkVideo" class="form-input" placeholder="C:\Users\Trant\Videos\Seedance\anhtonton\AI_VIDEO\(STT).mp4">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Trạng Thái Đăng Bài</label>
+            <select id="modalTrangThaiDangBai" class="form-select">
+              <option value="chưa hoàn thành">chưa hoàn thành</option>
+              <option value="hoàn thành">hoàn thành</option>
+              <option value="đăng bài">đăng bài</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bài Viết Đã Đăng (Link bài viết người dùng điền)</label>
+            <input type="text" id="modalBaiViet" class="form-input" placeholder="Dán link bài viết Facebook sau khi đăng...">
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('rowEditModal')">Hủy</button>
+        <button type="button" class="btn btn-primary" onclick="saveModalRow()">💾 Lưu Thay Đổi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Chi Tiết / Sửa Prompt Video -->
+  <div id="promptDetailModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">🎬 Prompt Tạo Video (STT: <span id="promptModalStt"></span>)</div>
+        <button type="button" class="modal-close-btn" onclick="closeModal('promptDetailModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <textarea id="promptDetailTextarea" class="form-textarea" style="min-height: 220px;" placeholder="Nhập prompt video..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="copyPromptFromModal()">📋 Sao Chép Prompt</button>
+        <a href="/" target="_blank" class="btn btn-secondary" title="Mở trang Gemini để phân tích video">✨ Sang Tab Gemini AI</a>
+        <button type="button" class="btn btn-primary" onclick="savePromptFromModal()">💾 Lưu Prompt</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Chi Tiết / Sửa Content -->
+  <div id="contentDetailModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">📝 Content Đăng Bài (STT: <span id="contentModalStt"></span>)</div>
+        <button type="button" class="modal-close-btn" onclick="closeModal('contentDetailModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; justify-content: flex-end;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="regenerateContentInModal()">
+            ✨ Tự Động Cào & Tạo Lại Content
+          </button>
+        </div>
+        <textarea id="contentDetailTextarea" class="form-textarea" style="min-height: 220px;" placeholder="Nhập content..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="copyContentFromModal()">📋 Sao Chép Content</button>
+        <button type="button" class="btn btn-success" onclick="markPostedFromModal()">🚀 Đánh Dấu "Đăng Bài"</button>
+        <button type="button" class="btn btn-primary" onclick="saveContentFromModal()">💾 Lưu Content</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Xem Ảnh Frame Lightbox -->
+  <div id="lightboxModal" class="modal-overlay" onclick="closeModal('lightboxModal')">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+      <img id="lightboxImg" src="" alt="Frame preview">
+      <div style="color: #fff; font-size: 13px;" id="lightboxCaption">Frame đầu tiên</div>
+    </div>
+  </div>
+
+  <!-- Modal Sao Chép Để Dán Vào Google Sheets -->
+  <div id="copyTsvModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">📋 Sao Chép Dữ Liệu Dán Vào Google Sheets</div>
+        <button type="button" class="modal-close-btn" onclick="closeModal('copyTsvModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size: 13px; color: #cbd5e1; line-height: 1.6;">
+          <strong>Cách cập nhật ngược lại Google Sheets trong 3 giây:</strong>
+          <ol style="margin: 8px 0 0 20px;">
+            <li>Bấm nút <strong>"📋 Sao Chép Toàn Bộ Bảng"</strong> bên dưới.</li>
+            <li>Mở tab <a href="https://docs.google.com/spreadsheets/d/1t4nyagzl-ySljwSK6nSxXPFttv11Vx-az2exQ9pKBuA/edit?usp=sharing" target="_blank" style="color: #38bdf8;">Google Sheet</a> của bạn.</li>
+            <li>Chọn ô <strong>A1</strong> và nhấn <strong>Ctrl + V</strong>. Toàn bộ các cột và dòng sẽ được cập nhật chuẩn xác!</li>
+          </ol>
+        </div>
+        <textarea id="tsvDataPreview" class="form-textarea" readonly style="min-height: 160px; font-size: 11px;"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('copyTsvModal')">Đóng</button>
+        <button type="button" class="btn btn-primary" onclick="copyTsvClipboard()">📋 Sao Chép Toàn Bộ Bảng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Cấu Hình Đồng Bộ Google Sheets -->
+  <div id="configSyncModal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 650px;">
+      <div class="modal-header">
+        <div class="modal-title">⚙️ Cấu Hình Đồng Bộ Dữ Liệu Google Sheets</div>
+        <button type="button" class="modal-close-btn" onclick="closeModal('configSyncModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size: 13px; color: #cbd5e1; line-height: 1.6; margin-bottom: 16px;">
+          <div style="padding: 10px 14px; background: rgba(56, 189, 248, 0.1); border-left: 3px solid #38bdf8; border-radius: 6px; margin-bottom: 12px;">
+            <strong>🟢 Chiều Google Sheets ➔ Web:</strong><br>
+            Hoàn toàn <strong>Tự Động 100%</strong>. Mỗi khi bạn thêm link Báo mới hay sửa trạng thái trên Google Sheet, khi vào web hoặc chuyển lại tab này, dữ liệu sẽ tự động nạp mới và <strong>tự động ghép Báo mới thành Content</strong> ngay lập tức!
+          </div>
+
+          <div style="padding: 10px 14px; background: rgba(139, 92, 246, 0.1); border-left: 3px solid #8b5cf6; border-radius: 6px;">
+            <strong>🚀 Chiều Web ➔ Google Sheets:</strong><br>
+            • <strong>Cách 1 (Nhanh nhất):</strong> Bấm nút <code>📋 Đẩy Vào Sheet (1-Click)</code> ở thanh tiêu đề, sau đó sang tab Google Sheets bấm <code>Ctrl + V</code> vào ô <strong>A1</strong>.<br>
+            • <strong>Cách 2 (Tự động ngầm):</strong> Dán link Google Apps Script Webhook vào ô bên dưới để web tự động cập nhật Sheet không cần bấm phím nào!
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label">Google Apps Script Webhook URL (Tùy chọn - Đồng bộ ngầm):</label>
+          <input type="text" id="configWebhookUrlInput" class="form-input" placeholder="https://script.google.com/macros/s/.../exec">
+        </div>
+
+        <div style="display: flex; gap: 8px; justify-content: flex-end; margin-bottom: 16px;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="testSheetWebhook()">
+            🚀 Thử Gửi Lên Sheet Ngay
+          </button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="saveSyncConfig()">
+            💾 Lưu Cấu Hình
+          </button>
+        </div>
+
+        <details style="background: #090f1d; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 14px;">
+          <summary style="cursor: pointer; font-size: 12px; font-weight: 600; color: #a78bfa;">
+            📝 Hướng dẫn 30 giây tạo Apps Script Webhook (Nếu muốn dùng Cách 2)
+          </summary>
+          <div style="font-size: 12px; color: #94a3b8; margin-top: 10px; line-height: 1.5;">
+            1. Mở file Google Sheet của bạn ➔ Chọn menu <strong>Tiện ích mở rộng (Extensions)</strong> ➔ <strong>Apps Script</strong>.<br>
+            2. Xóa hết code cũ, dán đoạn code bên dưới vào và bấm biểu tượng Lưu 💾:<br>
+            <pre style="background: #060913; border: 1px solid #1e293b; padding: 8px; border-radius: 6px; margin: 6px 0; color: #38bdf8; font-size: 11px; overflow-x: auto;">
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    if (data.rows && data.rows.length > 0) {
+      sheet.getRange(1, 1, data.rows.length, data.rows[0].length).setValues(data.rows);
+      return ContentService.createTextOutput(JSON.stringify({ok: true, count: data.rows.length})).setMimeType(ContentService.MimeType.JSON);
+    }
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ok: false, error: err.toString()})).setMimeType(ContentService.MimeType.JSON);
+  }
+}</pre>
+            3. Bấm nút <strong>Triển khai (Deploy)</strong> màu xanh góc phải ➔ <strong>Tùy chọn triển khai mới (New deployment)</strong>.<br>
+            4. Chọn loại: <strong>Ứng dụng web (Web app)</strong>. Ở mục "Ai có quyền truy cập", chọn: <strong>Bất kỳ ai (Anyone)</strong> ➔ Bấm <strong>Triển khai</strong>.<br>
+            5. Sao chép link Web App (kết thúc bằng <code>/exec</code>) dán vào ô bên trên và bấm <strong>Lưu Cấu Hình</strong>!
+          </div>
+        </details>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('configSyncModal')">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Floating Frame Zoom Popup -->
+  <div id="globalFrameZoom">
+    <img id="globalFrameZoomImg" src="" alt="Frame preview">
+    <div class="zoom-caption" id="globalFrameZoomCaption">Frame video</div>
+  </div>
+
+  <!-- Quick Status Popover Menu -->
+  <div id="statusQuickMenu" class="status-quick-menu" style="display: none;"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer"></div>
+
+  <script>
+    // ==========================================
+    // KHỞI TẠO BIẾN TOÀN CỤC & DỮ LIỆU
+    // ==========================================
+    let allRows = [];
+    let currentFilteredRows = [];
+    let viewMode = 'mode1'; // 'mode1' (Tạo video), 'mode2' (Đăng bài), 'all' (Tất cả)
+    let activeEditingStt = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadDataFromServer();
+    });
+
+    // ==========================================
+    // TẢI DỮ LIỆU & ĐỒNG BỘ REALTIME
+    // ==========================================
+    let lastLoadedSyncTime = 0;
+    let isRealtimePolling = false;
+    let lastDataFingerprint = "";
+
+    function generateDataFingerprint(rows) {
+      if (!rows || !rows.length) return "";
+      return rows.map(r => `${r.stt}|${r.trang_thai_video}|${r.bai_goc}|${r.prompt_video}|${r.frame_dau_tien}|${r.bao_goc}|${r.bao_moi}|${r.trang_thai_dang_bai}|${r.content || ''}|${r.link_video}|${r.bai_viet}`).join(";;");
+    }
+
+    function loadDataFromServer(silent = false, force = false) {
+      const url = force ? "/api/quan-ly/data?force=1" : "/api/quan-ly/data";
+      fetch(url)
+        .then(r => r.json())
+        .then(res => {
+          if (res.ok && res.data) {
+            allRows = res.data.rows || [];
+            lastDataFingerprint = generateDataFingerprint(allRows);
+            updateStatsUI(res.data.stats || {});
+            updateSyncStatusUI(res.data);
+            applyFilters();
+            // 1. TỰ ĐỘNG TẢI FRAME ĐẦU TIÊN KHI VÀO WEB
+            startAutoLoadingFrames();
+            // 2. TỰ ĐỘNG CHECK DỮ LIỆU BẢNG: CÓ BÁO MỚI THÌ TỰ ĐỘNG GHÉP CONTENT
+            startAutoGeneratingContent();
+
+            if (force && !silent) {
+              showToast("✅ Đã đồng bộ dữ liệu mới nhất từ Google Sheets!");
+            }
+          } else {
+            if (!silent) showToast("❌ Lỗi tải dữ liệu: " + (res.message || "Lỗi không xác định"), "error");
+          }
+        })
+        .catch(err => {
+          if (!silent) showToast("❌ Lỗi kết nối máy chủ: " + err, "error");
+        });
+    }
+
+    function checkRealtimeUpdate() {
+      if (isRealtimePolling || document.visibilityState !== "visible") return;
+      isRealtimePolling = true;
+
+      fetch("/api/quan-ly/data")
+        .then(r => r.json())
+        .then(res => {
+          if (res.ok && res.data) {
+            updateSyncStatusUI(res.data);
+            const currentFp = generateDataFingerprint(res.data.rows);
+            // Chỉ re-render khi dữ liệu thực sự có thay đổi từ Google Sheet
+            if (currentFp !== lastDataFingerprint) {
+              console.log("[RealtimeSync] Dữ liệu Google Sheets có cập nhật mới!");
+              lastDataFingerprint = currentFp;
+              allRows = res.data.rows || [];
+              updateStatsUI(res.data.stats || {});
+              applyFilters();
+              startAutoLoadingFrames();
+              startAutoGeneratingContent();
+            }
+          }
+        })
+        .catch(err => {
+          console.warn("[RealtimeSync] Lỗi poll:", err);
+        })
+        .finally(() => {
+          isRealtimePolling = false;
+        });
+    }
+
+    function updateSyncStatusUI(meta) {
+      const textEl = document.getElementById("syncStatusText");
+      if (textEl && meta) {
+        if (meta.last_sync_time) {
+          lastLoadedSyncTime = meta.last_sync_time;
+          const d = new Date(meta.last_sync_time * 1000);
+          const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          textEl.innerText = `Realtime: ${timeStr}`;
+        } else {
+          textEl.innerText = "Realtime: Đã kết nối";
+        }
+      }
+    }
+
+    function triggerSyncFromSheet(overwriteAll) {
+      const btn = document.getElementById("btnSyncSheet");
+      const icon = document.getElementById("btnSyncIcon");
+      if (btn) btn.disabled = true;
+      if (icon) icon.innerText = "⏳";
+      showToast("🔄 Đang đồng bộ dữ liệu từ Google Sheets...");
+
+      fetch("/api/quan-ly/sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ overwrite_all: overwriteAll })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.ok && res.data) {
+          allRows = res.data.rows || [];
+          lastDataFingerprint = generateDataFingerprint(allRows);
+          updateStatsUI(res.data.stats || {});
+          updateSyncStatusUI(res.data);
+          applyFilters();
+          startAutoLoadingFrames();
+          startAutoGeneratingContent();
+          showToast("✅ " + res.message);
+        } else {
+          showToast("❌ " + res.message, "error");
+        }
+      })
+      .catch(err => {
+        showToast("❌ Lỗi đồng bộ: " + err, "error");
+      })
+      .finally(() => {
+        if (btn) btn.disabled = false;
+        if (icon) icon.innerText = "🔄";
+      });
+    }
+
+    // Tự động kiểm tra và đồng bộ khi người dùng quay lại tab (sau khi sửa trên Google Sheets)
+    window.addEventListener("focus", () => {
+      console.log("[AutoSync] Quay lại tab web, tự động kiểm tra Google Sheets...");
+      loadDataFromServer(true, true);
+    });
+
+    // Đồng bộ Realtime ngầm mỗi 3 giây
+    setInterval(checkRealtimeUpdate, 3000);
+
+    // ==========================================
+    // ĐẨY DỮ LIỆU NHANH LÊN GOOGLE SHEETS
+    // ==========================================
+    function quickCopyPushToSheet() {
+      showToast("📋 Đang lấy toàn bộ dữ liệu 11 cột...");
+      fetch("/api/quan-ly/export-tsv")
+        .then(r => r.json())
+        .then(res => {
+          if (res.ok && res.tsv) {
+            navigator.clipboard.writeText(res.tsv)
+              .then(() => {
+                showToast("✅ Đã sao chép toàn bộ bảng vào Clipboard!", "success");
+                setTimeout(() => {
+                  if (confirm("Đã sao chép 40 dòng dữ liệu vào Clipboard!\n\nBạn có muốn mở Google Sheet ngay bây giờ không? Chỉ cần bấm Ctrl + V vào ô A1 là toàn bộ cột sẽ được cập nhật chuẩn xác!")) {
+                    window.open("https://docs.google.com/spreadsheets/d/1t4nyagzl-ySljwSK6nSxXPFttv11Vx-az2exQ9pKBuA/edit?usp=sharing", "_blank");
+                  }
+                }, 100);
+              })
+              .catch(() => {
+                openCopyTsvModal();
+              });
+          } else {
+            openCopyTsvModal();
+          }
+        })
+        .catch(() => openCopyTsvModal());
+    }
+
+    function openConfigSyncModal() {
+      fetch("/api/quan-ly/config")
+        .then(r => r.json())
+        .then(res => {
+          if (res.ok && res.data) {
+            const input = document.getElementById("configWebhookUrlInput");
+            if (input) input.value = res.data.webhook_url || "";
+          }
+          openModal("configSyncModal");
+        })
+        .catch(() => openModal("configSyncModal"));
+    }
+
+    function saveSyncConfig() {
+      const url = (document.getElementById("configWebhookUrlInput").value || "").trim();
+      fetch("/api/quan-ly/config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ webhook_url: url })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.ok) {
+          showToast("💾 Đã lưu cấu hình đồng bộ thành công!");
+          closeModal("configSyncModal");
+        } else {
+          showToast("❌ " + res.message, "error");
+        }
+      })
+      .catch(err => showToast("❌ Lỗi: " + err, "error"));
+    }
+
+    function testSheetWebhook() {
+      const url = (document.getElementById("configWebhookUrlInput").value || "").trim();
+      if (!url) {
+        showToast("⚠️ Vui lòng nhập link Webhook URL trước!", "error");
+        return;
+      }
+      showToast("🚀 Đang thử gửi toàn bộ dữ liệu lên Webhook...");
+      fetch("/api/quan-ly/push-to-sheet", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ webhook_url: url })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.ok) {
+          showToast("✨ " + res.message, "success");
+        } else {
+          showToast("❌ " + res.message, "error");
+        }
+      })
+      .catch(err => showToast("❌ Lỗi kết nối Webhook: " + err, "error"));
+    }
+
+    // ==========================================
+    // CẬP NHẬT THỐNG KÊ (STAT CARDS)
+    // ==========================================
+    function updateStatsUI(stats) {
+      document.getElementById("statTotalRows").innerText = stats.total || allRows.length;
+      document.getElementById("headerRowCountText").innerText = (stats.total || allRows.length) + " dòng";
+
+      const vStatus = stats.video_status || {};
+      const doneVideoCount = vStatus["Xong video"] || 0;
+      document.getElementById("statVideoDone").innerText = doneVideoCount;
+
+      document.getElementById("statVideoFilesReady").innerText = (stats.video_files_ready || 0) + " / " + (stats.total || allRows.length);
+
+      const pStatus = stats.post_status || {};
+      const donePostCount = (pStatus["hoàn thành"] || 0) + (pStatus["đăng bài"] || 0);
+      document.getElementById("statPostDone").innerText = donePostCount;
+
+      document.getElementById("badgeMode1Count").innerText = allRows.length;
+      document.getElementById("badgeMode2Count").innerText = allRows.length;
+    }
+
+    // ==========================================
+    // CHUYỂN ĐỔI CHẾ ĐỘ HIỂN THỊ (2 MỤC)
+    // ==========================================
+    function switchSectionView(mode) {
+      viewMode = mode;
+      document.getElementById("tabBtnMode1").classList.toggle("active", mode === 'mode1');
+      document.getElementById("tabBtnMode2").classList.toggle("active", mode === 'mode2');
+      document.getElementById("tabBtnAll").classList.toggle("active", mode === 'all');
+      renderTable();
+    }
+
+    // ==========================================
+    // BỘ LỌC DỮ LIỆU & STAT CARDS TƯƠNG TÁC 1-CLICK
+    // ==========================================
+    let activeStatFilter = null;
+
+    function filterByStat(statKey) {
+      if (activeStatFilter === statKey && statKey !== 'total') {
+        resetFilters();
+        return;
+      }
+
+      if (statKey === 'total') {
+        resetFilters();
+        activeStatFilter = 'total';
+        syncStatCardHighlights();
+        showToast("🎬 Đang hiển thị toàn bộ danh sách");
+        return;
+      }
+
+      if (statKey === 'video_done') {
+        document.getElementById("searchInput").value = "";
+        document.getElementById("filterVideoStatus").value = "Xong video";
+        document.getElementById("filterPostStatus").value = "";
+        document.getElementById("filterFileReady").value = "";
+        showToast("✅ Đang lọc các dòng 'Xong video'");
+      } else if (statKey === 'file_ready') {
+        document.getElementById("searchInput").value = "";
+        document.getElementById("filterVideoStatus").value = "";
+        document.getElementById("filterPostStatus").value = "";
+        document.getElementById("filterFileReady").value = "ready";
+        showToast("💾 Đang lọc các dòng đã có file video trong máy");
+      } else if (statKey === 'post_done') {
+        document.getElementById("searchInput").value = "";
+        document.getElementById("filterVideoStatus").value = "";
+        document.getElementById("filterPostStatus").value = "hoàn thành";
+        document.getElementById("filterFileReady").value = "";
+        showToast("🚀 Đang lọc các bài viết đã hoàn thành đăng");
+      }
+
+      activeStatFilter = statKey;
+      applyFilters();
+    }
+
+    function syncStatCardHighlights() {
+      const fVideo = document.getElementById("filterVideoStatus").value;
+      const fPost = document.getElementById("filterPostStatus").value;
+      const fFile = document.getElementById("filterFileReady").value;
+      const q = (document.getElementById("searchInput").value || "").trim();
+
+      document.querySelectorAll(".stat-card").forEach(c => c.classList.remove("active-filter"));
+
+      if (fVideo === "Xong video" && !fPost && !fFile && !q) {
+        document.getElementById("statCardVideoDone")?.classList.add("active-filter");
+      } else if (fFile === "ready" && !fVideo && !fPost && !q) {
+        document.getElementById("statCardFileReady")?.classList.add("active-filter");
+      } else if ((fPost === "hoàn thành" || fPost === "đăng bài") && !fVideo && !fFile && !q) {
+        document.getElementById("statCardPostDone")?.classList.add("active-filter");
+      } else if (!fVideo && !fPost && !fFile && !q) {
+        document.getElementById("statCardTotal")?.classList.add("active-filter");
+      }
+    }
+
+    function applyFilters() {
+      const q = (document.getElementById("searchInput").value || "").trim().toLowerCase();
+      const fVideo = document.getElementById("filterVideoStatus").value;
+      const fPost = document.getElementById("filterPostStatus").value;
+      const fFile = document.getElementById("filterFileReady").value;
+
+      currentFilteredRows = allRows.filter(r => {
+        // Tìm kiếm từ khóa
+        if (q) {
+          const matchStt = String(r.stt || "").toLowerCase().includes(q);
+          const matchBaiGoc = String(r.bai_goc || "").toLowerCase().includes(q);
+          const matchPrompt = String(r.prompt_video || "").toLowerCase().includes(q);
+          const matchBaoMoi = String(r.bao_moi || "").toLowerCase().includes(q);
+          const matchContent = String(r.content || "").toLowerCase().includes(q);
+          const matchLinkVideo = String(r.link_video || "").toLowerCase().includes(q);
+          if (!matchStt && !matchBaiGoc && !matchPrompt && !matchBaoMoi && !matchContent && !matchLinkVideo) {
+            return false;
+          }
+        }
+        // Lọc trạng thái video
+        if (fVideo && r.trang_thai_video !== fVideo) return false;
+        // Lọc trạng thái đăng bài
+        if (fPost) {
+          if (fPost === "hoàn thành") {
+            if (r.trang_thai_dang_bai !== "hoàn thành" && r.trang_thai_dang_bai !== "đăng bài") return false;
+          } else if (r.trang_thai_dang_bai !== fPost) {
+            return false;
+          }
+        }
+        // Lọc file video
+        if (fFile === "ready" && (!r.video_info || !r.video_info.exists)) return false;
+        if (fFile === "missing" && r.video_info && r.video_info.exists) return false;
+
+        return true;
+      });
+
+      syncStatCardHighlights();
+      renderTable();
+    }
+
+    function resetFilters() {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("filterVideoStatus").value = "";
+      document.getElementById("filterPostStatus").value = "";
+      document.getElementById("filterFileReady").value = "";
+      activeStatFilter = null;
+      applyFilters();
+    }
+
+    // ==========================================
+    // SAO CHÉP & PHẢN HỒI TỨC THÌ (MICRO-INTERACTION)
+    // ==========================================
+    function copyTextQuickFeedback(btn, text, msg) {
+      if (!text) return;
+      copyTextToClipboard(text, msg);
+      if (btn) {
+        const origText = btn.innerHTML;
+        btn.innerHTML = "✓";
+        btn.classList.add("copied-success");
+        setTimeout(() => {
+          btn.innerHTML = origText;
+          btn.classList.remove("copied-success");
+        }, 1200);
+      }
+    }
+
+    function flashRowUpdated(stt) {
+      const rowEl = document.getElementById(`row-${stt}`);
+      if (rowEl) {
+        rowEl.classList.remove("row-updated-flash");
+        void rowEl.offsetWidth; // trigger reflow
+        rowEl.classList.add("row-updated-flash");
+      }
+    }
+
+    // ==========================================
+    // POPUP XEM TRƯỚC FRAME TOÀN CỤC (FLOATING ZOOM)
+    // ==========================================
+    function showFloatingFramePreview(event, imgUrl, title) {
+      const zoomEl = document.getElementById("globalFrameZoom");
+      const imgEl = document.getElementById("globalFrameZoomImg");
+      const capEl = document.getElementById("globalFrameZoomCaption");
+      if (!zoomEl || !imgUrl) return;
+
+      imgEl.src = imgUrl;
+      capEl.innerText = title || "Frame video";
+      zoomEl.classList.add("visible");
+      moveFloatingFramePreview(event);
+    }
+
+    function moveFloatingFramePreview(event) {
+      const zoomEl = document.getElementById("globalFrameZoom");
+      if (!zoomEl || !zoomEl.classList.contains("visible")) return;
+
+      const offset = 16;
+      const zoomWidth = 244;
+      const zoomHeight = 275;
+      let left = event.clientX + offset;
+      let top = event.clientY + offset;
+
+      if (left + zoomWidth > window.innerWidth) {
+        left = event.clientX - zoomWidth - offset;
+      }
+      if (top + zoomHeight > window.innerHeight) {
+        top = event.clientY - zoomHeight - offset;
+      }
+      if (top < 10) top = 10;
+      if (left < 10) left = 10;
+
+      zoomEl.style.left = left + "px";
+      zoomEl.style.top = top + "px";
+    }
+
+    function hideFloatingFramePreview() {
+      const zoomEl = document.getElementById("globalFrameZoom");
+      if (zoomEl) {
+        zoomEl.classList.remove("visible");
+      }
+    }
+
+    // ==========================================
+    // MENU CHỌN TRẠNG THÁI 1-CLICK (QUICK POPOVER)
+    // ==========================================
+    const VIDEO_STATUS_OPTIONS = [
+      { val: "Xong video", icon: "✅", color: "#34d399", desc: "Đã hoàn thành video" },
+      { val: "Đang tạo video", icon: "⏳", color: "#fbbf24", desc: "Đang render/chờ kết quả" },
+      { val: "Xong báo", icon: "📰", color: "#38bdf8", desc: "Đã hoàn thành phần báo" },
+      { val: "Lấy video", icon: "🎬", color: "#c084fc", desc: "Chờ lấy nguồn video" },
+      { val: "không tạo được", icon: "❌", color: "#f87171", desc: "Lỗi tạo video" },
+      { val: "bị từ chối", icon: "🚫", color: "#94a3b8", desc: "Bị hệ thống từ chối" }
+    ];
+
+    const POST_STATUS_OPTIONS = [
+      { val: "chưa hoàn thành", icon: "⏳", color: "#fbbf24", desc: "Chưa đủ content hoặc video" },
+      { val: "hoàn thành", icon: "✅", color: "#34d399", desc: "Đã có đủ content & link video" },
+      { val: "đăng bài", icon: "🚀", color: "#60a5fa", desc: "Đã đăng bài lên mạng xã hội" }
+    ];
+
+    let activeQuickMenuStt = null;
+
+    function openStatusQuickMenu(event, stt, type, currentVal) {
+      event.stopPropagation();
+      const menu = document.getElementById("statusQuickMenu");
+      if (!menu) return;
+
+      activeQuickMenuStt = stt;
+      const options = (type === "video") ? VIDEO_STATUS_OPTIONS : POST_STATUS_OPTIONS;
+      const title = (type === "video") ? "TRẠNG THÁI VIDEO" : "TRẠNG THÁI ĐĂNG BÀI";
+
+      let itemsHtml = `
+        <div style="padding: 4px 8px; font-size: 10.5px; font-weight: 700; color: #94a3b8; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 3px; display:flex; justify-content:space-between;">
+          <span>${title} (STT ${stt})</span>
+        </div>
+      `;
+
+      options.forEach(opt => {
+        const isActive = opt.val.toLowerCase() === (currentVal || "").toLowerCase();
+        itemsHtml += `
+          <div class="status-quick-item ${isActive ? 'active' : ''}" onclick="selectQuickStatus('${stt}', '${type}', '${escapeHtml(opt.val)}')">
+            <span style="font-size: 13px;">${opt.icon}</span>
+            <span style="color: ${opt.color}; flex: 1;">${escapeHtml(opt.val)}</span>
+            ${isActive ? '<span style="font-size:11px; color:#8b5cf6;">✓</span>' : ''}
+          </div>
+        `;
+      });
+
+      menu.innerHTML = itemsHtml;
+      menu.style.display = "flex";
+
+      const rect = event.currentTarget.getBoundingClientRect();
+      let top = rect.bottom + 6;
+      let left = rect.left;
+
+      if (left + 190 > window.innerWidth) {
+        left = window.innerWidth - 200;
+      }
+      if (top + 260 > window.innerHeight) {
+        top = rect.top - 245;
+      }
+
+      menu.style.top = top + "px";
+      menu.style.left = left + "px";
+    }
+
+    function selectQuickStatus(stt, type, newVal) {
+      closeStatusQuickMenu();
+      const field = (type === "video") ? "trang_thai_video" : "trang_thai_dang_bai";
+      updateRowFieldDirect(stt, field, newVal);
+    }
+
+    function closeStatusQuickMenu() {
+      const menu = document.getElementById("statusQuickMenu");
+      if (menu) menu.style.display = "none";
+      activeQuickMenuStt = null;
+    }
+
+    document.addEventListener("click", (e) => {
+      const menu = document.getElementById("statusQuickMenu");
+      if (menu && menu.style.display !== "none" && !menu.contains(e.target)) {
+        closeStatusQuickMenu();
+      }
+    });
+
+    // Phím tắt bàn phím
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        const searchInput = document.getElementById("searchInput");
+        if (searchInput) searchInput.focus();
+      }
+      if (e.key === "Escape") {
+        closeStatusQuickMenu();
+        hideFloatingFramePreview();
+        document.querySelectorAll(".modal-overlay").forEach(m => m.style.display = "none");
+      }
+    });
+
+    // ==========================================
+    // RENDER Ô CONTENT (ĐỊNH DẠNG 1 DÒNG CHUẨN)
+    // ==========================================
+    function videoFilename(p) {
+      if (!p) return "";
+      const parts = p.replace(/\\/g, '/').split('/');
+      return parts[parts.length - 1] || p;
+    }
+
+    function renderContentCellHtml(r, isCompact = false) {
+      const stt = escapeHtml(r.stt);
+      const baoMoi = (r.bao_moi || "").trim();
+      const hasContent = Boolean(r.content && r.content.trim());
+      const isMerged = Boolean(hasContent && baoMoi && r.content.includes(baoMoi));
+      const isMissingMerge = Boolean(baoMoi && (!hasContent || !r.content.includes(baoMoi)));
+
+      let previewText = "";
+      if (hasContent) {
+        previewText = r.content.replace(/\r?\n+/g, " ").trim();
+      }
+
+      if (isMissingMerge) {
+        return `
+          <div class="cell-flex-nowrap" id="content-container-${stt}" title="Đã có link Báo mới, đang tự động ghép vào Content...">
+            <span class="badge-mini-loading" id="content-box-${stt}">✨ Đang ghép...</span>
+            <button type="button" class="btn-mini-icon" onclick="autoGenerateContentSingle('${stt}')" title="Bấm ghép ngay">⚡</button>
+          </div>
+        `;
+      }
+
+      const tooltipText = hasContent ? escapeHtml(r.content) : 'Bấm để tạo content tự động...';
+
+      return `
+        <div class="cell-flex-nowrap" id="content-container-${stt}" title="${tooltipText}">
+          ${isMerged ? `<span class="badge-mini-merged" title="Đã ghép Báo mới: ${escapeHtml(baoMoi)}">🔗 Báo mới</span>` : ''}
+          <span class="text-preview-cell" onclick="openContentDetailModal('${stt}')">
+            ${hasContent ? escapeHtml(previewText) : '<span style="color:var(--text-muted); font-style:italic;">+ Tạo content...</span>'}
+          </span>
+          <div style="display:inline-flex; align-items:center; gap:2px; flex-shrink:0;">
+            ${hasContent ? `<button type="button" class="btn-mini-icon" onclick="event.stopPropagation(); copyTextQuickFeedback(this, '${escapeHtml(r.content)}', 'Đã chép Content đăng bài!')" title="Sao chép Content">📋</button>` : ''}
+            <button type="button" class="btn-mini-icon" onclick="event.stopPropagation(); autoGenerateContentSingle('${stt}')" title="${hasContent ? 'Cào lại & ghép lại Báo mới' : 'Tự động tạo Content'}">✨</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // RENDER BẢNG DỮ LIỆU CHÍNH (ĐỊNH DẠNG 1 DÒNG CHUẨN)
+    // ==========================================
+    function renderTable() {
+      const thead = document.getElementById("tableHeaderRow");
+      const tbody = document.getElementById("tableBody");
+
+      // Xây dựng Header theo viewMode
+      if (viewMode === 'mode1') {
+        // MỤC 1: QUẢN LÝ TẠO VIDEO (1 DÒNG)
+        thead.innerHTML = `
+          <th class="col-stt col-sticky-stt" style="width: 45px; text-align: center;">STT</th>
+          <th style="width: 135px;">Trạng Thái Video ▾</th>
+          <th style="min-width: 170px;">Bài Gốc (Reels)</th>
+          <th style="min-width: 220px;">Prompt Video</th>
+          <th style="width: 60px; text-align: center;">Frame</th>
+          <th style="min-width: 130px;">Báo Gốc</th>
+          <th style="min-width: 140px;">Báo Mới</th>
+          <th style="width: 80px; text-align: center;">Thao Tác</th>
+        `;
+      } else if (viewMode === 'mode2') {
+        // MỤC 2: QUẢN LÝ ĐĂNG BÀI (1 DÒNG)
+        thead.innerHTML = `
+          <th class="col-stt col-sticky-stt" style="width: 45px; text-align: center;">STT</th>
+          <th style="width: 155px;">Trạng Thái Đăng ▾</th>
+          <th style="min-width: 280px;">Content (Ghép Báo Mới)</th>
+          <th style="min-width: 200px;">Link Video</th>
+          <th style="min-width: 140px;">Bài Viết (Link Đã Đăng)</th>
+          <th style="width: 80px; text-align: center;">Thao Tác</th>
+        `;
+      } else {
+        // TOÀN BỘ 11 CỘT (1 DÒNG)
+        thead.innerHTML = `
+          <th class="col-stt col-sticky-stt" style="width: 40px; text-align: center;">STT</th>
+          <th style="width: 125px;">Trạng Thái Video ▾</th>
+          <th style="min-width: 150px;">Bài Gốc</th>
+          <th style="min-width: 160px;">Prompt Video</th>
+          <th style="width: 55px; text-align: center;">Frame</th>
+          <th style="min-width: 110px;">Báo Gốc</th>
+          <th style="min-width: 120px;">Báo Mới</th>
+          <th style="width: 125px;">Trạng Thái Đăng ▾</th>
+          <th style="min-width: 200px;">Content</th>
+          <th style="min-width: 160px;">Link Video</th>
+          <th style="min-width: 120px;">Bài Viết</th>
+          <th style="width: 75px; text-align: center;">Thao Tác</th>
+        `;
+      }
+
+      // Xây dựng Body
+      if (currentFilteredRows.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="12" style="text-align: center; padding: 40px; color: var(--text-muted);">
+              Không tìm thấy dòng nào phù hợp với bộ lọc tìm kiếm.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      let html = "";
+      currentFilteredRows.forEach(r => {
+        const stt = escapeHtml(r.stt);
+        const vStatusClass = getVideoStatusBadgeClass(r.trang_thai_video);
+        const pStatusClass = getPostStatusBadgeClass(r.trang_thai_dang_bai);
+
+        // Frame đầu tiên thumbnail 28x28px strictly 1 line + floating hover zoom
+        let frameHtml = "";
+        if (r.frame_dau_tien) {
+          frameHtml = `
+            <div class="frame-mini-box" id="frame-box-${stt}">
+              <img src="${escapeHtml(r.frame_dau_tien)}" alt="Frame ${stt}" class="frame-mini-thumb" 
+                   onclick="showLightbox('${escapeHtml(r.frame_dau_tien)}', 'Frame video STT: ${stt}')" 
+                   onmouseenter="showFloatingFramePreview(event, '${escapeHtml(r.frame_dau_tien)}', 'STT ${stt}')" 
+                   onmousemove="moveFloatingFramePreview(event)" 
+                   onmouseleave="hideFloatingFramePreview()" 
+                   title="Rê chuột xem trước, click phóng to">
+            </div>
+          `;
+        } else if (r.bai_goc && r.bai_goc.trim()) {
+          frameHtml = `
+            <div class="frame-mini-box" id="frame-box-${stt}" title="Đang tự động tải frame từ video...">
+              <span class="badge-mini-loading" style="padding:1px 3px; font-size:9px;">📸...</span>
+            </div>
+          `;
+        } else {
+          frameHtml = `
+            <div class="frame-mini-box" id="frame-box-${stt}">
+              <button type="button" class="btn-mini-icon" onclick="extractFrameSingle('${stt}')" title="Bấm để lấy frame">📸</button>
+            </div>
+          `;
+        }
+
+        // Link Video Info
+        const videoExists = r.video_info && r.video_info.exists;
+        const videoBadge = videoExists 
+          ? `<span class="video-file-badge video-file-ready" title="File đã có sẵn trong máy (${r.video_info.size})">✅ Có file</span>` 
+          : `<span class="video-file-badge video-file-missing" title="Chưa tìm thấy file trong thư mục">⏳ Chưa có</span>`;
+
+        if (viewMode === 'mode1') {
+          // CHẾ ĐỘ 1: QUẢN LÝ TẠO VIDEO (1 DÒNG)
+          html += `
+            <tr id="row-${stt}">
+              <td class="col-stt col-sticky-stt">${stt}</td>
+              <td>
+                <span class="badge-status ${vStatusClass}" onclick="openStatusQuickMenu(event, '${stt}', 'video', '${escapeHtml(r.trang_thai_video)}')">
+                  ${escapeHtml(r.trang_thai_video || 'Lấy video')} ▾
+                </span>
+              </td>
+              <td class="link-cell">
+                <div class="cell-flex-nowrap" title="${escapeHtml(r.bai_goc || '')}">
+                  ${r.bai_goc ? `<a href="${escapeHtml(r.bai_goc)}" target="_blank" class="cell-link-text">🎬 ${escapeHtml(r.bai_goc)} ↗</a>` : '<span style="color:var(--text-muted)">--</span>'}
+                  ${r.bai_goc ? `<button type="button" class="btn-mini-icon" onclick="copyTextQuickFeedback(this, '${escapeHtml(r.bai_goc)}', 'Đã chép link reels!')" title="Sao chép link">📋</button>` : ''}
+                  <button type="button" class="btn-mini-icon" onclick="editSingleField('${stt}', 'bai_goc', '${escapeHtml(r.bai_goc || '')}')" title="Sửa link bài gốc">✏️</button>
+                </div>
+              </td>
+              <td>
+                <div class="cell-flex-nowrap" title="${escapeHtml(r.prompt_video || 'Chưa có prompt')}">
+                  <span class="text-preview-cell" onclick="openPromptDetailModal('${stt}')">
+                    ${r.prompt_video ? escapeHtml(r.prompt_video.replace(/\r?\n+/g, " ")) : '<span style="color:var(--text-muted); font-style:italic;">+ Nhập prompt...</span>'}
+                  </span>
+                  ${r.prompt_video ? `<button type="button" class="btn-mini-icon" onclick="copyTextQuickFeedback(this, '${escapeHtml(r.prompt_video)}', 'Đã chép prompt!')" title="Sao chép prompt">📋</button>` : ''}
+                </div>
+              </td>
+              <td style="text-align: center;">${frameHtml}</td>
+              <td class="link-cell">
+                <div class="cell-flex-nowrap" title="${escapeHtml(r.bao_goc || '')}">
+                  ${r.bao_goc ? `<a href="${escapeHtml(r.bao_goc)}" target="_blank" class="cell-link-text">📰 Báo gốc ↗</a>` : '<span style="color:var(--text-muted)">--</span>'}
+                  <button type="button" class="btn-mini-icon" onclick="editSingleField('${stt}', 'bao_goc', '${escapeHtml(r.bao_goc || '')}')" title="Sửa báo gốc">✏️</button>
+                </div>
+              </td>
+              <td class="link-cell">
+                <div class="cell-flex-nowrap" title="${escapeHtml(r.bao_moi || '')}">
+                  ${r.bao_moi ? `<a href="${escapeHtml(r.bao_moi)}" target="_blank" class="cell-link-text" style="color:#a78bfa;">🔗 Báo mới ↗</a>` : '<span style="color:var(--text-muted)">--</span>'}
+                  <button type="button" class="btn-mini-icon" onclick="editSingleField('${stt}', 'bao_moi', '${escapeHtml(r.bao_moi || '')}')" title="Sửa báo mới">✏️</button>
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <div class="cell-flex-nowrap" style="justify-content: center;">
+                  <button type="button" class="btn-mini-icon" onclick="openRowEditModal('${stt}')" title="Chỉnh sửa toàn bộ">✏️</button>
+                  <button type="button" class="btn-mini-icon" onclick="deleteRowSingle('${stt}')" title="Xóa dòng" style="color:#f87171;">🗑️</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        } else if (viewMode === 'mode2') {
+          // CHẾ ĐỘ 2: QUẢN LÝ ĐĂNG BÀI (1 DÒNG)
+          html += `
+            <tr id="row-${stt}">
+              <td class="col-stt col-sticky-stt">${stt}</td>
+              <td>
+                <div class="cell-flex-nowrap">
+                  <span class="badge-status ${pStatusClass}" onclick="openStatusQuickMenu(event, '${stt}', 'post', '${escapeHtml(r.trang_thai_dang_bai)}')">
+                    ${escapeHtml(r.trang_thai_dang_bai || 'chưa hoàn thành')} ▾
+                  </span>
+                  ${r.trang_thai_dang_bai !== 'đăng bài' ? `<button type="button" class="btn-mini-icon" onclick="quickMarkPosted('${stt}')" title="Đánh dấu đã đăng & copy content" style="color:#60a5fa;">🚀</button>` : ''}
+                </div>
+              </td>
+              <td>${renderContentCellHtml(r, false)}</td>
+              <td>
+                <div class="cell-flex-nowrap" title="${escapeHtml(r.link_video || '')}">
+                  ${videoBadge}
+                  <span class="text-preview-cell" style="max-width: 140px; font-family: monospace; font-size: 11px;">
+                    ${escapeHtml(videoFilename(r.link_video) || '--')}
+                  </span>
+                  ${r.link_video ? `<button type="button" class="btn-mini-icon" onclick="copyTextQuickFeedback(this, '${escapeHtml(r.link_video)}', 'Đã chép link video!')" title="Sao chép path">📋</button>` : ''}
+                  <button type="button" class="btn-mini-icon" onclick="openVideoFolder('${escapeHtml(r.link_video || '')}')" title="Mở thư mục video trong máy">📂</button>
+                </div>
+              </td>
+              <td>
+                <div class="cell-flex-nowrap" title="${escapeHtml(r.bai_viet || '')}">
+                  ${r.bai_viet ? `<a href="${escapeHtml(r.bai_viet)}" target="_blank" class="cell-link-text">🌐 Bài đăng ↗</a>` : '<span style="color:var(--text-muted); font-size: 11px;">Chưa đăng</span>'}
+                  <button type="button" class="btn-mini-icon" onclick="editSingleField('${stt}', 'bai_viet', '${escapeHtml(r.bai_viet || '')}')" title="Điền link bài viết">✏️</button>
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <div class="cell-flex-nowrap" style="justify-content: center;">
+                  <button type="button" class="btn-mini-icon" onclick="openRowEditModal('${stt}')" title="Chỉnh sửa toàn bộ">✏️</button>
+                  <button type="button" class="btn-mini-icon" onclick="deleteRowSingle('${stt}')" title="Xóa dòng" style="color:#f87171;">🗑️</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        } else {
+          // BẢNG TỔNG HỢP FULL 11 CỘT (1 DÒNG)
+          html += `
+            <tr id="row-${stt}">
+              <td class="col-stt col-sticky-stt">${stt}</td>
+              <td>
+                <span class="badge-status ${vStatusClass}" onclick="openStatusQuickMenu(event, '${stt}', 'video', '${escapeHtml(r.trang_thai_video)}')">
+                  ${escapeHtml(r.trang_thai_video || 'Lấy video')} ▾
+                </span>
+              </td>
+              <td class="link-cell">
+                <div class="cell-flex-nowrap" title="${escapeHtml(r.bai_goc || '')}">
+                  ${r.bai_goc ? `<a href="${escapeHtml(r.bai_goc)}" target="_blank" class="cell-link-text">🎬 Reels ↗</a>` : '--'}
+                  ${r.bai_goc ? `<button type="button" class="btn-mini-icon" onclick="copyTextQuickFeedback(this, '${escapeHtml(r.bai_goc)}', 'Đã chép link!')">📋</button>` : ''}
+                </div>
+              </td>
+              <td>
+                <div class="cell-flex-nowrap" title="${escapeHtml(r.prompt_video || '')}">
+                  <span class="text-preview-cell" onclick="openPromptDetailModal('${stt}')">
+                    ${r.prompt_video ? escapeHtml(r.prompt_video.replace(/\r?\n+/g, " ")) : '<span style="color:var(--text-muted)">--</span>'}
+                  </span>
+                </div>
+              </td>
+              <td style="text-align: center;">${frameHtml}</td>
+              <td class="link-cell">
+                <div class="cell-flex-nowrap" title="${escapeHtml(r.bao_goc || '')}">
+                  ${r.bao_goc ? `<a href="${escapeHtml(r.bao_goc)}" target="_blank" class="cell-link-text">📰 Gốc ↗</a>` : '--'}
+                </div>
+              </td>
+              <td class="link-cell">
+                <div class="cell-flex-nowrap" title="${escapeHtml(r.bao_moi || '')}">
+                  ${r.bao_moi ? `<a href="${escapeHtml(r.bao_moi)}" target="_blank" class="cell-link-text" style="color:#a78bfa;">🔗 Mới ↗</a>` : '--'}
+                  <button type="button" class="btn-mini-icon" onclick="editSingleField('${stt}', 'bao_moi', '${escapeHtml(r.bao_moi || '')}')">✏️</button>
+                </div>
+              </td>
+              <td>
+                <span class="badge-status ${pStatusClass}" onclick="openStatusQuickMenu(event, '${stt}', 'post', '${escapeHtml(r.trang_thai_dang_bai)}')">
+                  ${escapeHtml(r.trang_thai_dang_bai || 'chưa hoàn thành')} ▾
+                </span>
+              </td>
+              <td>${renderContentCellHtml(r, true)}</td>
+              <td>
+                <div class="cell-flex-nowrap" title="${escapeHtml(r.link_video || '')}">
+                  ${videoBadge}
+                  <button type="button" class="btn-mini-icon" onclick="openVideoFolder('${escapeHtml(r.link_video || '')}')" title="Mở file/thư mục">📂</button>
+                </div>
+              </td>
+              <td class="link-cell">
+                <div class="cell-flex-nowrap" title="${escapeHtml(r.bai_viet || '')}">
+                  ${r.bai_viet ? `<a href="${escapeHtml(r.bai_viet)}" target="_blank" class="cell-link-text">🌐 Bài ↗</a>` : '--'}
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <div class="cell-flex-nowrap" style="justify-content: center;">
+                  <button type="button" class="btn-mini-icon" onclick="openRowEditModal('${stt}')" title="Sửa">✏️</button>
+                  <button type="button" class="btn-mini-icon" onclick="deleteRowSingle('${stt}')" title="Xóa" style="color:#f87171;">🗑️</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    // ==========================================
+    // HELPER STYLES CHO BADGE TRẠNG THÁI
+    // ==========================================
+    function getVideoStatusBadgeClass(status) {
+      const s = (status || "").toLowerCase();
+      if (s === "xong video") return "status-video-xong";
+      if (s === "đang tạo video") return "status-video-dang-tao";
+      if (s === "xong báo") return "status-video-xong-bao";
+      if (s === "lấy video") return "status-video-lay";
+      if (s === "không tạo được") return "status-video-khong-tao";
+      if (s === "bị từ chối") return "status-video-tu-choi";
+      return "status-video-lay";
+    }
+
+    function getPostStatusBadgeClass(status) {
+      const s = (status || "").toLowerCase();
+      if (s === "hoàn thành") return "status-post-hoan-thanh";
+      if (s === "đăng bài") return "status-post-dang-bai";
+      return "status-post-chua";
+    }
+
+    function quickMarkPosted(stt) {
+      const row = allRows.find(r => String(r.stt) === String(stt));
+      if (!row) return;
+      if (row.content) {
+        copyTextToClipboard(row.content, "Đã sao chép Content để đăng bài!");
+      }
+      updateRowFieldDirect(stt, "trang_thai_dang_bai", "đăng bài");
+      showToast("🚀 Đã chuyển trạng thái STT " + stt + " sang: 'đăng bài'!");
+    }
+
+    function updateRowFieldDirect(stt, field, value) {
+      fetch("/api/quan-ly/update-field", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ stt: stt, field: field, value: value })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.ok) {
+          const item = allRows.find(r => String(r.stt) === String(stt));
+          if (item) {
+            item[field] = value;
+            if (res.row) Object.assign(item, res.row);
+          }
+          applyFilters();
+          flashRowUpdated(stt);
+          showToast("💾 Đã cập nhật STT " + stt);
+        } else {
+          showToast("❌ " + res.message, "error");
+        }
+      })
+      .catch(err => {
+        showToast("❌ Lỗi cập nhật: " + err, "error");
+      });
+    }
+
+    function editSingleField(stt, field, currentVal) {
+      let label = field;
+      if (field === "bai_goc") label = "Link Bài Gốc (Reels)";
+      else if (field === "bao_goc") label = "Link Báo Gốc";
+      else if (field === "bao_moi") label = "Link Báo Mới";
+      else if (field === "bai_viet") label = "Link Bài Viết Đã Đăng";
+
+      const val = prompt(`Nhập nội dung cho ${label} (STT ${stt}):`, currentVal || "");
+      if (val === null) return;
+      updateRowFieldDirect(stt, field, val.trim());
+    }
+
+    // ==========================================
+    // LẤY FRAME ĐẦU TIÊN TỪ REELS HOẶC VIDEO NỘI BỘ
+    // ==========================================
+    function extractFrameSingle(stt) {
+      const row = allRows.find(r => String(r.stt) === String(stt));
+      if (!row || (!row.bai_goc && !row.link_video)) {
+        showToast("⚠️ Dòng này chưa có link bài gốc hoặc video!", "error");
+        return;
+      }
+      const box = document.getElementById(`frame-box-${stt}`);
+      if (box) {
+        box.innerHTML = `
+          <div class="frame-loading-pulse">
+            <span style="font-size: 13px;">📸</span>
+            <span style="font-size: 8.5px; font-weight: 600;">Đang tải...</span>
+          </div>
+        `;
+      }
+      showToast(`📸 Đang lấy frame đầu tiên cho STT ${stt}...`);
+      fetch("/api/quan-ly/extract-frame", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ stt: stt, url: row.bai_goc || "" })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.ok && res.frame_url) {
+          row.frame_dau_tien = res.frame_url;
+          updateFrameInRowDOM(stt, res.frame_url);
+          showToast(`✨ Đã lấy frame cho STT ${stt} thành công!`);
+        } else {
+          updateFrameFailedDOM(stt);
+          showToast("❌ " + res.message, "error");
+        }
+      })
+      .catch(err => {
+        updateFrameFailedDOM(stt);
+        showToast("❌ Lỗi lấy frame: " + err, "error");
+      });
+    }
+
+    // ==========================================
+    // TỰ ĐỘNG TẢI FRAME ĐẦU TIÊN KHI VÀO WEB
+    // ==========================================
+    let isAutoLoadingFrames = false;
+
+    function startAutoLoadingFrames() {
+      if (isAutoLoadingFrames) return;
+      // Lọc các dòng có bài gốc hoặc video nhưng chưa có frame
+      const pendingRows = allRows.filter(r => !r.frame_dau_tien && (r.bai_goc || r.link_video));
+      if (pendingRows.length === 0) return;
+
+      isAutoLoadingFrames = true;
+      console.log(`[AutoLoadFrames] Tự động tải frame cho ${pendingRows.length} dòng...`);
+
+      const queue = [...pendingRows];
+      const concurrency = 2; // Tải 2 frame song song để mượt và ổn định
+      let activeWorkers = 0;
+      let loadedCount = 0;
+
+      function next() {
+        if (queue.length === 0 && activeWorkers === 0) {
+          isAutoLoadingFrames = false;
+          if (loadedCount > 0) {
+            showToast(`✨ Đã tự động nạp xong ${loadedCount} ảnh frame đầu tiên!`);
+          }
+          return;
+        }
+
+        while (queue.length > 0 && activeWorkers < concurrency) {
+          const row = queue.shift();
+          activeWorkers++;
+
+          fetch("/api/quan-ly/extract-frame", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ stt: row.stt, url: row.bai_goc || "" })
+          })
+          .then(r => r.json())
+          .then(res => {
+            if (res.ok && res.frame_url) {
+              row.frame_dau_tien = res.frame_url;
+              loadedCount++;
+              updateFrameInRowDOM(row.stt, res.frame_url);
+            } else {
+              updateFrameFailedDOM(row.stt);
+            }
+          })
+          .catch(() => {
+            updateFrameFailedDOM(row.stt);
+          })
+          .finally(() => {
+            activeWorkers--;
+            next();
+          });
+        }
+      }
+
+      next();
+    }
+
+    function updateFrameInRowDOM(stt, frameUrl) {
+      const box = document.getElementById(`frame-box-${stt}`);
+      if (box) {
+        box.outerHTML = `
+          <div class="frame-mini-box" id="frame-box-${stt}">
+            <img src="${escapeHtml(frameUrl)}" alt="Frame ${stt}" class="frame-mini-thumb" 
+                 onclick="showLightbox('${escapeHtml(frameUrl)}', 'Frame video STT: ${stt}')" 
+                 onmouseenter="showFloatingFramePreview(event, '${escapeHtml(frameUrl)}', 'STT ${stt}')" 
+                 onmousemove="moveFloatingFramePreview(event)" 
+                 onmouseleave="hideFloatingFramePreview()" 
+                 title="Rê chuột xem trước, click phóng to">
+          </div>
+        `;
+      }
+    }
+
+    function updateFrameFailedDOM(stt) {
+      const box = document.getElementById(`frame-box-${stt}`);
+      if (box) {
+        box.innerHTML = `
+          <button type="button" class="btn-mini-icon" onclick="extractFrameSingle('${stt}')" title="Chưa tải được, bấm để thử lại">⚠️</button>
+        `;
+      }
+    }
+
+    // ==========================================
+    // TỰ ĐỘNG KIỂM TRA & GHÉP BÁO MỚI KHI VÀO WEB
+    // ==========================================
+    let isAutoGeneratingContent = false;
+
+    function startAutoGeneratingContent() {
+      if (isAutoGeneratingContent) return;
+      // Tìm tất cả các dòng đã có link Báo mới (bao_moi) nhưng chưa có content hoặc content chưa chứa bao_moi
+      const pendingRows = allRows.filter(r => {
+        const bm = (r.bao_moi || "").trim();
+        if (!bm) return false;
+        if (!r.content) return true;
+        return !r.content.includes(bm);
+      });
+
+      if (pendingRows.length === 0) return;
+
+      isAutoGeneratingContent = true;
+      console.log(`[AutoContent] Tự động ghép Báo mới cho ${pendingRows.length} dòng...`);
+
+      const queue = [...pendingRows];
+      const concurrency = 2; // Ghép 2 dòng song song
+      let activeWorkers = 0;
+      let completedCount = 0;
+
+      function next() {
+        if (queue.length === 0 && activeWorkers === 0) {
+          isAutoGeneratingContent = false;
+          if (completedCount > 0) {
+            showToast(`✨ Đã tự động ghép xong Báo mới cho ${completedCount} dòng!`);
+            updateStatsUI({});
+          }
+          return;
+        }
+
+        while (queue.length > 0 && activeWorkers < concurrency) {
+          const row = queue.shift();
+          activeWorkers++;
+
+          fetch("/api/quan-ly/generate-content", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ stt: row.stt, bai_goc: row.bai_goc || "", bao_moi: row.bao_moi || "" })
+          })
+          .then(r => r.json())
+          .then(res => {
+            if (res.ok && res.content) {
+              row.content = res.content;
+              row.trang_thai_dang_bai = (row.link_video && row.link_video.trim()) ? "hoàn thành" : "chưa hoàn thành";
+              completedCount++;
+              updateContentInRowDOM(row.stt, res.content, row.bao_moi);
+            } else {
+              updateContentFailedDOM(row.stt);
+            }
+          })
+          .catch(() => {
+            updateContentFailedDOM(row.stt);
+          })
+          .finally(() => {
+            activeWorkers--;
+            next();
+          });
+        }
+      }
+
+      next();
+    }
+
+    function updateContentInRowDOM(stt, content, baoMoi) {
+      const container = document.getElementById(`content-container-${stt}`);
+      const row = allRows.find(r => String(r.stt) === String(stt));
+      if (row) {
+        row.content = content;
+        if (row.link_video && row.link_video.trim()) {
+          row.trang_thai_dang_bai = "hoàn thành";
+        }
+        if (container) {
+          container.outerHTML = renderContentCellHtml(row, viewMode === 'all');
+        }
+        // Cập nhật badge trạng thái đăng bài của dòng nếu đang hiển thị
+        const postBadge = document.querySelector(`#row-${stt} .badge-status.status-post-chua, #row-${stt} .badge-status.status-post-hoan-thanh`);
+        if (postBadge && row.link_video) {
+          postBadge.className = `badge-status ${getPostStatusBadgeClass(row.trang_thai_dang_bai)}`;
+          postBadge.innerText = `${row.trang_thai_dang_bai} ▾`;
+        }
+      }
+    }
+
+    function updateContentFailedDOM(stt) {
+      const box = document.getElementById(`content-box-${stt}`);
+      if (box) {
+        box.innerHTML = `
+          <span style="color:#f87171; font-size:10.5px;">⚠️ Chưa ghép được</span>
+          <button type="button" class="btn btn-secondary btn-sm" style="font-size:10px; padding:2px 6px; margin-left:4px;" onclick="autoGenerateContentSingle('${stt}')">Thử lại</button>
+        `;
+      }
+    }
+
+    // ==========================================
+    // TỰ ĐỘNG TẠO CONTENT TỪ REELS & BÁO MỚI
+    // ==========================================
+    function autoGenerateContentSingle(stt) {
+      const row = allRows.find(r => String(r.stt) === String(stt));
+      if (!row || !row.bai_goc) {
+        showToast("⚠️ Dòng này chưa có link bài gốc!", "error");
+        return;
+      }
+      showToast(`✨ Đang tạo Content tự động cho STT ${stt}...`);
+      fetch("/api/quan-ly/generate-content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ stt: stt, bai_goc: row.bai_goc, bao_moi: row.bao_moi })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.ok && res.content) {
+          row.content = res.content;
+          row.trang_thai_dang_bai = (row.link_video && row.link_video.trim()) ? "hoàn thành" : "chưa hoàn thành";
+          updateContentInRowDOM(stt, res.content, row.bao_moi);
+          showToast(`✅ Đã tạo Content cho STT ${stt}!`);
+        } else {
+          showToast("❌ " + res.message, "error");
+        }
+      })
+      .catch(err => {
+        showToast("❌ Lỗi tạo Content: " + err, "error");
+      });
+    }
+
+    // ==========================================
+    // MỞ THƯ MỤC / FILE VIDEO TRÊN MÁY TÍNH
+    // ==========================================
+    function openVideoFolder(path) {
+      if (!path) {
+        showToast("⚠️ Chưa có đường dẫn video!", "error");
+        return;
+      }
+      fetch("/api/quan-ly/open-video", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path: path })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.ok) {
+          showToast("📂 " + res.message);
+        } else {
+          showToast("⚠️ " + res.message, "error");
+        }
+      })
+      .catch(err => {
+        showToast("❌ Lỗi mở video: " + err, "error");
+      });
+    }
+
+    // ==========================================
+    // CÁC THAO TÁC HÀNG LOẠT (BATCH ACTIONS)
+    // ==========================================
+    async function batchAutoFillVideoPaths() {
+      const emptyRows = allRows.filter(r => !r.link_video || !r.link_video.trim());
+      if (emptyRows.length === 0) {
+        showToast("ℹ️ Tất cả các dòng đều đã có link video!");
+        return;
+      }
+      if (!confirm(`Bạn có muốn tự động điền đường dẫn link video theo STT cho ${emptyRows.length} dòng đang trống?`)) return;
+
+      let count = 0;
+      for (const r of emptyRows) {
+        const path = `C:\\Users\\Trant\\Videos\\Seedance\\anhtonton\\AI_VIDEO\\${r.stt}.mp4`;
+        await fetch("/api/quan-ly/update-field", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ stt: r.stt, field: "link_video", value: path })
+        });
+        r.link_video = path;
+        count++;
+      }
+      loadDataFromServer();
+      showToast(`✅ Đã tự động điền đường dẫn cho ${count} dòng!`);
+    }
+
+    async function batchGenerateContent() {
+      const candidates = allRows.filter(r => r.bai_goc && !r.content);
+      if (candidates.length === 0) {
+        showToast("ℹ️ Không có dòng nào có Bài Gốc mà chưa có Content!");
+        return;
+      }
+      if (!confirm(`Tìm thấy ${candidates.length} dòng có link bài gốc nhưng chưa có Content. Bắt đầu tự động cào và tạo content?`)) return;
+
+      showToast(`⏳ Đang xử lý ${candidates.length} dòng...`);
+      let successCount = 0;
+      for (const r of candidates) {
+        try {
+          const res = await fetch("/api/quan-ly/generate-content", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ stt: r.stt, bai_goc: r.bai_goc, bao_moi: r.bao_moi })
+          }).then(res => res.json());
+
+          if (res.ok && res.content) {
+            r.content = res.content;
+            successCount++;
+          }
+        } catch(e) {}
+      }
+      loadDataFromServer();
+      showToast(`✨ Đã tạo content thành công cho ${successCount}/${candidates.length} dòng!`);
+    }
+
+    async function batchExtractFrames() {
+      const candidates = allRows.filter(r => r.bai_goc && !r.frame_dau_tien);
+      if (candidates.length === 0) {
+        showToast("ℹ️ Tất cả dòng có bài gốc đều đã có ảnh frame!");
+        return;
+      }
+      if (!confirm(`Tìm thấy ${candidates.length} dòng chưa có ảnh frame. Bắt đầu tải frame từ Reels?`)) return;
+
+      showToast(`⏳ Đang lấy frame cho ${candidates.length} dòng...`);
+      let count = 0;
+      for (const r of candidates) {
+        try {
+          const res = await fetch("/api/quan-ly/extract-frame", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ stt: r.stt, url: r.bai_goc })
+          }).then(res => res.json());
+
+          if (res.ok && res.frame_url) {
+            r.frame_dau_tien = res.frame_url;
+            count++;
+          }
+        } catch(e) {}
+      }
+      loadDataFromServer();
+      showToast(`📸 Đã lấy thành công ${count}/${candidates.length} frame!`);
+    }
+
+    // ==========================================
+    // MODALS: CHỈNH SỬA & THÊM DÒNG
+    // ==========================================
+    function openRowEditModal(stt) {
+      activeEditingStt = stt;
+      const row = allRows.find(r => String(r.stt) === String(stt));
+      if (!row) return;
+
+      document.getElementById("rowEditModalTitle").innerText = `✏️ Chỉnh Sửa Dòng STT: ${stt}`;
+      document.getElementById("modalStt").value = row.stt || "";
+      document.getElementById("modalStt").disabled = true;
+      document.getElementById("modalTrangThaiVideo").value = row.trang_thai_video || "Lấy video";
+      document.getElementById("modalBaiGoc").value = row.bai_goc || "";
+      document.getElementById("modalPromptVideo").value = row.prompt_video || "";
+      document.getElementById("modalBaoGoc").value = row.bao_goc || "";
+      document.getElementById("modalBaoMoi").value = row.bao_moi || "";
+      document.getElementById("modalContent").value = row.content || "";
+      document.getElementById("modalLinkVideo").value = row.link_video || "";
+      document.getElementById("modalTrangThaiDangBai").value = row.trang_thai_dang_bai || "chưa hoàn thành";
+      document.getElementById("modalBaiViet").value = row.bai_viet || "";
+
+      openModal("rowEditModal");
+    }
+
+    function openAddRowModal() {
+      activeEditingStt = null;
+      let nextStt = 1;
+      if (allRows.length > 0) {
+        const maxStt = Math.max(...allRows.map(r => parseInt(r.stt) || 0));
+        nextStt = maxStt + 1;
+      }
+
+      document.getElementById("rowEditModalTitle").innerText = `➕ Thêm Dòng Mới`;
+      document.getElementById("modalStt").value = nextStt;
+      document.getElementById("modalStt").disabled = false;
+      document.getElementById("modalTrangThaiVideo").value = "Lấy video";
+      document.getElementById("modalBaiGoc").value = "";
+      document.getElementById("modalPromptVideo").value = "";
+      document.getElementById("modalBaoGoc").value = "";
+      document.getElementById("modalBaoMoi").value = "";
+      document.getElementById("modalContent").value = "";
+      document.getElementById("modalLinkVideo").value = `C:\\Users\\Trant\\Videos\\Seedance\\anhtonton\\AI_VIDEO\\${nextStt}.mp4`;
+      document.getElementById("modalTrangThaiDangBai").value = "chưa hoàn thành";
+      document.getElementById("modalBaiViet").value = "";
+
+      openModal("rowEditModal");
+    }
+
+    function saveModalRow() {
+      const stt = document.getElementById("modalStt").value.trim();
+      if (!stt) {
+        alert("Vui lòng nhập STT!");
+        return;
+      }
+
+      const rowData = {
+        stt: stt,
+        trang_thai_video: document.getElementById("modalTrangThaiVideo").value,
+        bai_goc: document.getElementById("modalBaiGoc").value.trim(),
+        prompt_video: document.getElementById("modalPromptVideo").value.trim(),
+        bao_goc: document.getElementById("modalBaoGoc").value.trim(),
+        bao_moi: document.getElementById("modalBaoMoi").value.trim(),
+        content: document.getElementById("modalContent").value.trim(),
+        link_video: document.getElementById("modalLinkVideo").value.trim(),
+        trang_thai_dang_bai: document.getElementById("modalTrangThaiDangBai").value,
+        bai_viet: document.getElementById("modalBaiViet").value.trim()
+      };
+
+      fetch("/api/quan-ly/upsert-row", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(rowData)
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.ok) {
+          closeModal("rowEditModal");
+          loadDataFromServer();
+          showToast(res.message);
+        } else {
+          showToast("❌ " + res.message, "error");
+        }
+      })
+      .catch(err => {
+        showToast("❌ Lỗi lưu dòng: " + err, "error");
+      });
+    }
+
+    function deleteRowSingle(stt) {
+      if (!confirm(`Bạn có chắc chắn muốn xóa dòng STT ${stt}?`)) return;
+      fetch("/api/quan-ly/delete-row", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ stt: stt })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.ok) {
+          allRows = allRows.filter(r => String(r.stt) !== String(stt));
+          applyFilters();
+          showToast(`🗑️ Đã xóa STT ${stt}`);
+        } else {
+          showToast("❌ " + res.message, "error");
+        }
+      })
+      .catch(err => {
+        showToast("❌ Lỗi xóa: " + err, "error");
+      });
+    }
+
+    function modalFetchFrame() {
+      const stt = document.getElementById("modalStt").value.trim();
+      const url = document.getElementById("modalBaiGoc").value.trim();
+      if (!url) {
+        alert("Vui lòng nhập link Bài gốc trước!");
+        return;
+      }
+      showToast("📸 Đang lấy frame...");
+      fetch("/api/quan-ly/extract-frame", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ stt: stt, url: url })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.ok) {
+          showToast("✅ Đã lấy frame thành công!");
+        } else {
+          showToast("❌ " + res.message, "error");
+        }
+      });
+    }
+
+    function modalAutoGenerateContent() {
+      const stt = document.getElementById("modalStt").value.trim();
+      const baiGoc = document.getElementById("modalBaiGoc").value.trim();
+      const baoMoi = document.getElementById("modalBaoMoi").value.trim();
+      if (!baiGoc) {
+        alert("Vui lòng nhập link Bài gốc trước!");
+        return;
+      }
+      showToast("✨ Đang tự động tạo Content...");
+      fetch("/api/quan-ly/generate-content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ stt: stt, bai_goc: baiGoc, bao_moi: baoMoi })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.ok && res.content) {
+          document.getElementById("modalContent").value = res.content;
+          showToast("✅ Đã tạo Content thành công!");
+        } else {
+          showToast("❌ " + res.message, "error");
+        }
+      });
+    }
+
+    // ==========================================
+    // PROMPT MODAL
+    // ==========================================
+    let currentPromptStt = null;
+
+    function openPromptDetailModal(stt) {
+      currentPromptStt = stt;
+      const row = allRows.find(r => String(r.stt) === String(stt));
+      if (!row) return;
+      document.getElementById("promptModalStt").innerText = stt;
+      document.getElementById("promptDetailTextarea").value = row.prompt_video || "";
+      openModal("promptDetailModal");
+    }
+
+    function copyPromptFromModal() {
+      const txt = document.getElementById("promptDetailTextarea").value;
+      if (!txt) {
+        showToast("⚠️ Nội dung prompt đang trống!");
+        return;
+      }
+      copyTextToClipboard(txt, "Đã sao chép Prompt vào clipboard!");
+    }
+
+    function savePromptFromModal() {
+      if (!currentPromptStt) return;
+      const val = document.getElementById("promptDetailTextarea").value.trim();
+      updateRowFieldDirect(currentPromptStt, "prompt_video", val);
+      closeModal("promptDetailModal");
+    }
+
+    // ==========================================
+    // CONTENT MODAL
+    // ==========================================
+    let currentContentStt = null;
+
+    function openContentDetailModal(stt) {
+      currentContentStt = stt;
+      const row = allRows.find(r => String(r.stt) === String(stt));
+      if (!row) return;
+      document.getElementById("contentModalStt").innerText = stt;
+      document.getElementById("contentDetailTextarea").value = row.content || "";
+      openModal("contentDetailModal");
+    }
+
+    function copyContentFromModal() {
+      const txt = document.getElementById("contentDetailTextarea").value;
+      if (!txt) {
+        showToast("⚠️ Nội dung content đang trống!");
+        return;
+      }
+      copyTextToClipboard(txt, "Đã sao chép Content đăng bài!");
+    }
+
+    function saveContentFromModal() {
+      if (!currentContentStt) return;
+      const val = document.getElementById("contentDetailTextarea").value.trim();
+      updateRowFieldDirect(currentContentStt, "content", val);
+      closeModal("contentDetailModal");
+    }
+
+    function markPostedFromModal() {
+      if (!currentContentStt) return;
+      saveContentFromModal();
+      quickMarkPosted(currentContentStt);
+    }
+
+    function regenerateContentInModal() {
+      if (!currentContentStt) return;
+      const row = allRows.find(r => String(r.stt) === String(currentContentStt));
+      if (!row || !row.bai_goc) {
+        alert("Chưa có link bài gốc!");
+        return;
+      }
+      showToast("✨ Đang cào lại content...");
+      fetch("/api/quan-ly/generate-content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ stt: currentContentStt, bai_goc: row.bai_goc, bao_moi: row.bao_moi })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.ok && res.content) {
+          document.getElementById("contentDetailTextarea").value = res.content;
+          row.content = res.content;
+          showToast("✅ Đã cập nhật lại content!");
+        } else {
+          showToast("❌ " + res.message, "error");
+        }
+      });
+    }
+
+    // ==========================================
+    // LIGHTBOX XEM ẢNH FRAME
+    // ==========================================
+    function showLightbox(src, caption) {
+      const modal = document.getElementById("lightboxModal");
+      const img = document.getElementById("lightboxImg");
+      const cap = document.getElementById("lightboxCaption");
+      img.src = src;
+      cap.innerText = caption || "Frame đầu tiên";
+      modal.style.display = "flex";
+    }
+
+    // ==========================================
+    // SAO CHÉP TSV ĐỂ DÁN VÀO GOOGLE SHEETS
+    // ==========================================
+    function openCopyTsvModal() {
+      fetch("/api/quan-ly/export-tsv")
+        .then(r => r.json())
+        .then(res => {
+          if (res.ok && res.tsv) {
+            document.getElementById("tsvDataPreview").value = res.tsv;
+            openModal("copyTsvModal");
+          } else {
+            showToast("❌ Không thể lấy dữ liệu TSV", "error");
+          }
+        });
+    }
+
+    function copyTsvClipboard() {
+      const tsv = document.getElementById("tsvDataPreview").value;
+      if (!tsv) return;
+      copyTextToClipboard(tsv, "🎉 Đã sao chép toàn bộ bảng! Hãy mở ô A1 trên Google Sheets và nhấn Ctrl+V.");
+      closeModal("copyTsvModal");
+    }
+
+    function exportCsvFile() {
+      window.location.href = "/api/quan-ly/export-csv";
+    }
+
+    // ==========================================
+    // TIỆN ÍCH MODAL, TOAST & CLIPBOARD
+    // ==========================================
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = "flex";
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      if (event.target.classList.contains("modal-overlay")) {
+        event.target.style.display = "none";
+      }
+    };
+
+    function copyTextToClipboard(text, msg) {
+      if (!text) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(msg || "Đã sao chép vào bộ nhớ tạm!");
+        }).catch(() => {
+          fallbackCopyText(text, msg);
+        });
+      } else {
+        fallbackCopyText(text, msg);
+      }
+    }
+
+    function fallbackCopyText(text, msg) {
+      const el = document.createElement("textarea");
+      el.value = text;
+      el.style.position = "fixed";
+      el.style.left = "-9999px";
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand("copy");
+      document.body.removeChild(el);
+      showToast(msg || "Đã sao chép vào bộ nhớ tạm!");
+    }
+
+    function showToast(message, type) {
+      const container = document.getElementById("toastContainer");
+      if (!container) return;
+      const t = document.createElement("div");
+      t.className = "toast";
+      if (type === "error") {
+        t.style.borderColor = "#ef4444";
+      }
+      t.innerHTML = `<span>${message}</span>`;
+      container.appendChild(t);
+      setTimeout(() => {
+        t.style.transition = "opacity 0.3s";
+        t.style.opacity = "0";
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>
