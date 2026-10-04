@@ -8,29 +8,35 @@
 
 1. **Giao diện chuẩn Fluent Design Windows 11**:
    - Tối ưu giao diện **Sáng (Light Mode)** hiện đại, bo góc 12px, shadow mềm, font Segoe UI / Inter sắc nét.
-   - 5 Tab điều hướng Sidebar thông minh: *Quản Lý Video*, *Tải Video FB*, *Cào Truyện & CMS*, *Bản Quyền HWID*, *Cài Đặt*.
+   - 6 Tab điều hướng Sidebar thông minh: *Quản Lý Video*, *Tải Video FB*, *Gemini AI Video*, *Cào Truyện & CMS*, *Bản Quyền HWID*, *Cài Đặt*.
    - Stat Cards thống kê tương tác lọc 1-click.
    - Bảng 11 cột định dạng **1 dòng duy nhất**, badge trạng thái đa màu sắc, popup chỉnh sửa và xem chi tiết tức thì.
 2. **Cơ sở dữ liệu SQLite Local (WAL Mode)**:
    - Sử dụng file database nhúng `data/app.db` với chế độ Write-Ahead Logging (WAL) cực nhanh, an toàn đa luồng.
    - Không lo xung đột file JSON, xử lý mượt mà hàng chục nghìn dòng dữ liệu.
-3. **Đồng bộ Google Sheets 2 chiều Realtime**:
+3. **✨ Nhúng Trực Tiếp Google Gemini AI & Quản Lý Prompt**:
+   - Tích hợp trình duyệt Chromium nhúng (`QWebEngineView`) mở trực tiếp `https://gemini.google.com/app` ngay trong app, không bị lỗi chặn iframe.
+   - **Video Context Card**: Tự động hiển thị video đang làm việc, 1-click chép đường dẫn file video, mở thư mục chứa video.
+   - **Soạn thảo & Quản lý Prompt chuẩn Cinematic**: Tự động chèn đường dẫn video vào đầu prompt, đếm ký tự & số từ realtime, lưu mẫu vào SQLite.
+   - Nút chuyển nhanh: Bấm **✨ Sang Tab Gemini Phân Tích** từ Tab Tải Video hoặc Menu chuột phải ở Bảng Quản Lý để tự động nạp video sang Gemini.
+4. **Đồng bộ Google Sheets 2 chiều Realtime**:
    - Tự động kiểm tra thay đổi qua MD5 hash mỗi 3 giây (Background QThread).
    - Bảo vệ chống xung đột dữ liệu: các dòng chỉnh sửa cục bộ trong vòng 25 giây được ưu tiên bảo toàn.
    - Nút đẩy trực tiếp 11 cột lên Google Sheets qua Apps Script Webhook.
-4. **Tự động ghép Content & trích xuất Frame**:
+5. **Tự động ghép Content & trích xuất Frame**:
    - Tự động nhận diện khi có link báo mới (`bao_moi`) và ghép với caption bài gốc Facebook Reel.
    - Trích xuất frame đầu tiên bằng FFmpeg cực nhanh (0.04s) hoặc bóc tách ảnh bìa Facebook Reel.
    - Xem trước phóng to ảnh frame trực tiếp trong ứng dụng.
-5. **Cào & Tải Video Facebook Đa Chất Lượng**:
+6. **Cào & Tải Video Facebook Đa Chất Lượng**:
    - Phân tích link Facebook Reels/Video: Full HD (1080p), HD (720p), SD (480p), Tách âm thanh MP3.
    - Thanh tiến trình tải phần trăm và dung lượng trực quan.
    - Trình phát video nhúng xem lại tức thì.
-6. **Cào Truyện & Tự Động Đăng CMS BlogBio**:
-   - Cào truyện chữ từ nhiều trang web, tải ảnh, dịch tự động sang tiếng Anh.
-   - Đăng bài tự động lên CMS BlogBio qua REST API.
+7. **Cào Truyện & Tự Động Đăng CMS BlogBio (Chuẩn 100% Web Logic)**:
+   - Tự động nhận diện cấu trúc trang web truyện (TreeIQ, AHCMS, Universal Parser cho mọi website).
+   - Tải hình ảnh, dịch tự động sang tiếng Anh, lưu từng chapter `title.md` + `content.md` và file tổng hợp `full_story.md`.
+   - Đăng bài tự động lên CMS BlogBio qua REST API (hỗ trợ tách PART, tạo Next/Prev chapter link).
    - Console terminal xem log trực tiếp theo thời gian thực (Real-time).
-7. **Bản Quyền Phần Mềm (HWID)**:
+8. **Bản Quyền Phần Mềm (HWID)**:
    - Tự động nhận diện mã máy duy nhất (Hardware ID).
    - Xác thực bản quyền Online qua Google Sheets hoặc Offline qua License Key mã hóa HMAC-SHA256.
    - Tích hợp công cụ Admin tạo key cho khách hàng (7 ngày, 30 ngày, 1 năm, vĩnh viễn).

@@ -243,6 +243,10 @@ class VideoTableWidget(TableWidget):
         act_extract_frame.triggered.connect(lambda: self.requestAction.emit("extract_frame", stt))
         menu.addAction(act_extract_frame)
 
+        act_gemini = Action(FluentIcon.CHAT, "✨ Phân tích video bằng Gemini AI", menu)
+        act_gemini.triggered.connect(lambda: self.requestAction.emit("analyze_gemini", stt))
+        menu.addAction(act_gemini)
+
         if r.get("bai_goc", "").startswith("http"):
             act_open_reel = Action(FluentIcon.SHARE, "Mở link Facebook Reel", menu)
             act_open_reel.triggered.connect(lambda: QDesktopServices.openUrl(QUrl(r.get("bai_goc"))))

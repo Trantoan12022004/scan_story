@@ -335,6 +335,17 @@ class QuanLyPage(QWidget):
                 self.refresh_data()
             ))
             worker.start()
+        elif action_type == "analyze_gemini":
+            db = get_db()
+            v_row = db.get_video_by_stt(stt)
+            v_path = ""
+            if v_row:
+                from ban_win.core.video_checker import check_video_file
+                v_check = check_video_file(v_row.get("link_video", ""), stt)
+                v_path = v_check["path"] if v_check["exists"] else (v_row.get("link_video") or "")
+            main_win = self.window()
+            if hasattr(main_win, "switch_to_gemini"):
+                main_win.switch_to_gemini(v_path, f"Video STT {stt}")
 
     def closeEvent(self, event):
         if hasattr(self, "bg_sync_worker"):

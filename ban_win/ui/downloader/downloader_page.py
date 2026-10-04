@@ -1,6 +1,6 @@
 """
 Trang Tải Video Facebook Reels & Videos với Fluent Design.
-Hỗ trợ probe thông tin, chọn chất lượng HD/SD/Audio, báo tiến trình realtime, và xem lại lịch sử.
+Hỗ trợ probe thông tin, chọn chất lượng HD/SD/Audio, báo tiến trình realtime, và chuyển tiếp sang Gemini AI.
 """
 import os
 import subprocess
@@ -29,6 +29,7 @@ class DownloaderPage(QWidget):
         super().__init__(parent)
         self.setObjectName("DownloaderPage")
         self.probed_data = None
+        self.last_downloaded_file = ""
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(24, 20, 24, 20)
@@ -38,7 +39,7 @@ class DownloaderPage(QWidget):
         top_box = QVBoxLayout()
         title_lbl = SubtitleLabel("Tải Video Facebook Reels & Videos", self)
         title_lbl.setStyleSheet("font-size: 20px; font-weight: 700; color: #1e293b;")
-        sub_lbl = CaptionLabel("Tải video Full HD / HD / SD / Tách nhạc MP3 không dính logo", self)
+        sub_lbl = CaptionLabel("Tải video Full HD / HD / SD / Tách nhạc MP3 và chuyển sang Gemini AI phân tích kịch bản", self)
         sub_lbl.setStyleSheet("color: #64748b; font-size: 12px;")
         top_box.addWidget(title_lbl)
         top_box.addWidget(sub_lbl)
@@ -126,6 +127,11 @@ class DownloaderPage(QWidget):
         self.btn_preview_last.clicked.connect(self._preview_downloaded)
         dl_row.addWidget(self.btn_preview_last)
 
+        self.btn_jump_gemini = PrimaryPushButton(FluentIcon.CHAT, "✨ Sang Tab Gemini Phân Tích", self.info_card)
+        self.btn_jump_gemini.setVisible(False)
+        self.btn_jump_gemini.clicked.connect(self._jump_to_gemini)
+        dl_row.addWidget(self.btn_jump_gemini)
+
         dl_row.addStretch()
         details_layout.addLayout(dl_row)
 
@@ -145,8 +151,6 @@ class DownloaderPage(QWidget):
         # 3. Lịch sử tải xuống
         self.history_widget = DownloadHistoryWidget(self)
         layout.addWidget(self.history_widget, 1)
-
-        self.last_downloaded_file = ""
 
     def _browse_dir(self):
         folder = QFileDialog.getExistingDirectory(self, "Chọn thư mục lưu video", self.in_save_dir.text())
@@ -242,6 +246,7 @@ class DownloaderPage(QWidget):
         if res.get("ok"):
             self.last_downloaded_file = res.get("file_path", "")
             self.btn_preview_last.setVisible(bool(self.last_downloaded_file))
+            self.btn_jump_gemini.setVisible(bool(self.last_downloaded_file))
             Toast.success(self, "Tải thành công!", f"Đã lưu: {res.get('filename')}")
             self.history_widget.load_history()
         else:
@@ -256,3 +261,10 @@ class DownloaderPage(QWidget):
         if self.last_downloaded_file and os.path.isfile(self.last_downloaded_file):
             dlg = VideoPlayerDialog(self.last_downloaded_file, parent=self)
             dlg.exec()
+
+    def _jump_to_gemini(self):
+        if not self.last_downloaded_file:
+            return
+        main_win = self.window()
+        if hasattr(main_win, "switch_to_gemini"):
+            main_win.switch_to_gemini(self.last_downloaded_file, self.lbl_video_title.text())

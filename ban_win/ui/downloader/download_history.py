@@ -52,10 +52,56 @@ class DownloadHistoryWidget(QWidget):
         self.table.setColumnWidth(4, 90)
         self.table.horizontalHeader().setStretchLastSection(True)
 
+        self.table.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.table.customContextMenuRequested.connect(self._show_context_menu)
         self.table.cellDoubleClicked.connect(self._on_double_click)
         layout.addWidget(self.table, 1)
 
         self.load_history()
+
+    def _show_context_menu(self, pos):
+        item = self.table.itemAt(pos)
+        if not item:
+            return
+        row = item.row()
+        if row >= len(getattr(self, "items_cache", [])):
+            return
+        it = self.items_cache[row]
+        fp = it.get("file_path", "")
+        title = it.get("title", "Video")
+
+        menu = RoundMenu(parent=self)
+
+        act_gemini = Action(FluentIcon.CHAT, "✨ Phân tích video với Gemini AI", menu)
+        act_gemini.triggered.connect(lambda: self._analyze_gemini(fp, title))
+        menu.addAction(act_gemini)
+
+        if fp and os.path.isfile(fp):
+            act_folder = Action(FluentIcon.FOLDER, "Mở vị trí file video", menu)
+            act_folder.triggered.connect(lambda: subprocess.Popen(f'explorer /select,"{fp}"'))
+            menu.addAction(act_folder)
+
+        act_copy_path = Action(FluentIcon.COPY, "Sao chép đường dẫn file", menu)
+        act_copy_path.triggered.connect(lambda: QApplication.clipboard().setText(fp))
+        menu.addAction(act_copy_path)
+
+        if it.get("url"):
+            act_url = Action(FluentIcon.SHARE, "Mở link Facebook gốc", menu)
+            act_url.triggered.connect(lambda: QDesktopServices.openUrl(QUrl(it.get("url"))))
+            menu.addAction(act_url)
+
+        menu.addSeparator()
+
+        act_del = Action(FluentIcon.DELETE, "Xóa khỏi lịch sử", menu)
+        act_del.triggered.connect(lambda: (get_db().delete_downloaded_video(it.get("id")), self.load_history()))
+        menu.addAction(act_del)
+
+        menu.exec(QCursor.pos())
+
+    def _analyze_gemini(self, file_path: str, title: str):
+        main_win = self.window()
+        if hasattr(main_win, "switch_to_gemini"):
+            main_win.switch_to_gemini(file_path, title)
 
     def load_history(self):
         items = get_db().get_downloaded_videos(limit=100)

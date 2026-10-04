@@ -41,6 +41,8 @@ def build_exe():
         "--hidden-import=qfluentwidgets",
         "--hidden-import=PySide6.QtMultimedia",
         "--hidden-import=PySide6.QtMultimediaWidgets",
+        "--hidden-import=PySide6.QtWebEngineWidgets",
+        "--hidden-import=PySide6.QtWebEngineCore",
         "--hidden-import=sqlite3",
         "--hidden-import=bs4",
         "--hidden-import=lxml",

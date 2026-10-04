@@ -57,8 +57,13 @@ class ScraperPage(QWidget):
         # Checkboxes & Options
         opt_row = QHBoxLayout()
         self.chk_images = CheckBox("Tải hình ảnh", config_card)
+        self.chk_images.setChecked(True)
+
         self.chk_translate = CheckBox("Dịch sang tiếng Anh", config_card)
+        self.chk_translate.setChecked(True)
+
         self.chk_publish = CheckBox("Tự động đăng CMS BlogBio", config_card)
+        self.chk_publish.setChecked(True)
         self.chk_publish.stateChanged.connect(self._toggle_cms_card)
 
         opt_row.addWidget(self.chk_images)
@@ -101,9 +106,9 @@ class ScraperPage(QWidget):
         c_layout.addLayout(range_row)
         layout.addWidget(config_card)
 
-        # CMS Config Box (mặc định ẩn)
+        # CMS Config Box (hiển thị khi bật đăng CMS)
         self.cms_box = CMSConfigWidget(self)
-        self.cms_box.setVisible(False)
+        self.cms_box.setVisible(True)
         layout.addWidget(self.cms_box)
 
         # Progress bar
