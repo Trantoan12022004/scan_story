@@ -4,6 +4,13 @@ Tool Python hỗ trợ tải nội dung truyện và toàn bộ hình ảnh minh
 
 ---
 
+> 🚀 **PHIÊN BẢN MỚI**: **Ứng Dụng Windows Desktop Native (Fluent Design + SQLite)** hiện đã có sẵn tại thư mục [`ban_win/`](ban_win/).
+> - Khởi chạy 1-Click: Chạy file `ban_win\run.bat` hoặc `ban_win\run.vbs`.
+> - Đóng gói EXE độc lập: Chạy `ban_win\build.bat`.
+> - Xem chi tiết tài liệu tại: [`ban_win/README.md`](ban_win/README.md).
+
+---
+
 ## 🌟 Tính năng nổi bật
 
 - **Tự động nhận diện trang web**: Tự phát hiện CMS/template dựa vào URL truyện.
