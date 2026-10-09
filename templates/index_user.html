@@ -496,8 +496,15 @@
     }
 
     @keyframes bannerSlideDown {
-      from { transform: translateY(-100%); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
 
     .update-banner-content {
@@ -1404,8 +1411,17 @@
     }
 
     @keyframes pulseDot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.8); }
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(0.8);
+      }
     }
 
     /* Scrubber Progress */
@@ -2071,14 +2087,14 @@
     }
 
     .btn-highlight-popup {
-      background: linear-gradient(135deg, rgba(139,92,246,0.25), rgba(59,130,246,0.25));
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(59, 130, 246, 0.25));
       border-color: #8b5cf6;
       color: #c4b5fd;
       font-weight: 600;
     }
 
     .btn-highlight-popup:hover {
-      background: linear-gradient(135deg, rgba(139,92,246,0.4), rgba(59,130,246,0.4));
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(59, 130, 246, 0.4));
       border-color: #a78bfa;
       color: #fff;
     }
@@ -2216,7 +2232,8 @@
       <button type="button" class="btn-update-now" id="btnUpdateNow" onclick="performAppUpdate()">
         <span>⚡ Cập nhật ngay</span>
       </button>
-      <button type="button" class="btn-update-dismiss" onclick="dismissUpdateBanner()" title="Đóng banner này">✕</button>
+      <button type="button" class="btn-update-dismiss" onclick="dismissUpdateBanner()"
+        title="Đóng banner này">✕</button>
     </div>
   </div>
 
@@ -2253,208 +2270,210 @@
   <div id="storyTabSection">
     <!-- Banner cảnh báo bản quyền -->
     <div id="licenseAlertBanner" class="license-alert-banner" style="display: none;">
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <span>🔒</span>
-      <span id="licenseAlertText">Bản quyền chưa được kích hoạt hoặc đã hết hạn. Vui lòng kích hoạt key để tiếp tục sử
-        dụng.</span>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span>🔒</span>
+        <span id="licenseAlertText">Bản quyền chưa được kích hoạt hoặc đã hết hạn. Vui lòng kích hoạt key để tiếp tục sử
+          dụng.</span>
+      </div>
+      <button type="button" class="btn-primary" style="padding: 5px 14px; font-size: 12px;"
+        onclick="openLicenseModal()">
+        🔑 Kích hoạt ngay
+      </button>
     </div>
-    <button type="button" class="btn-primary" style="padding: 5px 14px; font-size: 12px;" onclick="openLicenseModal()">
-      🔑 Kích hoạt ngay
-    </button>
-  </div>
 
-  <!-- Main Grid -->
-  <main class="app-container">
+    <!-- Main Grid -->
+    <main class="app-container">
 
-    <!-- Cột trái: Điều khiển & Cấu hình -->
-    <div class="panel">
-      <div class="panel-header">
-        <h2 class="panel-title">⚙️ Cấu hình tác vụ</h2>
-      </div>
-
-      <!-- Ô nhập URL -->
-      <div class="form-group">
-        <label class="form-label" for="storyUrl">URL Truyện (Hỗ trợ mọi website truyện)</label>
-        <div class="input-wrapper">
-          <input type="text" id="storyUrl" class="input-text"
-            placeholder="Dán link bất kỳ trang truyện nào (feji.io, danhngon.pro, treeiq.biz, fast2tricks.com...)" required>
-        </div>
-      </div>
-
-      <!-- Xem trước truyện sau khi parse -->
-      <div class="preview-card" id="previewCard">
-        <img id="previewCover" class="preview-cover" src="" alt="Cover">
-        <div class="preview-info">
-          <div class="preview-title" id="previewTitle">Tên truyện</div>
-          <div class="preview-meta">
-            <span id="previewChapters">📄 0 chapters</span>
-            <span id="previewParser">🌐 Universal</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tùy chọn Tự động hóa -->
-      <div class="toggles-group">
-        <label class="toggle-item">
-          <div class="toggle-label">
-            <div class="toggle-title">🌐 Tự động dịch sang tiếng Anh</div>
-            <div class="toggle-desc">Dịch title, heading và content toàn bộ chapter</div>
-          </div>
-          <label class="switch">
-            <input type="checkbox" id="translateToggle" checked>
-            <span class="slider"></span>
-          </label>
-        </label>
-
-        <label class="toggle-item">
-          <div class="toggle-label">
-            <div class="toggle-title">🚀 Tự động đăng CMS BlogBio</div>
-            <div class="toggle-desc">Chế độ Chapter mode, chèn cover và tạo liên kết</div>
-          </div>
-          <label class="switch">
-            <input type="checkbox" id="publishToggle" checked>
-            <span class="slider"></span>
-          </label>
-        </label>
-
-        <label class="toggle-item">
-          <div class="toggle-label">
-            <div class="toggle-title">🖼️ Tải hình ảnh minh họa</div>
-            <div class="toggle-desc">Tải ảnh bìa cover và ảnh minh họa trong truyện</div>
-          </div>
-          <label class="switch">
-            <input type="checkbox" id="imagesToggle" checked>
-            <span class="slider"></span>
-          </label>
-        </label>
-      </div>
-
-      <!-- Cấu hình Tài khoản CMS -->
-      <div class="account-card" id="cmsAccountCard">
-        <div class="account-header">
-          <div class="account-title">
-            <span>🔐</span>
-            <span>Tài khoản CMS</span>
-          </div>
-          <button type="button" class="btn-account-test" id="btnTestCms" onclick="testCmsLogin()">
-            ⚡ Kiểm tra kết nối
-          </button>
+      <!-- Cột trái: Điều khiển & Cấu hình -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">⚙️ Cấu hình tác vụ</h2>
         </div>
 
-        <div id="cmsTestStatus" class="account-status-badge" style="display: none;"></div>
-
+        <!-- Ô nhập URL -->
         <div class="form-group">
-          <label class="form-label" for="cmsUrl" style="font-size: 11px;">CMS Base URL</label>
-          <input type="text" id="cmsUrl" class="input-text" style="padding: 9px 12px; font-size: 13px;"
-            value="https://vmnewstoryus.cfx.bz" placeholder="https://vmnewstoryus.cfx.bz"
-            oninput="saveAccountSettings()">
+          <label class="form-label" for="storyUrl">URL Truyện (Hỗ trợ mọi website truyện)</label>
+          <div class="input-wrapper">
+            <input type="text" id="storyUrl" class="input-text"
+              placeholder="Dán link bất kỳ trang truyện nào (feji.io, danhngon.pro, treeiq.biz, fast2tricks.com...)"
+              required>
+          </div>
         </div>
 
-        <div class="grid-2">
-          <div class="form-group">
-            <label class="form-label" for="cmsUser" style="font-size: 11px;">Tài khoản (Email/User)</label>
-            <input type="text" id="cmsUser" class="input-text" style="padding: 9px 12px; font-size: 13px;" value="admin"
-              placeholder="admin" oninput="saveAccountSettings()">
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="cmsPass" style="font-size: 11px;">Mật khẩu</label>
-            <div class="input-wrapper">
-              <input type="password" id="cmsPass" class="input-text"
-                style="padding: 9px 36px 9px 12px; font-size: 13px;" value="Vnpt@123" placeholder="Mật khẩu"
-                oninput="saveAccountSettings()">
-              <button type="button" class="btn-toggle-pw" onclick="togglePasswordVisibility()"
-                title="Ẩn/Hiện mật khẩu">👁️</button>
+        <!-- Xem trước truyện sau khi parse -->
+        <div class="preview-card" id="previewCard">
+          <img id="previewCover" class="preview-cover" src="" alt="Cover">
+          <div class="preview-info">
+            <div class="preview-title" id="previewTitle">Tên truyện</div>
+            <div class="preview-meta">
+              <span id="previewChapters">📄 0 chapters</span>
+              <span id="previewParser">🌐 Universal</span>
             </div>
           </div>
         </div>
 
-        <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 2px;">
-          <label
-            style="display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--text-secondary); cursor: pointer; user-select: none;">
-            <input type="checkbox" id="rememberAccount" checked style="accent-color: var(--primary); cursor: pointer;"
-              onchange="saveAccountSettings()">
-            <span>Ghi nhớ tài khoản trên thiết bị này</span>
+        <!-- Tùy chọn Tự động hóa -->
+        <div class="toggles-group">
+          <label class="toggle-item">
+            <div class="toggle-label">
+              <div class="toggle-title">🌐 Tự động dịch sang tiếng Anh</div>
+              <div class="toggle-desc">Dịch title, heading và content toàn bộ chapter</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="translateToggle" checked>
+              <span class="slider"></span>
+            </label>
           </label>
-          <span style="font-size: 11px; color: var(--text-muted);">Lưu an toàn ở trình duyệt</span>
+
+          <label class="toggle-item">
+            <div class="toggle-label">
+              <div class="toggle-title">🚀 Tự động đăng CMS BlogBio</div>
+              <div class="toggle-desc">Chế độ Chapter mode, chèn cover và tạo liên kết</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="publishToggle" checked>
+              <span class="slider"></span>
+            </label>
+          </label>
+
+          <label class="toggle-item">
+            <div class="toggle-label">
+              <div class="toggle-title">🖼️ Tải hình ảnh minh họa</div>
+              <div class="toggle-desc">Tải ảnh bìa cover và ảnh minh họa trong truyện</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="imagesToggle" checked>
+              <span class="slider"></span>
+            </label>
+          </label>
+        </div>
+
+        <!-- Cấu hình Tài khoản CMS -->
+        <div class="account-card" id="cmsAccountCard">
+          <div class="account-header">
+            <div class="account-title">
+              <span>🔐</span>
+              <span>Tài khoản CMS</span>
+            </div>
+            <button type="button" class="btn-account-test" id="btnTestCms" onclick="testCmsLogin()">
+              ⚡ Kiểm tra kết nối
+            </button>
+          </div>
+
+          <div id="cmsTestStatus" class="account-status-badge" style="display: none;"></div>
+
+          <div class="form-group">
+            <label class="form-label" for="cmsUrl" style="font-size: 11px;">CMS Base URL</label>
+            <input type="text" id="cmsUrl" class="input-text" style="padding: 9px 12px; font-size: 13px;"
+              value="https://vmnewstoryus.cfx.bz" placeholder="https://vmnewstoryus.cfx.bz"
+              oninput="saveAccountSettings()">
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label" for="cmsUser" style="font-size: 11px;">Tài khoản (Email/User)</label>
+              <input type="text" id="cmsUser" class="input-text" style="padding: 9px 12px; font-size: 13px;"
+                value="admin" placeholder="admin" oninput="saveAccountSettings()">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cmsPass" style="font-size: 11px;">Mật khẩu</label>
+              <div class="input-wrapper">
+                <input type="password" id="cmsPass" class="input-text"
+                  style="padding: 9px 36px 9px 12px; font-size: 13px;" value="Vnpt@123" placeholder="Mật khẩu"
+                  oninput="saveAccountSettings()">
+                <button type="button" class="btn-toggle-pw" onclick="togglePasswordVisibility()"
+                  title="Ẩn/Hiện mật khẩu">👁️</button>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 2px;">
+            <label
+              style="display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--text-secondary); cursor: pointer; user-select: none;">
+              <input type="checkbox" id="rememberAccount" checked style="accent-color: var(--primary); cursor: pointer;"
+                onchange="saveAccountSettings()">
+              <span>Ghi nhớ tài khoản trên thiết bị này</span>
+            </label>
+            <span style="font-size: 11px; color: var(--text-muted);">Lưu an toàn ở trình duyệt</span>
+          </div>
+        </div>
+
+        <!-- Giới hạn chapter & delay -->
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label" for="fromChapter">Từ Chapter</label>
+            <input type="number" id="fromChapter" class="input-text" value="1" min="1">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="toChapter">Đến Chapter (0 = Hết)</label>
+            <input type="number" id="toChapter" class="input-text" value="0" min="0">
+          </div>
+        </div>
+
+        <!-- Nút hành động chính -->
+        <button class="btn-primary" id="btnStart" onclick="startProcess()">
+          <span>🚀 Bắt đầu Cào, Dịch & Đăng bài</span>
+        </button>
+
+        <!-- Thanh tiến trình -->
+        <div class="progress-container" id="progressContainer">
+          <div class="progress-header">
+            <span id="progressLabel">Đang xử lý...</span>
+            <span id="progressPercent">0%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
+          </div>
+        </div>
+
+        <!-- Kết quả đăng CMS -->
+        <div class="cms-results-container" id="cmsResultsContainer">
+          <div class="cms-results-title">
+            <span>🎉 Đã đăng thành công lên CMS</span>
+          </div>
+          <div class="cms-posts-list" id="cmsPostsList"></div>
         </div>
       </div>
 
-      <!-- Giới hạn chapter & delay -->
-      <div class="grid-2">
-        <div class="form-group">
-          <label class="form-label" for="fromChapter">Từ Chapter</label>
-          <input type="number" id="fromChapter" class="input-text" value="1" min="1">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="toChapter">Đến Chapter (0 = Hết)</label>
-          <input type="number" id="toChapter" class="input-text" value="0" min="0">
-        </div>
-      </div>
-
-      <!-- Nút hành động chính -->
-      <button class="btn-primary" id="btnStart" onclick="startProcess()">
-        <span>🚀 Bắt đầu Cào, Dịch & Đăng bài</span>
-      </button>
-
-      <!-- Thanh tiến trình -->
-      <div class="progress-container" id="progressContainer">
-        <div class="progress-header">
-          <span id="progressLabel">Đang xử lý...</span>
-          <span id="progressPercent">0%</span>
-        </div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="progressBarFill"></div>
+      <!-- Cột phải: Live Console Terminal -->
+      <div class="panel" style="padding: 0; overflow: hidden;">
+        <div class="terminal-wrapper">
+          <div class="terminal-topbar">
+            <div class="terminal-dots">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <div class="terminal-title">live_terminal.log</div>
+            <div class="terminal-actions">
+              <button class="btn-term-action" onclick="clearTerminal()">Xóa log</button>
+              <button class="btn-term-action" onclick="copyLogs()">Sao chép</button>
+            </div>
+          </div>
+          <div class="terminal-body" id="terminalBody">
+            <div class="log-row">
+              <span class="log-time">[System]</span>
+              <span class="log-msg log-info">Hệ thống sẵn sàng. Nhập link truyện và bấm "Bắt đầu".</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Kết quả đăng CMS -->
-      <div class="cms-results-container" id="cmsResultsContainer">
-        <div class="cms-results-title">
-          <span>🎉 Đã đăng thành công lên CMS</span>
+    </main>
+
+    <!-- Lịch sử truyện đã cào -->
+    <div style="padding: 0 32px 32px 32px; max-width: 1680px; margin: 0 auto; width: 100%;">
+      <div class="history-card">
+        <div class="history-title">
+          <span>📁 Truyện đã cào gần đây</span>
+          <button class="btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="loadHistory()">Làm
+            mới</button>
         </div>
-        <div class="cms-posts-list" id="cmsPostsList"></div>
+        <div class="history-list" id="historyList">
+          <div style="color: var(--text-muted); font-size: 13px;">Đang tải lịch sử...</div>
+        </div>
       </div>
     </div>
-
-    <!-- Cột phải: Live Console Terminal -->
-    <div class="panel" style="padding: 0; overflow: hidden;">
-      <div class="terminal-wrapper">
-        <div class="terminal-topbar">
-          <div class="terminal-dots">
-            <span class="dot dot-red"></span>
-            <span class="dot dot-yellow"></span>
-            <span class="dot dot-green"></span>
-          </div>
-          <div class="terminal-title">live_terminal.log</div>
-          <div class="terminal-actions">
-            <button class="btn-term-action" onclick="clearTerminal()">Xóa log</button>
-            <button class="btn-term-action" onclick="copyLogs()">Sao chép</button>
-          </div>
-        </div>
-        <div class="terminal-body" id="terminalBody">
-          <div class="log-row">
-            <span class="log-time">[System]</span>
-            <span class="log-msg log-info">Hệ thống sẵn sàng. Nhập link truyện và bấm "Bắt đầu".</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- Lịch sử truyện đã cào -->
-  <div style="padding: 0 32px 32px 32px; max-width: 1680px; margin: 0 auto; width: 100%;">
-    <div class="history-card">
-      <div class="history-title">
-        <span>📁 Truyện đã cào gần đây</span>
-        <button class="btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="loadHistory()">Làm
-          mới</button>
-      </div>
-      <div class="history-list" id="historyList">
-        <div style="color: var(--text-muted); font-size: 13px;">Đang tải lịch sử...</div>
-      </div>
-    </div>
-  </div>
   </div>
   <!-- /#storyTabSection -->
 
@@ -2487,15 +2506,16 @@
               📋 Sao chép mã máy
             </button>
           </div>
-          <div style="font-size: 12px; color: #93c5fd; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); padding: 8px 12px; border-radius: 6px; line-height: 1.5; margin-top: 6px;">
+          <div
+            style="font-size: 12px; color: #93c5fd; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); padding: 8px 12px; border-radius: 6px; line-height: 1.5; margin-top: 6px;">
             💡 <strong>Kích hoạt Online:</strong> Bạn chỉ cần sao chép mã máy ở trên gửi cho Admin để kích hoạt
           </div>
         </div>
 
         <!-- Nút kiểm tra trực tiếp Online -->
         <div style="display: flex; gap: 10px; margin-top: 14px;">
-          <button type="button" class="btn-primary" id="btnRefreshLicense" style="flex: 1; padding: 10px; font-size: 13px;"
-            onclick="manualRefreshLicense()">
+          <button type="button" class="btn-primary" id="btnRefreshLicense"
+            style="flex: 1; padding: 10px; font-size: 13px;" onclick="manualRefreshLicense()">
             <span>⚡ Kiểm tra kích hoạt online</span>
           </button>
         </div>
@@ -2505,20 +2525,24 @@
           <span>🔑 Kích hoạt Key offline dự phòng (Nếu không có mạng)</span>
           <span id="offlineKeySectionIcon">▼</span>
         </div>
-        <div id="offlineKeySection" style="display: none; padding: 12px; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 6px 6px;">
+        <div id="offlineKeySection"
+          style="display: none; padding: 12px; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 6px 6px;">
           <div class="form-group" style="margin-bottom: 8px;">
             <label class="form-label" for="licenseKeyInput" style="font-size: 11px;">Nhập License Key offline</label>
-            <textarea id="licenseKeyInput" class="input-text" rows="2" placeholder="Dán chuỗi License Key offline vào đây..."
+            <textarea id="licenseKeyInput" class="input-text" rows="2"
+              placeholder="Dán chuỗi License Key offline vào đây..."
               style="font-family: 'JetBrains Mono', monospace; font-size: 12px; resize: vertical;"></textarea>
           </div>
           <div style="display: flex; justify-content: flex-end;">
-            <button type="button" class="btn-secondary" id="btnSubmitLicense" style="padding: 6px 14px; font-size: 12px;" onclick="submitLicenseKey()">
+            <button type="button" class="btn-secondary" id="btnSubmitLicense"
+              style="padding: 6px 14px; font-size: 12px;" onclick="submitLicenseKey()">
               Kích hoạt Key Offline
             </button>
           </div>
         </div>
 
-        <div id="activateErrorMsg" class="account-status-badge status-badge-error" style="display: none; margin-top: 10px;"></div>
+        <div id="activateErrorMsg" class="account-status-badge status-badge-error"
+          style="display: none; margin-top: 10px;"></div>
       </div>
 
       <div class="modal-footer">
@@ -2529,30 +2553,41 @@
 
 
 
-  
+
   <!-- Modal Donate Ủng Hộ Tác Giả (Cứ 20 bài báo 1 lần) -->
-  <div id="donateModal" class="modal-backdrop" style="display: none; z-index: 100000; align-items: center; justify-content: center;">
-    <div class="modal-card" style="max-width: 440px; width: 92%; text-align: center; border: 1px solid rgba(56, 189, 248, 0.4); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 24px rgba(56, 189, 248, 0.2); animation: fadeIn 0.25s ease-out;">
-      <div class="modal-header" style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+  <div id="donateModal" class="modal-backdrop"
+    style="display: none; z-index: 100000; align-items: center; justify-content: center;">
+    <div class="modal-card"
+      style="max-width: 440px; width: 92%; text-align: center; border: 1px solid rgba(56, 189, 248, 0.4); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 24px rgba(56, 189, 248, 0.2); animation: fadeIn 0.25s ease-out;">
+      <div class="modal-header"
+        style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
         <div class="modal-title" style="display: flex; align-items: center; gap: 8px; font-size: 15px;">
           <span>☕</span>
-          <span style="background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700;">Ủng Hộ Tác Giả (Donate)</span>
+          <span
+            style="background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700;">Ủng
+            Hộ Tác Giả (Donate)</span>
         </div>
         <button type="button" class="btn-modal-close" onclick="closeDonateModal()" title="Đóng thông báo">✕</button>
       </div>
 
-      <div class="modal-body" style="display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 18px;">
-        <div style="font-size: 13px; line-height: 1.55; color: #f1f5f9; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); padding: 12px 14px; border-radius: 10px; text-align: center;">
-          💖 <strong>Tools hoàn toàn miễn phí</strong>, bạn có thể donate ủng hộ tác giả qua STK hoặc mã QR như ảnh bên dưới.
+      <div class="modal-body"
+        style="display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 18px;">
+        <div
+          style="font-size: 13px; line-height: 1.55; color: #f1f5f9; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); padding: 12px 14px; border-radius: 10px; text-align: center;">
+          💖 <strong>Tools hoàn toàn miễn phí</strong>, bạn có thể donate ủng hộ tác giả qua STK hoặc mã QR như ảnh bên
+          dưới.
         </div>
 
         <!-- Ảnh QR Code Vietcombank -->
-        <div style="background: #ffffff; padding: 8px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); max-width: 240px; width: 100%;">
-          <img src="/static/img/donate_qr.png" alt="Mã QR Donate Vietcombank - TRAN VAN TOAN" style="width: 100%; height: auto; display: block; border-radius: 6px;" />
+        <div
+          style="background: #ffffff; padding: 8px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); max-width: 240px; width: 100%;">
+          <img src="/static/img/donate_qr.png" alt="Mã QR Donate Vietcombank - TRAN VAN TOAN"
+            style="width: 100%; height: auto; display: block; border-radius: 6px;" />
         </div>
 
         <!-- Thông tin số tài khoản -->
-        <div style="width: 100%; background: #090e1a; border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; text-align: left; display: flex; flex-direction: column; gap: 6px;">
+        <div
+          style="width: 100%; background: #090e1a; border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; text-align: left; display: flex; flex-direction: column; gap: 6px;">
           <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;">
             <span style="color: var(--text-secondary);">Ngân hàng:</span>
             <span style="font-weight: 700; color: #34d399;">Vietcombank (VCB)</span>
@@ -2561,18 +2596,22 @@
             <span style="color: var(--text-secondary);">Chủ tài khoản:</span>
             <span style="font-weight: 700; color: #f8fafc;">TRAN VAN TOAN</span>
           </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; border-top: 1px dashed var(--border); padding-top: 6px; margin-top: 2px;">
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; border-top: 1px dashed var(--border); padding-top: 6px; margin-top: 2px;">
             <span style="color: var(--text-secondary);">Số tài khoản:</span>
-            <span style="font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: #38bdf8;">9363870102</span>
+            <span
+              style="font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: #38bdf8;">9363870102</span>
           </div>
         </div>
 
         <!-- Nút hành động -->
         <div style="display: flex; gap: 10px; width: 100%; margin-top: 4px;">
-          <button type="button" class="btn-primary" style="flex: 1; padding: 10px; font-size: 13px; justify-content: center;" onclick="copyDonateStk()">
+          <button type="button" class="btn-primary"
+            style="flex: 1; padding: 10px; font-size: 13px; justify-content: center;" onclick="copyDonateStk()">
             <span>📋 Sao chép STK: 9363870102</span>
           </button>
-          <button type="button" class="btn-secondary" style="padding: 10px 16px; font-size: 13px;" onclick="closeDonateModal()">
+          <button type="button" class="btn-secondary" style="padding: 10px 16px; font-size: 13px;"
+            onclick="closeDonateModal()">
             <span>Đóng</span>
           </button>
         </div>
@@ -2793,18 +2832,18 @@
             currentHwid = data.hwid || "";
             document.getElementById("displayHwid").innerText = currentHwid || "Không xác định";
 
-          if (res.boot_id) {
-            const lastBoot = localStorage.getItem("last_server_boot_id");
-            if (lastBoot && lastBoot !== res.boot_id) {
-              localStorage.setItem("last_server_boot_id", res.boot_id);
-              setTimeout(() => {
-                let currentCount = parseInt(localStorage.getItem("total_created_articles_count") || "0", 10);
-                openDonateModal(currentCount, "restart");
-              }, 600);
-            } else {
-              localStorage.setItem("last_server_boot_id", res.boot_id);
+            if (res.boot_id) {
+              const lastBoot = localStorage.getItem("last_server_boot_id");
+              if (lastBoot && lastBoot !== res.boot_id) {
+                localStorage.setItem("last_server_boot_id", res.boot_id);
+                setTimeout(() => {
+                  let currentCount = parseInt(localStorage.getItem("total_created_articles_count") || "0", 10);
+                  openDonateModal(currentCount, "restart");
+                }, 600);
+              } else {
+                localStorage.setItem("last_server_boot_id", res.boot_id);
+              }
             }
-          }
 
             // Điền URL Sheet vào ô cấu hình nếu có
             if (res.sheet_url && document.getElementById("sheetUrlInput")) {
@@ -3234,17 +3273,17 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ path: targetPath })
       })
-      .then(r => r.json())
-      .then(res => {
-        if (res.ok) {
-          showToast(res.message || "Đã mở thư mục trên máy tính");
-        } else {
-          showToast(res.message || "Không thể mở thư mục", "error");
-        }
-      })
-      .catch(err => {
-        showToast("Lỗi kết nối khi mở thư mục: " + err, "error");
-      });
+        .then(r => r.json())
+        .then(res => {
+          if (res.ok) {
+            showToast(res.message || "Đã mở thư mục trên máy tính");
+          } else {
+            showToast(res.message || "Không thể mở thư mục", "error");
+          }
+        })
+        .catch(err => {
+          showToast("Lỗi kết nối khi mở thư mục: " + err, "error");
+        });
     }
 
     function openMediaFile(filePath) {
@@ -3255,17 +3294,17 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ path: cleanPath })
       })
-      .then(r => r.json())
-      .then(res => {
-        if (res.ok) {
-          showToast(res.message || "Đang mở video trên máy tính...");
-        } else {
-          showToast(res.message || "Không thể mở file", "error");
-        }
-      })
-      .catch(err => {
-        showToast("Lỗi kết nối khi mở file: " + err, "error");
-      });
+        .then(r => r.json())
+        .then(res => {
+          if (res.ok) {
+            showToast(res.message || "Đang mở video trên máy tính...");
+          } else {
+            showToast(res.message || "Không thể mở file", "error");
+          }
+        })
+        .catch(err => {
+          showToast("Lỗi kết nối khi mở file: " + err, "error");
+        });
     }
 
     function loadHistory() {
@@ -3307,7 +3346,7 @@
       loadHistory();
     }
 
-        // ==========================================
+    // ==========================================
     // LOGIC DONATE MODAL: CỨ 20 BÀI BÁO 1 LẦN & KHI TẮT KHỞI ĐỘNG LẠI
     // ==========================================
     function checkStartupDonate() {
@@ -3373,7 +3412,7 @@
     }
 
 
-    
+
 
 
     // Khởi tạo ban đầu
