@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.9] - 2026-10-09
 
 ### Changed / Fixed
+- [Ẩn Câu Lệnh Hướng Dẫn Nội Bộ Khỏi Giao Diện Popup Donate]:
+  - **Mô tả**: Loại bỏ câu *"Cứ 20 bài báo 1 lần nhé!"* và dòng chân trang *"✨ Cứ mỗi 20 bài báo tạo thành công sẽ nhắc 1 lần..."* trên giao diện modal popup donate của toàn bộ các template Web; giữ nguyên logic kích hoạt định kỳ 20 bài báo và khởi động lại ngầm bên dưới.
+  - **Files affected**:
+    - [templates/index_user.html](file:///c:/Users/Trant/Documents/tools/scan_story/templates/index_user.html)
+    - [templates/index_admin.html](file:///c:/Users/Trant/Documents/tools/scan_story/templates/index_admin.html)
+    - [templates/index.html](file:///c:/Users/Trant/Documents/tools/scan_story/templates/index.html)
+    - [tests/test_donate_modal.py](file:///c:/Users/Trant/Documents/tools/scan_story/tests/test_donate_modal.py)
+  - **Tests**:
+    - [tests/test_donate_modal.py](file:///c:/Users/Trant/Documents/tools/scan_story/tests/test_donate_modal.py): 10/10 tests PASS (bổ sung test kiểm định chuỗi hướng dẫn không xuất hiện trên UI người dùng).
+    - Toàn bộ test suite Python (34 tests): PASS 100%.
+    - Đã build lại và đồng bộ 2 file EXE mới lên GitHub Release v2.0.9.
+
 - [Cập Nhật Toàn Diện .gitignore & Chuẩn Bị Đẩy Lên Git]:
   - **Mục tiêu**: Làm sạch toàn bộ working tree, loại bỏ các thư mục rác, cache, dữ liệu browser runtime và các repo ngoại vi trước khi commit/push lên Git repository.
   - **Quy tắc bổ sung & Tối ưu hóa**:

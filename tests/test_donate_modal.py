@@ -120,6 +120,15 @@ class TestDonateModal(unittest.TestCase):
         self.assertTrue(check_donate_trigger(25, 0))
         self.assertTrue(check_donate_trigger(45, 25))
 
+    def test_internal_developer_instruction_hidden_from_users(self):
+        """Edge Case: Câu chữ hướng dẫn nội bộ 'Cứ 20 bài báo 1 lần nhé!' và 'Cứ mỗi 20 bài báo tạo thành công sẽ nhắc 1 lần' KHÔNG được hiển thị ra giao diện người dùng."""
+        for filename in ["index_user.html", "index_admin.html", "index.html"]:
+            file_path = os.path.join(self.templates_dir, filename)
+            with open(file_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            self.assertNotIn("Cứ 20 bài báo 1 lần nhé!", content, f"{filename} không được chứa câu 'Cứ 20 bài báo 1 lần nhé!'")
+            self.assertNotIn("Cứ mỗi 20 bài báo tạo thành công sẽ nhắc 1 lần", content, f"{filename} không được hiển thị câu nhắc nhở định kỳ cho người dùng")
+
     # ==========================================
     # 3. ERROR HANDLING
     # ==========================================
