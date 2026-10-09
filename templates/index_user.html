@@ -2249,25 +2249,6 @@
     </div>
   </header>
 
-  <!-- Navigation Tabs -->
-  <nav class="nav-tabs-wrapper">
-    <button class="nav-tab active" id="tabStoryBtn" onclick="switchMainTab('story')">
-      <span>📖 Cào & Đăng Truyện</span>
-    </button>
-    <button class="nav-tab" id="tabFbBtn" onclick="switchMainTab('fb')">
-      <span>🎬 Tải Reels & Video Facebook</span>
-      <span class="tab-badge">Mới</span>
-    </button>
-    <button class="nav-tab" id="tabGeminiBtn" onclick="switchMainTab('gemini')">
-      <span>✨ Gemini AI Phân Tích Video</span>
-      <span class="tab-badge" style="background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: #fff;">AI Studio</span>
-    </button>
-    <a href="/quan-ly" class="nav-tab" style="text-decoration: none;" title="Trang quản lý tiến độ tạo video và đăng bài Google Sheets">
-      <span>📊 Quản Lý Tiến Độ Video & Đăng Bài</span>
-      <span class="tab-badge" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff;">Google Sheets</span>
-    </a>
-  </nav>
-
   <!-- Tab 1: Story Scraper & Auto CMS Publisher -->
   <div id="storyTabSection">
     <!-- Banner cảnh báo bản quyền -->
@@ -2477,368 +2458,6 @@
   </div>
   <!-- /#storyTabSection -->
 
-  <!-- Tab 2: Facebook Reels & Video Downloader -->
-  <div id="fbTabSection" style="display: none;">
-    <main class="app-container">
-      <!-- Cột trái: Nhập link & Thao tác -->
-      <div class="panel">
-        <div class="panel-header">
-          <h2 class="panel-title">🎬 Tải Reels & Video Facebook</h2>
-        </div>
-
-        <!-- Ô nhập link Facebook -->
-        <div class="form-group">
-          <label class="form-label" for="fbUrlInput">Link Facebook Reel hoặc Video</label>
-          <div class="input-wrapper">
-            <input type="text" id="fbUrlInput" class="input-text"
-              placeholder="Dán link (ví dụ: https://www.facebook.com/reel/1142203028130644 hoặc fb.watch/...)" required>
-          </div>
-          <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">
-            Hỗ trợ Facebook Reels, Facebook Watch, Video bài viết công khai.
-          </div>
-        </div>
-
-        <!-- Nút dò chất lượng -->
-        <button type="button" class="btn-primary" id="btnProbeFb" onclick="probeFbVideo()">
-          <span>🔍 Quét Các Mức Chất Lượng Video</span>
-        </button>
-
-        <div id="fbProbeLoading" style="display: none; align-items: center; gap: 10px; font-size: 13px; color: var(--primary); padding: 12px; background: rgba(56,189,248,0.1); border-radius: 8px;">
-          <span>⏳</span>
-          <span>Đang phân tích video và dò tìm các định dạng tải về...</span>
-        </div>
-
-        <div id="fbProbeError" class="account-status-badge status-badge-error" style="display: none;"></div>
-
-        <!-- Thư mục lưu trữ & Tùy chọn -->
-        <div style="border-top: 1px solid var(--border); padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <span style="font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase;">Thư mục lưu video:</span>
-            <button type="button" class="btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="openOutputFolder('output/videos')">
-              📁 Mở thư mục Video
-            </button>
-          </div>
-          <div style="font-size: 12px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; background: #0b1120; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);">
-            output/videos/
-          </div>
-        </div>
-
-        <!-- Tải nhanh chất lượng cao nhất -->
-        <button type="button" class="btn-secondary" id="btnQuickBestDownload" style="display: none; justify-content: center; padding: 10px; font-size: 13px;" onclick="downloadFbQuality('best')">
-          ⚡ Tải nhanh Bản Nét Nhất (1080p Full HD)
-        </button>
-      </div>
-
-      <!-- Cột phải: Kết quả dò tìm chất lượng & Video Preview -->
-      <div class="panel">
-        <div class="panel-header">
-          <h2 class="panel-title">📋 Kết quả phân tích chất lượng</h2>
-          <span id="fbVideoStatusBadge" class="brand-badge" style="display: none;">Sẵn sàng tải</span>
-        </div>
-
-        <!-- Trạng thái chờ link (Empty State) -->
-        <div id="fbEmptyState" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; gap: 12px; color: var(--text-muted);">
-          <div style="font-size: 48px;">🎬</div>
-          <div style="font-size: 15px; font-weight: 600; color: var(--text-secondary);">Chưa có video nào được phân tích</div>
-          <div style="font-size: 13px; max-width: 380px; line-height: 1.5;">
-            Dán đường dẫn Facebook Reel hoặc Video vào ô bên trái rồi bấm <strong>Quét Các Mức Chất Lượng</strong> để xem trước và chọn định dạng tải về.
-          </div>
-        </div>
-
-        <!-- Card xem trước video với Player trực tiếp & Bộ đo thời gian realtime -->
-        <div id="fbPreviewCard" class="fb-preview-player-card" style="display: none;">
-          <!-- Header thông tin video -->
-          <div class="fb-player-header">
-            <div class="fb-video-title-row">
-              <span id="fbVideoSourceBadge" class="fb-badge fb-badge-primary">🌐 Online Preview</span>
-              <div id="fbVideoTitle" class="fb-video-title">Tiêu đề video</div>
-            </div>
-            <div class="fb-meta-badges">
-              <span class="fb-badge fb-badge-highlight"><span id="fbPlatform">Facebook Reel</span></span>
-              <span class="fb-badge">⏱ Thời lượng: <span id="fbDuration">--:--</span></span>
-              <span class="fb-badge">👤 <span id="fbUploader">Facebook</span></span>
-            </div>
-          </div>
-
-          <!-- Video Player trực tiếp -->
-          <div class="fb-video-stage">
-            <video id="fbVideoPlayer" playsinline preload="metadata" controls></video>
-          </div>
-
-          <!-- Bảng điều khiển & Thời gian Realtime dưới Video -->
-          <div class="fb-realtime-dashboard">
-            <!-- Hàng đồng hồ thời gian số lớn và trạng thái realtime -->
-            <div class="realtime-clock-bar">
-              <div class="realtime-digits-group">
-                <span class="realtime-clock-icon">⏱</span>
-                <span class="realtime-label">THỜI GIAN PHÁT:</span>
-                <span id="fbCurrentTime" class="realtime-clock-val">00:00.0</span>
-                <span class="realtime-clock-sep">/</span>
-                <span id="fbTotalTime" class="realtime-clock-total">00:00.0</span>
-                <span id="fbRemainingBadge" class="realtime-remaining-badge">-00:00.0</span>
-              </div>
-              <div id="fbPlayStatusBadge" class="play-status-pill status-ready">
-                <span class="status-pulse-dot"></span>
-                <span id="fbPlayStatusText">SẴN SÀNG</span>
-              </div>
-            </div>
-
-            <!-- Thanh tiến trình phát Realtime (Scrubber) -->
-            <div class="realtime-scrubber-wrapper">
-              <div class="realtime-scrubber-track" id="fbScrubberTrack" onclick="handleScrubberClick(event)" title="Nhấp chuột để tua nhanh tới vị trí mong muốn">
-                <div class="realtime-buffer-bar" id="fbBufferBar" style="width: 0%;"></div>
-                <div class="realtime-fill-bar" id="fbFillBar" style="width: 0%;"></div>
-                <div class="realtime-thumb-dot" id="fbThumbDot" style="left: 0%;"></div>
-              </div>
-              <span class="realtime-percent-text" id="fbPercentText">0%</span>
-            </div>
-
-            <!-- Các nút điều khiển thời gian thực và hành động -->
-            <div class="realtime-actions-bar">
-              <div class="playback-btn-group">
-                <button type="button" class="btn-ctrl-sub" onclick="seekFbVideoRelative(-5)" title="Tua lùi 5 giây">⏪ -5s</button>
-                <button type="button" class="btn-ctrl-main" id="btnTogglePlay" onclick="toggleFbPlay()">▶ Phát</button>
-                <button type="button" class="btn-ctrl-sub" onclick="seekFbVideoRelative(5)" title="Tua tới 5 giây">⏩ +5s</button>
-                <button type="button" class="btn-ctrl-sub" onclick="restartFbVideo()" title="Phát lại từ đầu">⏮ Về đầu</button>
-              </div>
-
-              <div class="playback-speed-group">
-                <span style="font-size: 11.5px; color: var(--text-muted); font-weight: 600;">Tốc độ:</span>
-                <select id="fbPlaybackRate" class="playback-select" onchange="setFbPlaybackRate(this.value)">
-                  <option value="0.5">0.5x</option>
-                  <option value="0.75">0.75x</option>
-                  <option value="1.0" selected>1.0x Chuẩn</option>
-                  <option value="1.25">1.25x</option>
-                  <option value="1.5">1.5x</option>
-                  <option value="2.0">2.0x</option>
-                </select>
-              </div>
-
-              <div class="file-action-buttons">
-                <button type="button" class="btn-file-action" onclick="openOutputFolder('output/videos')" title="Mở thư mục lưu trữ video trên Windows Explorer">
-                  📁 Mở thư mục Video
-                </button>
-                <button type="button" class="btn-file-action btn-file-highlight" id="btnOpenInApp" style="display: none;" onclick="openCurrentVideoFile()" title="Mở video này bằng ứng dụng xem phim trên Windows (VLC, Media Player)">
-                  🖥 Mở video trên máy
-                </button>
-              </div>
-            </div>
-
-            <!-- Hàng hiển thị đường dẫn video trên máy khi phát local -->
-            <div id="fbPlayerPathRow" class="fb-player-path-row" style="display: none;">
-              <span class="fb-player-path-label">📁 File máy:</span>
-              <input type="text" id="fbPlayerPathInput" class="input-text fb-path-input-sm" readonly onclick="this.select()" />
-              <button type="button" class="btn-secondary btn-copy-sm" id="btnCopyPlayerPath" onclick="copyPlayerVideoPath()">
-                <span>📋 Sao chép path</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tiến trình tải video -->
-        <div id="fbDownloadProgressBox" style="display: none; background: #0b1120; border: 1px solid var(--primary); border-radius: 8px; padding: 14px; flex-direction: column; gap: 10px; margin-top: 10px;">
-          <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px;">
-            <span id="fbDownloadStatusText" style="color: var(--primary); font-weight: 500;">⏳ Đang tải video về máy...</span>
-            <span id="fbDownloadPercentText" style="color: var(--text-primary); font-weight: 600;">--</span>
-          </div>
-          <div class="progress-bar-track">
-            <div class="progress-bar-fill" id="fbProgressBarFill" style="width: 0%;"></div>
-          </div>
-        </div>
-
-        <!-- Hộp hiển thị kết quả sau khi tải xong kèm Path và nút Sao chép -->
-        <div id="fbDownloadSuccessCard" class="fb-download-success-box" style="display: none;">
-          <div class="fb-success-header">
-            <div class="fb-success-title">
-              <span class="fb-success-icon">✅</span>
-              <span id="fbSuccessStatusTitle">Đã tải video thành công về máy tính!</span>
-            </div>
-            <span id="fbSuccessFileSizeBadge" class="brand-badge fb-badge-green">-- MB</span>
-          </div>
-
-          <div class="fb-path-wrapper">
-            <div class="fb-path-label-row">
-              <span class="fb-path-label">📁 Đường dẫn file video trên máy:</span>
-              <span class="fb-path-sub">(Click nút bên phải để sao chép đường dẫn)</span>
-            </div>
-            <div class="fb-path-input-group">
-              <input type="text" id="fbDownloadedPathInput" class="input-text fb-path-input" readonly value="" placeholder="C:\path\to\video.mp4" onclick="this.select()" />
-              <button type="button" class="btn-primary btn-copy-path" id="btnCopyDownloadedPath" onclick="copyDownloadedVideoPath()">
-                <span id="btnCopyDownloadedPathIcon">📋</span>
-                <span id="btnCopyDownloadedPathText">Sao chép path</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="fb-success-actions">
-            <button type="button" class="btn-secondary" onclick="openOutputFolder(window.lastDownloadedVideo ? window.lastDownloadedVideo.absPath : 'output/videos')">
-              📁 Mở thư mục Video
-            </button>
-            <button type="button" class="btn-secondary" onclick="openCurrentDownloadedFile()">
-              🖥 Mở bằng ứng dụng máy
-            </button>
-            <button type="button" class="btn-gemini-jump" onclick="switchToGeminiWithVideo()">
-              ✨ Sang Tab Gemini Phân Tích Ngay
-            </button>
-          </div>
-        </div>
-
-        <!-- Danh sách chất lượng khả dụng -->
-        <div id="fbQualitiesWrapper" style="display: none; margin-top: 10px;">
-          <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">
-            Các định dạng video & âm thanh tìm thấy:
-          </div>
-          <div id="fbQualitiesList" class="qualities-list"></div>
-        </div>
-
-      </div>
-    </main>
-  </div>
-  <!-- /#fbTabSection -->
-
-  <!-- Tab 3: Gemini AI Video Analyzer & Prompt Manager -->
-  <div id="geminiTabSection" style="display: none;">
-    <main class="app-container gemini-layout-grid">
-      <!-- Cột trái: Hộp thoại Prompt Mẫu & Quản lý Prompt -->
-      <div class="panel gemini-prompt-col">
-        <div class="panel-header">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 18px;">📝</span>
-            <h2 class="panel-title">Hộp Thoại Prompt Mẫu</h2>
-          </div>
-          <span class="brand-badge" style="background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(59,130,246,0.2)); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.3);">
-            Gemini Format
-          </span>
-        </div>
-
-        <!-- Video Context Card: Hiển thị video vừa tải để tiện tham chiếu -->
-        <div id="geminiVideoContextCard" class="gemini-video-context" style="display: none;">
-          <div class="gemini-context-header">
-            <span class="gemini-context-icon">🎬</span>
-            <div class="gemini-context-info">
-              <div class="gemini-context-name" id="geminiActiveVideoName">Chưa có video</div>
-              <div class="gemini-context-path" id="geminiActiveVideoPath">--</div>
-            </div>
-          </div>
-          <div class="gemini-context-btns">
-            <button type="button" class="btn-secondary btn-sm" onclick="copyGeminiActiveVideoPath()">
-              📋 Sao chép Path
-            </button>
-            <button type="button" class="btn-secondary btn-sm" onclick="insertPathToPrompt()">
-              ➕ Chèn Path vào Prompt
-            </button>
-            <button type="button" class="btn-secondary btn-sm" onclick="openOutputFolder(window.lastDownloadedVideo ? window.lastDownloadedVideo.absPath : 'output/videos')">
-              📁 Thư mục
-            </button>
-          </div>
-        </div>
-
-        <!-- Selector chọn mẫu prompt -->
-        <div class="form-group" style="margin-bottom: 12px;">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-            <label class="form-label" for="promptSelect" style="margin-bottom: 0;">Chọn mẫu prompt:</label>
-            <div style="display: flex; gap: 6px;">
-              <button type="button" class="btn-text-action" onclick="createNewPromptTemplate()" title="Tạo mẫu prompt mới">
-                ➕ Thêm mới
-              </button>
-              <button type="button" class="btn-text-action" onclick="resetDefaultPrompt()" title="Khôi phục mẫu mặc định">
-                🔄 Khôi phục
-              </button>
-              <button type="button" class="btn-text-action btn-text-danger" id="btnDeletePrompt" onclick="deleteCurrentPromptTemplate()" title="Xóa mẫu đang chọn" style="display: none;">
-                🗑 Xóa
-              </button>
-            </div>
-          </div>
-          <select id="promptSelect" class="input-select" onchange="handlePromptSelectChange(this.value)">
-            <!-- Rendered by JS -->
-          </select>
-        </div>
-
-        <!-- Ô soạn thảo Prompt mẫu -->
-        <div class="form-group" style="flex: 1; display: flex; flex-direction: column; margin-bottom: 12px;">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-            <label class="form-label" for="promptTextarea" style="margin-bottom: 0;">Nội dung Prompt:</label>
-            <div style="font-size: 11px; color: var(--text-muted);">
-              <span id="promptCharCount">0</span> ký tự &bull; <span id="promptWordCount">0</span> từ
-            </div>
-          </div>
-          <textarea id="promptTextarea" class="gemini-prompt-editor" placeholder="Nhập prompt mẫu..." spellcheck="false" oninput="updatePromptStats()"></textarea>
-        </div>
-
-        <!-- Các nút thao tác với Prompt -->
-        <div class="prompt-action-grid">
-          <button type="button" class="btn-primary btn-copy-prompt-glow" id="btnCopyPrompt" onclick="copyActivePrompt()">
-            <span id="btnCopyPromptIcon">📋</span>
-            <span id="btnCopyPromptText">SAO CHÉP PROMPT NÀY</span>
-          </button>
-          <button type="button" class="btn-secondary" id="btnCopyPromptWithPath" onclick="copyPromptWithVideoPath()" title="Sao chép toàn bộ Prompt kèm theo đường dẫn video trên máy">
-            📎 Sao chép Kèm Path Video
-          </button>
-          <div style="display: flex; gap: 8px;">
-            <button type="button" class="btn-secondary" style="flex: 1;" onclick="saveActivePromptChanges()">
-              💾 Lưu Thay Đổi
-            </button>
-            <button type="button" class="btn-secondary" style="flex: 1;" onclick="openGeminiPopup()">
-              🚀 Mở Gemini Cửa Sổ Riêng
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Cột phải: Webview Gemini AI & Thanh điều khiển -->
-      <div class="panel gemini-webview-col">
-        <!-- Banner giải thích lỗi từ chối kết nối và cách mở khóa -->
-        <div class="gemini-blocked-banner">
-          <div style="display: flex; align-items: flex-start; gap: 10px;">
-            <span style="font-size: 20px;">⚠️</span>
-            <div style="flex: 1;">
-              <div style="font-size: 13px; font-weight: 700; color: #f59e0b; margin-bottom: 4px;">
-                Lưu ý nếu khung webview báo "gemini.google.com đã từ chối kết nối"
-              </div>
-              <div style="font-size: 12px; line-height: 1.55; color: #cbd5e1;">
-                Google mặc định chặn tất cả website bên ngoài nhúng trang tài khoản vào iframe (<code>X-Frame-Options: SAMEORIGIN</code>).<br>
-                <strong>Cách khắc phục để mở ngay trên cùng trang web này:</strong>
-                <ul style="margin: 6px 0 0 16px; padding: 0;">
-                  <li><strong>Cách 1 (Mở khóa Iframe):</strong> Cài tiện ích Chrome 
-                    <a href="https://chromewebstore.google.com/detail/ignore-x-frame-options/ammkbmfgriadimchnlliakealojbflac" target="_blank" style="color: #38bdf8; text-decoration: underline; font-weight: 600;">Ignore X-Frame-Options ↗</a> 
-                    (tiện ích này sẽ gỡ lệnh chặn của Google, sau đó bạn bấm <em>🔄 Tải lại</em> là webview sẽ tải bình thường).
-                  </li>
-                  <li><strong>Cách 2:</strong> Bấm nút <strong>🖥️ Mở Cửa Sổ Riêng</strong> bên dưới để mở Gemini song song như một ứng dụng độc lập.</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Toolbar thanh địa chỉ trình duyệt -->
-        <div class="gemini-browser-toolbar">
-          <div class="gemini-address-bar">
-            <span class="gemini-ssl-badge">🔒 Bảo mật</span>
-            <span class="gemini-url-display">https://gemini.google.com/app</span>
-          </div>
-
-          <div class="gemini-toolbar-btns">
-            <button type="button" class="btn-toolbar-item btn-highlight-popup" onclick="openGeminiPopup()" title="Mở Gemini trong cửa sổ độc lập (Tối ưu nhất, không bị hạn chế iframe)">
-              <span>🖥️ Mở Cửa Sổ Riêng</span>
-            </button>
-            <button type="button" class="btn-toolbar-item" onclick="openGeminiNewTab()" title="Mở Gemini trên tab trình duyệt mới">
-              <span>🌐 Mở Tab Mới</span>
-            </button>
-            <button type="button" class="btn-toolbar-item" onclick="reloadGeminiIframe()" title="Tải lại Webview">
-              <span>🔄 Tải lại</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Khung Webview Iframe -->
-        <div class="gemini-iframe-container">
-          <iframe id="geminiIframe" src="https://gemini.google.com/app" allow="camera; microphone; clipboard-read; clipboard-write; web-share" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
-        </div>
-      </div>
-    </main>
-  </div>
-  <!-- /#geminiTabSection -->
-
   <!-- Modal Kích Hoạt Bản Quyền -->
   <div id="licenseModal" class="modal-backdrop" style="display: none;">
     <div class="modal-card" style="max-width: 550px;">
@@ -2909,6 +2528,61 @@
   </div>
 
 
+
+  
+  <!-- Modal Donate Ủng Hộ Tác Giả (Cứ 20 bài báo 1 lần) -->
+  <div id="donateModal" class="modal-backdrop" style="display: none; z-index: 100000; align-items: center; justify-content: center;">
+    <div class="modal-card" style="max-width: 440px; width: 92%; text-align: center; border: 1px solid rgba(56, 189, 248, 0.4); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 24px rgba(56, 189, 248, 0.2); animation: fadeIn 0.25s ease-out;">
+      <div class="modal-header" style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+        <div class="modal-title" style="display: flex; align-items: center; gap: 8px; font-size: 15px;">
+          <span>☕</span>
+          <span style="background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700;">Ủng Hộ Tác Giả (Donate)</span>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeDonateModal()" title="Đóng thông báo">✕</button>
+      </div>
+
+      <div class="modal-body" style="display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 18px;">
+        <div style="font-size: 13px; line-height: 1.55; color: #f1f5f9; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); padding: 12px 14px; border-radius: 10px; text-align: center;">
+          💖 <strong>Tools hoàn toàn miễn phí</strong> bạn có thể donate ủng hộ tác giả qua stk, mã qr như ảnh bên dưới. Cứ 20 bài báo 1 lần nhé!
+        </div>
+
+        <!-- Ảnh QR Code Vietcombank -->
+        <div style="background: #ffffff; padding: 8px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); max-width: 240px; width: 100%;">
+          <img src="/static/img/donate_qr.png" alt="Mã QR Donate Vietcombank - TRAN VAN TOAN" style="width: 100%; height: auto; display: block; border-radius: 6px;" />
+        </div>
+
+        <!-- Thông tin số tài khoản -->
+        <div style="width: 100%; background: #090e1a; border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; text-align: left; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;">
+            <span style="color: var(--text-secondary);">Ngân hàng:</span>
+            <span style="font-weight: 700; color: #34d399;">Vietcombank (VCB)</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;">
+            <span style="color: var(--text-secondary);">Chủ tài khoản:</span>
+            <span style="font-weight: 700; color: #f8fafc;">TRAN VAN TOAN</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; border-top: 1px dashed var(--border); padding-top: 6px; margin-top: 2px;">
+            <span style="color: var(--text-secondary);">Số tài khoản:</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: #38bdf8;">9363870102</span>
+          </div>
+        </div>
+
+        <!-- Nút hành động -->
+        <div style="display: flex; gap: 10px; width: 100%; margin-top: 4px;">
+          <button type="button" class="btn-primary" style="flex: 1; padding: 10px; font-size: 13px; justify-content: center;" onclick="copyDonateStk()">
+            <span>📋 Sao chép STK: 9363870102</span>
+          </button>
+          <button type="button" class="btn-secondary" style="padding: 10px 16px; font-size: 13px;" onclick="closeDonateModal()">
+            <span>Đóng</span>
+          </button>
+        </div>
+
+        <div style="font-size: 11px; color: var(--text-muted);">
+          ✨ Cứ mỗi 20 bài báo tạo thành công sẽ nhắc 1 lần (Đã tạo: <span id="donateArticlesCountText" style="color: #38bdf8; font-weight: 600;">0</span> bài)
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
     // Kết nối SSE để nhận log real-time
@@ -2981,6 +2655,8 @@
             renderCmsResults(data.cms_posts);
           }
           loadHistory();
+          const added = (data && data.cms_posts && data.cms_posts.length > 0) ? data.cms_posts.length : 1;
+          checkAndTriggerDonateModal(added);
         }
 
       } catch (err) {
@@ -3118,6 +2794,19 @@
             const data = res.data;
             currentHwid = data.hwid || "";
             document.getElementById("displayHwid").innerText = currentHwid || "Không xác định";
+
+          if (res.boot_id) {
+            const lastBoot = localStorage.getItem("last_server_boot_id");
+            if (lastBoot && lastBoot !== res.boot_id) {
+              localStorage.setItem("last_server_boot_id", res.boot_id);
+              setTimeout(() => {
+                let currentCount = parseInt(localStorage.getItem("total_created_articles_count") || "0", 10);
+                openDonateModal(currentCount, "restart");
+              }, 600);
+            } else {
+              localStorage.setItem("last_server_boot_id", res.boot_id);
+            }
+          }
 
             // Điền URL Sheet vào ô cấu hình nếu có
             if (res.sheet_url && document.getElementById("sheetUrlInput")) {
@@ -3614,868 +3303,87 @@
         .replace(/'/g, "&#039;");
     }
 
-    // ==========================================
-    // TAB CHÍNH: STORY SCRAPER VS FACEBOOK REELS
-    // ==========================================
-    let currentFbUrl = "";
-    let currentFbQualities = [];
-    let currentPlayingLocalPath = "";
-    let isVideoScrubbing = false;
-    let animFrameId = null;
-
     function switchMainTab(tab) {
-      const tabs = [
-        { id: "story", btn: "tabStoryBtn", section: "storyTabSection" },
-        { id: "fb", btn: "tabFbBtn", section: "fbTabSection" },
-        { id: "gemini", btn: "tabGeminiBtn", section: "geminiTabSection" }
-      ];
-
-      tabs.forEach(t => {
-        const btn = document.getElementById(t.btn);
-        const sec = document.getElementById(t.section);
-        if (btn) btn.classList.toggle("active", t.id === tab);
-        if (sec) sec.style.display = (t.id === tab) ? "block" : "none";
-      });
-
-      if (tab === "fb") {
-        loadFbHistory();
-        initVideoPlayerEvents();
-      } else if (tab === "gemini") {
-        initGeminiTab();
-      } else {
-        loadHistory();
-      }
+      const storySec = document.getElementById("storyTabSection");
+      if (storySec) storySec.style.display = "block";
+      loadHistory();
     }
 
+        // ==========================================
+    // LOGIC DONATE MODAL: CỨ 20 BÀI BÁO 1 LẦN & KHI TẮT KHỞI ĐỘNG LẠI
     // ==========================================
-    // LOGIC VIDEO PREVIEW PLAYER & REALTIME RUNNING TIMER
-    // ==========================================
-    function formatRealtime(seconds) {
-      if (isNaN(seconds) || seconds < 0) seconds = 0;
-      const m = Math.floor(seconds / 60);
-      const s = Math.floor(seconds % 60);
-      const ms = Math.floor((seconds % 1) * 10);
-      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${ms}`;
-    }
-
-    function initVideoPlayerEvents() {
-      const player = document.getElementById("fbVideoPlayer");
-      if (!player || player._hasEventsAttached) return;
-      player._hasEventsAttached = true;
-
-      const currTimeEl = document.getElementById("fbCurrentTime");
-      const totalTimeEl = document.getElementById("fbTotalTime");
-      const remainEl = document.getElementById("fbRemainingBadge");
-      const fillBar = document.getElementById("fbFillBar");
-      const thumbDot = document.getElementById("fbThumbDot");
-      const pctText = document.getElementById("fbPercentText");
-      const bufferBar = document.getElementById("fbBufferBar");
-      const statusBadge = document.getElementById("fbPlayStatusBadge");
-      const statusText = document.getElementById("fbPlayStatusText");
-      const btnPlay = document.getElementById("btnTogglePlay");
-
-      function updateRealtimeDisplay() {
-        if (!player) return;
-        const cur = player.currentTime || 0;
-        const dur = player.duration || 0;
-
-        if (currTimeEl) currTimeEl.innerText = formatRealtime(cur);
-
-        if (dur > 0) {
-          if (totalTimeEl) totalTimeEl.innerText = formatRealtime(dur);
-          const rem = Math.max(0, dur - cur);
-          if (remainEl) remainEl.innerText = "-" + formatRealtime(rem);
-
-          const pct = Math.min(100, Math.max(0, (cur / dur) * 100));
-          if (!isVideoScrubbing) {
-            if (fillBar) fillBar.style.width = pct + "%";
-            if (thumbDot) thumbDot.style.left = pct + "%";
-            if (pctText) pctText.innerText = Math.round(pct) + "%";
-          }
-        } else {
-          if (remainEl) remainEl.innerText = "--:--";
-          if (pctText) pctText.innerText = "0%";
-        }
-
-        if (player.buffered && player.buffered.length > 0 && dur > 0) {
-          try {
-            const bufEnd = player.buffered.end(player.buffered.length - 1);
-            const bufPct = Math.min(100, (bufEnd / dur) * 100);
-            if (bufferBar) bufferBar.style.width = bufPct + "%";
-          } catch(e) {}
-        }
-
-        if (!player.paused && !player.ended) {
-          animFrameId = requestAnimationFrame(updateRealtimeDisplay);
-        }
-      }
-
-      player.addEventListener("play", () => {
-        if (statusBadge) {
-          statusBadge.className = "play-status-pill status-playing";
-        }
-        if (statusText) statusText.innerText = "ĐANG PHÁT";
-        if (btnPlay) btnPlay.innerHTML = "<span>⏸ Tạm dừng</span>";
-        cancelAnimationFrame(animFrameId);
-        animFrameId = requestAnimationFrame(updateRealtimeDisplay);
-      });
-
-      player.addEventListener("pause", () => {
-        cancelAnimationFrame(animFrameId);
-        updateRealtimeDisplay();
-        if (statusBadge) {
-          statusBadge.className = "play-status-pill status-paused";
-        }
-        if (statusText) statusText.innerText = "TẠM DỪNG";
-        if (btnPlay) btnPlay.innerHTML = "<span>▶ Tiếp tục</span>";
-      });
-
-      player.addEventListener("ended", () => {
-        cancelAnimationFrame(animFrameId);
-        updateRealtimeDisplay();
-        if (statusBadge) {
-          statusBadge.className = "play-status-pill status-ready";
-        }
-        if (statusText) statusText.innerText = "ĐÃ PHÁT XONG";
-        if (btnPlay) btnPlay.innerHTML = "<span>▶ Phát lại</span>";
-      });
-
-      player.addEventListener("timeupdate", () => {
-        if (player.paused) {
-          updateRealtimeDisplay();
-        }
-      });
-
-      player.addEventListener("loadedmetadata", () => {
-        if (totalTimeEl) totalTimeEl.innerText = formatRealtime(player.duration);
-        updateRealtimeDisplay();
-      });
-
-      player.addEventListener("progress", () => {
-        if (player.buffered && player.buffered.length > 0 && player.duration > 0) {
-          try {
-            const bufEnd = player.buffered.end(player.buffered.length - 1);
-            const bufPct = Math.min(100, (bufEnd / player.duration) * 100);
-            if (bufferBar) bufferBar.style.width = bufPct + "%";
-          } catch(e) {}
-        }
-      });
-    }
-
-    function toggleFbPlay() {
-      const player = document.getElementById("fbVideoPlayer");
-      if (!player) return;
-      if (player.paused || player.ended) {
-        player.play().catch(e => console.log("Play error:", e));
-      } else {
-        player.pause();
-      }
-    }
-
-    function seekFbVideoRelative(deltaSec) {
-      const player = document.getElementById("fbVideoPlayer");
-      if (!player) return;
-      player.currentTime = Math.max(0, Math.min((player.duration || 9999), player.currentTime + deltaSec));
-    }
-
-    function restartFbVideo() {
-      const player = document.getElementById("fbVideoPlayer");
-      if (!player) return;
-      player.currentTime = 0;
-      player.play().catch(e => console.log("Play error:", e));
-    }
-
-    function setFbPlaybackRate(rate) {
-      const player = document.getElementById("fbVideoPlayer");
-      if (player) {
-        player.playbackRate = parseFloat(rate) || 1.0;
-      }
-    }
-
-    function handleScrubberClick(event) {
-      const player = document.getElementById("fbVideoPlayer");
-      const track = document.getElementById("fbScrubberTrack");
-      if (!player || !track || !player.duration) return;
-
-      const rect = track.getBoundingClientRect();
-      const clickX = event.clientX - rect.left;
-      const pct = Math.max(0, Math.min(1, clickX / rect.width));
-      player.currentTime = pct * player.duration;
-    }
-
-    function openCurrentVideoFile() {
-      if (!currentPlayingLocalPath) {
-        showToast("Video đang phát là bản trực tuyến, chưa tải về máy", "error");
-        return;
-      }
-      openMediaFile(currentPlayingLocalPath);
-    }
-
-    function playFbPreview(url, title, isLocalFile = false, filePath = "", durationStr = "") {
-      const player = document.getElementById("fbVideoPlayer");
-      const previewCard = document.getElementById("fbPreviewCard");
-      const emptyState = document.getElementById("fbEmptyState");
-      const titleEl = document.getElementById("fbVideoTitle");
-      const sourceBadge = document.getElementById("fbVideoSourceBadge");
-      const btnOpenInApp = document.getElementById("btnOpenInApp");
-
-      if (!player) return;
-      initVideoPlayerEvents();
-
-      if (emptyState) emptyState.style.display = "none";
-      if (previewCard) previewCard.style.display = "flex";
-
-      if (titleEl) titleEl.innerText = title || "Facebook Video";
-      if (durationStr) {
-        const durEl = document.getElementById("fbDuration");
-        if (durEl) durEl.innerText = durationStr;
-      }
-
-      currentPlayingLocalPath = isLocalFile ? (filePath || "").replace(/\\/g, '/') : "";
-
-      // Hiển thị hoặc ẩn hàng đường dẫn file máy trong khung phát video
-      const playerPathRow = document.getElementById("fbPlayerPathRow");
-      const playerPathInput = document.getElementById("fbPlayerPathInput");
-      if (playerPathRow && playerPathInput) {
-        if (isLocalFile && filePath) {
-          playerPathRow.style.display = "flex";
-          playerPathInput.value = filePath;
-        } else {
-          playerPathRow.style.display = "none";
-        }
-      }
-
-      if (sourceBadge) {
-        if (isLocalFile) {
-          sourceBadge.className = "fb-badge fb-badge-highlight";
-          sourceBadge.innerText = "💾 Phát từ máy tính (Local)";
-        } else {
-          sourceBadge.className = "fb-badge fb-badge-primary";
-          sourceBadge.innerText = "🌐 Xem trước trực tuyến (Facebook Stream)";
-        }
-      }
-
-      if (btnOpenInApp) {
-        btnOpenInApp.style.display = isLocalFile ? "inline-flex" : "none";
-      }
-
-      player.src = url;
-      player.load();
-      player.play().catch(e => {
-        console.log("Auto-play blocked or waiting for user gesture:", e);
-      });
-
-      previewCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      showToast(isLocalFile ? "▶ Đang phát video từ máy tính" : "🌐 Đang tải xem trước video Facebook...");
-    }
-
-    // ==========================================
-    // LOGIC TẢI REELS & VIDEO FACEBOOK
-    // ==========================================
-    function probeFbVideo() {
-      const urlInput = document.getElementById("fbUrlInput");
-      const url = urlInput ? urlInput.value.trim() : "";
-      if (!url) {
-        alert("Vui lòng nhập link Facebook Reel hoặc Video!");
-        if (urlInput) urlInput.focus();
-        return;
-      }
-
-      currentFbUrl = url;
-      const btnProbe = document.getElementById("btnProbeFb");
-      const loading = document.getElementById("fbProbeLoading");
-      const errorMsg = document.getElementById("fbProbeError");
-      const emptyState = document.getElementById("fbEmptyState");
-      const previewCard = document.getElementById("fbPreviewCard");
-      const qualitiesWrapper = document.getElementById("fbQualitiesWrapper");
-      const statusBadge = document.getElementById("fbVideoStatusBadge");
-      const btnQuick = document.getElementById("btnQuickBestDownload");
-      const successCard = document.getElementById("fbDownloadSuccessCard");
-
-      if (successCard) successCard.style.display = "none";
-
-      btnProbe.disabled = true;
-      btnProbe.innerHTML = "<span>⏳ Đang dò tìm...</span>";
-      loading.style.display = "flex";
-      errorMsg.style.display = "none";
-
-      fetch("/api/fb/probe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: url })
-      })
-      .then(r => r.json())
-      .then(res => {
-        btnProbe.disabled = false;
-        btnProbe.innerHTML = "<span>🔍 Quét Các Mức Chất Lượng Video</span>";
-        loading.style.display = "none";
-
-        if (!res.ok) {
-          errorMsg.innerText = "❌ " + (res.message || "Không thể phân tích video.");
-          errorMsg.style.display = "flex";
-          return;
-        }
-
-        const data = res.data;
-        currentFbQualities = data.qualities || [];
-
-        // Hiển thị preview card
-        emptyState.style.display = "none";
-        previewCard.style.display = "flex";
-        qualitiesWrapper.style.display = "block";
-        statusBadge.style.display = "inline-block";
-        btnQuick.style.display = "flex";
-
-        document.getElementById("fbVideoTitle").innerText = data.title || "Facebook Reel";
-        document.getElementById("fbDuration").innerText = data.duration || "--:--";
-        document.getElementById("fbUploader").innerText = data.uploader || "Facebook";
-
-        // Khởi tạo player và tự động nạp preview_url nếu có
-        initVideoPlayerEvents();
-        if (data.preview_url) {
-          playFbPreview(data.preview_url, data.title, false, "", data.duration);
-        }
-
-        renderFbQualities(currentFbQualities);
-      })
-      .catch(err => {
-        btnProbe.disabled = false;
-        btnProbe.innerHTML = "<span>🔍 Quét Các Mức Chất Lượng Video</span>";
-        loading.style.display = "none";
-        errorMsg.innerText = "❌ Lỗi kết nối tới server: " + err;
-        errorMsg.style.display = "flex";
-      });
-    }
-
-    function renderFbQualities(qualities) {
-      const container = document.getElementById("fbQualitiesList");
-      container.innerHTML = "";
-
-      if (!qualities || qualities.length === 0) {
-        container.innerHTML = `<div style="color: var(--text-muted); font-size: 13px;">Không tìm thấy định dạng tải về nào.</div>`;
-        return;
-      }
-
-      qualities.forEach((q, idx) => {
-        const item = document.createElement("div");
-        item.className = "quality-item";
-
-        const icon = q.ext === "m4a" ? "🎵" : (q.badge === "1080p" || q.id === "best" ? "🌟" : "🎬");
-        item.innerHTML = `
-          <div class="quality-info">
-            <div class="quality-name-row">
-              <span style="font-size: 16px;">${icon}</span>
-              <span class="quality-name">${escapeHtml(q.label)}</span>
-              ${q.badge ? `<span class="quality-badge">${escapeHtml(q.badge)}</span>` : ""}
-            </div>
-            <div class="quality-subtext">
-              <span>Định dạng: <strong>${escapeHtml(q.ext.toUpperCase())}</strong></span>
-              ${q.resolution ? ` &bull; <span>Độ phân giải: <strong>${escapeHtml(q.resolution)}</strong></span>` : ""}
-              ${q.size && q.size !== "Tự động" ? ` &bull; <span>Dung lượng: <strong>${escapeHtml(q.size)}</strong></span>` : ""}
-              ${q.note ? ` &bull; <span>${escapeHtml(q.note)}</span>` : ""}
-            </div>
-          </div>
-          <button type="button" class="btn-download-quality" id="btnDl_${idx}" onclick="downloadFbQuality('${escapeHtml(q.id)}', 'btnDl_${idx}')">
-            <span>⬇ Tải về</span>
-          </button>
-        `;
-        container.appendChild(item);
-      });
-    }
-
-    function downloadFbQuality(formatId, btnId = null) {
-      if (!currentFbUrl) {
-        alert("Vui lòng nhập và quét video Facebook trước khi tải!");
-        return;
-      }
-
-      const progressBox = document.getElementById("fbDownloadProgressBox");
-      const statusText = document.getElementById("fbDownloadStatusText");
-      const percentText = document.getElementById("fbDownloadPercentText");
-      const barFill = document.getElementById("fbProgressBarFill");
-      const successCard = document.getElementById("fbDownloadSuccessCard");
-
-      if (successCard) successCard.style.display = "none";
-
-      let clickedBtn = btnId ? document.getElementById(btnId) : null;
-      if (clickedBtn) {
-        clickedBtn.disabled = true;
-        clickedBtn.innerHTML = "<span>⏳ Đang tải...</span>";
-      }
-
-      progressBox.style.display = "flex";
-      statusText.innerHTML = "⏳ Đang tải video từ Facebook và xử lý âm thanh/hình ảnh...";
-      percentText.innerText = "50%";
-      barFill.style.width = "50%";
-
-      fetch("/api/fb/download", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          url: currentFbUrl,
-          format_id: formatId
-        })
-      })
-      .then(r => r.json())
-      .then(res => {
-        if (clickedBtn) {
-          clickedBtn.disabled = false;
-          clickedBtn.innerHTML = "<span>⬇ Tải về</span>";
-        }
-
-        if (res.ok && res.data) {
-          const streamUrl = res.data.stream_url || "";
-          const fileName = res.data.file_name || "";
-          const absPath = (res.data.abs_path || "").replace(/\\/g, '/');
-          const localPath = res.data.local_path || (res.data.abs_path || "").replace(/\//g, '\\');
-          window.lastDownloadedVideo = {
-            streamUrl: streamUrl,
-            fileName: fileName,
-            absPath: absPath,
-            localPath: localPath,
-            fileSize: res.data.file_size || ""
-          };
-
-          barFill.style.width = "100%";
-          percentText.innerText = "100%";
-          statusText.innerHTML = `✅ Đã tải thành công <strong>${escapeHtml(fileName)}</strong> (${res.data.file_size})!
-            <button type="button" class="btn-ctrl-main" style="display: inline-flex; margin-left: 10px; padding: 4px 10px; font-size: 12px;" onclick="playFbPreview(window.lastDownloadedVideo.streamUrl, window.lastDownloadedVideo.fileName, true, window.lastDownloadedVideo.localPath)">▶ Xem ngay trên Web</button>
-            <button type="button" class="btn-ctrl-sub" style="display: inline-flex; margin-left: 6px; padding: 4px 10px; font-size: 12px;" onclick="openMediaFile(window.lastDownloadedVideo.absPath)">🖥 Mở trên máy</button>
-          `;
-
-          // Cập nhật thẻ hiển thị đường dẫn video trên máy và nút sao chép
-          const successCard = document.getElementById("fbDownloadSuccessCard");
-          const pathInput = document.getElementById("fbDownloadedPathInput");
-          const sizeBadge = document.getElementById("fbSuccessFileSizeBadge");
-          if (pathInput) pathInput.value = localPath;
-          if (sizeBadge) sizeBadge.innerText = res.data.file_size || "-- MB";
-          if (successCard) successCard.style.display = "flex";
-
-          // Cập nhật context card bên tab Gemini AI
-          updateGeminiVideoContext(window.lastDownloadedVideo);
-
-          showToast("✅ Đã tải xong: " + fileName);
-          // Tự động nạp video đã tải vào khung preview trên Web
-          if (streamUrl) {
-            playFbPreview(streamUrl, fileName, true, localPath);
-          }
-        } else {
-          barFill.style.width = "0%";
-          percentText.innerText = "Lỗi";
-          statusText.innerHTML = `❌ Lỗi khi tải video: ${escapeHtml(res.message || "Không xác định")}`;
-        }
-      })
-      .catch(err => {
-        if (clickedBtn) {
-          clickedBtn.disabled = false;
-          clickedBtn.innerHTML = "<span>⬇ Tải về</span>";
-        }
-        barFill.style.width = "0%";
-        percentText.innerText = "Lỗi";
-        statusText.innerHTML = `❌ Lỗi kết nối: ${escapeHtml(err.message || err)}`;
-      });
-    }
-
-    function loadFbHistory() {
-      // Đã ẩn phần Lịch sử video theo yêu cầu
-    }
-
-    // ==========================================
-    // SAO CHÉP VÀ THAO TÁC ĐƯỜNG DẪN VIDEO
-    // ==========================================
-    function copyTextToClipboard(text, successToast = "Đã sao chép!") {
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text).then(() => {
-          showToast("📋 " + successToast);
-        }).catch(() => {
-          fallbackCopyText(text, successToast);
-        });
-      } else {
-        fallbackCopyText(text, successToast);
-      }
-    }
-
-    function fallbackCopyText(text, successToast) {
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-      textArea.style.position = "fixed";
-      textArea.style.left = "-999999px";
-      textArea.style.top = "-999999px";
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
+    function checkStartupDonate() {
       try {
-        document.execCommand('copy');
-        showToast("📋 " + successToast);
-      } catch (err) {
-        console.error("Lỗi sao chép:", err);
-      }
-      document.body.removeChild(textArea);
-    }
-
-    function copyDownloadedVideoPath() {
-      const input = document.getElementById("fbDownloadedPathInput");
-      const path = (input && input.value) ? input.value : (window.lastDownloadedVideo ? window.lastDownloadedVideo.localPath : "");
-      if (!path) {
-        showToast("⚠️ Chưa có đường dẫn video nào để sao chép!", "error");
-        return;
-      }
-      copyTextToClipboard(path, "Đã sao chép đường dẫn video vào bộ nhớ tạm!");
-      const btn = document.getElementById("btnCopyDownloadedPath");
-      const btnText = document.getElementById("btnCopyDownloadedPathText");
-      const btnIcon = document.getElementById("btnCopyDownloadedPathIcon");
-      if (btn) {
-        btn.classList.add("copied");
-        if (btnText) btnText.innerText = "Đã sao chép!";
-        if (btnIcon) btnIcon.innerText = "✅";
-        setTimeout(() => {
-          btn.classList.remove("copied");
-          if (btnText) btnText.innerText = "Sao chép path";
-          if (btnIcon) btnIcon.innerText = "📋";
-        }, 2000);
-      }
-    }
-
-    function copyPlayerVideoPath() {
-      const input = document.getElementById("fbPlayerPathInput");
-      const path = (input && input.value) ? input.value : "";
-      if (!path) {
-        showToast("⚠️ Chưa có đường dẫn video nào!", "error");
-        return;
-      }
-      copyTextToClipboard(path, "Đã sao chép đường dẫn video!");
-      const btn = document.getElementById("btnCopyPlayerPath");
-      if (btn) {
-        btn.innerHTML = "<span>✅ Đã chép</span>";
-        setTimeout(() => {
-          btn.innerHTML = "<span>📋 Sao chép path</span>";
-        }, 2000);
-      }
-    }
-
-    function openCurrentDownloadedFile() {
-      const path = window.lastDownloadedVideo ? window.lastDownloadedVideo.absPath : currentPlayingLocalPath;
-      if (!path) {
-        showToast("⚠️ Không tìm thấy file video để mở!", "error");
-        return;
-      }
-      openMediaFile(path);
-    }
-
-    function switchToGeminiWithVideo() {
-      switchMainTab('gemini');
-      if (window.lastDownloadedVideo) {
-        updateGeminiVideoContext(window.lastDownloadedVideo);
-      }
-    }
-
-    function updateGeminiVideoContext(videoInfo) {
-      const card = document.getElementById("geminiVideoContextCard");
-      const nameEl = document.getElementById("geminiActiveVideoName");
-      const pathEl = document.getElementById("geminiActiveVideoPath");
-      if (!card) return;
-      if (videoInfo && (videoInfo.fileName || videoInfo.localPath)) {
-        card.style.display = "flex";
-        if (nameEl) nameEl.innerText = videoInfo.fileName || "Video Facebook";
-        if (pathEl) pathEl.innerText = videoInfo.localPath || videoInfo.absPath || "";
-      }
-    }
-
-    function copyGeminiActiveVideoPath() {
-      const pathEl = document.getElementById("geminiActiveVideoPath");
-      const path = pathEl ? pathEl.innerText : (window.lastDownloadedVideo ? window.lastDownloadedVideo.localPath : "");
-      if (!path || path === "--") {
-        showToast("⚠️ Chưa có đường dẫn video để sao chép!", "error");
-        return;
-      }
-      copyTextToClipboard(path, "Đã sao chép đường dẫn video!");
-    }
-
-    function insertPathToPrompt() {
-      const pathEl = document.getElementById("geminiActiveVideoPath");
-      const path = pathEl ? pathEl.innerText : (window.lastDownloadedVideo ? window.lastDownloadedVideo.localPath : "");
-      if (!path || path === "--") {
-        showToast("⚠️ Chưa có video nào đang chọn!", "error");
-        return;
-      }
-      const textarea = document.getElementById("promptTextarea");
-      if (!textarea) return;
-      const insertText = `Đường dẫn video trên máy: ${path}\n\n`;
-      textarea.value = insertText + textarea.value;
-      updatePromptStats();
-      showToast("➕ Đã chèn đường dẫn video vào đầu prompt!");
-    }
-
-    // ==========================================
-    // LOGIC TAB GEMINI AI & HỘP THOẠI PROMPT MẪU
-    // ==========================================
-    const DEFAULT_GEMINI_PROMPT_CONTENT = `từ video tôi gửi sau đây hãy phân tích cho tôi theo format này nhé 
-Create a 15-second cinematic realistic video.
-Keep the same characters, faces, clothing, location, lighting, and key objects consistent in every shot.   
-Use subtle natural acting, realistic facial micro-expressions, slow eye movement, small pauses before speaking, natural breathing, restrained emotions, and cinematic realism.
-Avoid repeated generic dialogue. Avoid exaggerated crying, avoid sudden screaming, avoid cartoon-like reactions, avoid unnatural mouth movement, avoid fast body movements, avoid overacting.
-Character consistency:
-Sarah: Caucasian woman in her early 30s, shoulder-length brown hair, bruised left cheek with soup stains dripping down her chin, neck, and stained ivory cable-knit sweater, wearing a delicate gold necklace.   
-Husband: Mid-30s Caucasian man, short neat dark hair, clean-shaven, dark green textured knit sweater, tense and evasive expression.   
-Mother-in-law (Mrs. Harrington): Mid-60s elegant Caucasian woman, styled silver hair, gold chain necklace, wearing a sophisticated fitted red long-sleeve dress, composed yet condescending demeanor.   
-The Father: Imposing older man (around late 60s/70s), weathered tough facial features, gray hair, wearing a heavy black overcoat over a dark turtleneck, accompanied by suited bodyguards.   
-Key objects: Bowl of spilled soup on the dining table, modern smartphone, grand Harrington mansion illuminated in winter night.   
-Structure the video in shots:
-[0s - 3s] Medium shot: Sarah sits at the lavish Christmas dinner table with soup spilled across her front and an injury on her face. She glares at her husband with restrained fury while he avoids taking her side.   
-Character dialogue: Sarah firmly: “Say something.”
-   
-Character dialogue: Husband defensively: “You shouldn’t have provoked her.”
-   
-[3s - 6s] Close-up to Medium close-up: Sarah wipes her face slightly, pulls out her smartphone, and begins dialing. The mother-in-law smirks smugly with crossed arms.   
-Character dialogue: Mother-in-law condescendingly: “Who are you calling?”
-   
-Character dialogue: Husband panicked: “Sarah, don’t!”
-   
-[6s - 9s] Close-up: Sarah holds the phone to her ear, her voice trembling but resolute.   
-Character dialogue: Sarah into phone: “Dad, they crossed the line.”
-   
-Character dialogue: Father (over phone): “Are you still inside the Harrington house?”
-   
-Character dialogue: Sarah: “Yes.”
-   
-[9s - 12s] Wide exterior shot cut to Interior reaction shot: The exterior of the lavish snow-covered Harrington mansion shudders under a loud impact. Cut quickly to the dining room as the family freezes in sudden dread.   
-Character dialogue: Husband in panic: “Mom, what did you do?”
-   
-[12s - 15s] Low-angle tracking shot to Close-up: The front doors swing wide open as Sarah’s powerful father walks into the foyer with armed bodyguards in dark suits. Cut to the mother-in-law’s face draining of color, completely paralyzed with fear.   
-Character dialogue: The Father in a low, menacing voice: “Who touched my daughter?”`;
-
-    let geminiPrompts = [
-      {
-        id: "cinematic_15s",
-        name: "🎬 Kịch bản 15s Cinematic Realism (Mẫu chuẩn)",
-        content: DEFAULT_GEMINI_PROMPT_CONTENT
-      }
-    ];
-    let currentPromptId = "cinematic_15s";
-    let isGeminiTabInitialized = false;
-
-    function initGeminiTab() {
-      if (!isGeminiTabInitialized) {
-        loadPromptTemplates();
-        isGeminiTabInitialized = true;
-      }
-      if (window.lastDownloadedVideo) {
-        updateGeminiVideoContext(window.lastDownloadedVideo);
-      }
-    }
-
-    function loadPromptTemplates() {
-      fetch("/api/prompts")
-        .then(r => r.json())
-        .then(res => {
-          if (res.ok && Array.isArray(res.data) && res.data.length > 0) {
-            geminiPrompts = res.data;
-          } else {
-            try {
-              const cached = localStorage.getItem("story_gemini_prompts");
-              if (cached) geminiPrompts = JSON.parse(cached);
-            } catch(e) {}
-          }
-          renderPromptSelectOptions();
-        })
-        .catch(() => {
-          try {
-            const cached = localStorage.getItem("story_gemini_prompts");
-            if (cached) geminiPrompts = JSON.parse(cached);
-          } catch(e) {}
-          renderPromptSelectOptions();
-        });
-    }
-
-    function renderPromptSelectOptions() {
-      const select = document.getElementById("promptSelect");
-      if (!select) return;
-      select.innerHTML = "";
-      geminiPrompts.forEach(p => {
-        const opt = document.createElement("option");
-        opt.value = p.id;
-        opt.innerText = p.name;
-        if (p.id === currentPromptId) opt.selected = true;
-        select.appendChild(opt);
-      });
-      if (!geminiPrompts.some(p => p.id === currentPromptId) && geminiPrompts.length > 0) {
-        currentPromptId = geminiPrompts[0].id;
-        select.value = currentPromptId;
-      }
-      displayActivePrompt();
-    }
-
-    function displayActivePrompt() {
-      const prompt = geminiPrompts.find(p => p.id === currentPromptId) || geminiPrompts[0];
-      const textarea = document.getElementById("promptTextarea");
-      const btnDelete = document.getElementById("btnDeletePrompt");
-      if (textarea && prompt) {
-        textarea.value = prompt.content;
-        updatePromptStats();
-      }
-      if (btnDelete) {
-        btnDelete.style.display = (prompt && prompt.id !== "cinematic_15s") ? "inline-block" : "none";
-      }
-    }
-
-    function handlePromptSelectChange(val) {
-      currentPromptId = val;
-      displayActivePrompt();
-    }
-
-    function updatePromptStats() {
-      const textarea = document.getElementById("promptTextarea");
-      const charEl = document.getElementById("promptCharCount");
-      const wordEl = document.getElementById("promptWordCount");
-      if (!textarea) return;
-      const val = textarea.value;
-      if (charEl) charEl.innerText = val.length;
-      if (wordEl) {
-        const words = val.trim() ? val.trim().split(/\s+/).length : 0;
-        wordEl.innerText = words;
-      }
-    }
-
-    function copyActivePrompt() {
-      const textarea = document.getElementById("promptTextarea");
-      if (!textarea) return;
-      const content = textarea.value;
-      if (!content) {
-        showToast("⚠️ Nội dung prompt đang trống!");
-        return;
-      }
-      copyTextToClipboard(content, "Đã sao chép Prompt mẫu vào bộ nhớ tạm!");
-      const btn = document.getElementById("btnCopyPrompt");
-      const btnText = document.getElementById("btnCopyPromptText");
-      const btnIcon = document.getElementById("btnCopyPromptIcon");
-      if (btn) {
-        if (btnText) btnText.innerText = "ĐÃ SAO CHÉP PROMPT!";
-        if (btnIcon) btnIcon.innerText = "✅";
-        setTimeout(() => {
-          if (btnText) btnText.innerText = "SAO CHÉP PROMPT NÀY";
-          if (btnIcon) btnIcon.innerText = "📋";
-        }, 2000);
-      }
-    }
-
-    function copyPromptWithVideoPath() {
-      const textarea = document.getElementById("promptTextarea");
-      if (!textarea) return;
-      let text = textarea.value;
-      const videoPath = (window.lastDownloadedVideo && window.lastDownloadedVideo.localPath) 
-        ? window.lastDownloadedVideo.localPath 
-        : (currentPlayingLocalPath || "");
-      if (videoPath) {
-        text = `Đường dẫn video trên máy tính: ${videoPath}\n\n` + text;
-      }
-      copyTextToClipboard(text, videoPath ? "Đã sao chép Prompt kèm đường dẫn video!" : "Đã sao chép Prompt (chưa có video tải về)");
-    }
-
-    function saveActivePromptChanges() {
-      const textarea = document.getElementById("promptTextarea");
-      if (!textarea) return;
-      const activePrompt = geminiPrompts.find(p => p.id === currentPromptId);
-      if (!activePrompt) return;
-      activePrompt.content = textarea.value;
-      savePromptsToServer();
-    }
-
-    function savePromptsToServer() {
-      try {
-        localStorage.setItem("story_gemini_prompts", JSON.stringify(geminiPrompts));
-      } catch(e) {}
-      fetch("/api/prompts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompts: geminiPrompts })
-      })
-      .then(r => r.json())
-      .then(res => {
-        if (res.ok) {
-          showToast("✅ Đã lưu prompt mẫu thành công!");
-        } else {
-          showToast("⚠️ Đã lưu trên máy (lỗi server: " + res.message + ")");
+        const isFreshSession = !sessionStorage.getItem("startup_donate_shown");
+        if (isFreshSession) {
+          sessionStorage.setItem("startup_donate_shown", "1");
+          setTimeout(() => {
+            let currentCount = parseInt(localStorage.getItem("total_created_articles_count") || "0", 10);
+            openDonateModal(currentCount, "startup");
+          }, 600);
         }
-      })
-      .catch(() => {
-        showToast("✅ Đã lưu prompt vào bộ nhớ tạm trình duyệt");
+      } catch (e) {
+        console.warn("Startup donate check error:", e);
+      }
+    }
+
+    function checkAndTriggerDonateModal(articlesAdded = 1) {
+      try {
+        let currentCount = parseInt(localStorage.getItem("total_created_articles_count") || "0", 10);
+        if (isNaN(currentCount) || currentCount < 0) currentCount = 0;
+        currentCount += articlesAdded;
+        localStorage.setItem("total_created_articles_count", currentCount);
+
+        let lastPrompted = parseInt(localStorage.getItem("last_donate_prompt_count") || "0", 10);
+        if (isNaN(lastPrompted) || lastPrompted < 0) lastPrompted = 0;
+
+        // Kích hoạt khi đạt bội số của 20 (20, 40, 60, ...)
+        if (currentCount >= 20 && Math.floor(currentCount / 20) > Math.floor(lastPrompted / 20)) {
+          localStorage.setItem("last_donate_prompt_count", currentCount);
+          openDonateModal(currentCount, "interval");
+        }
+      } catch (e) {
+        console.warn("Donate check error:", e);
+      }
+    }
+
+    function openDonateModal(count, reason = "interval") {
+      const modal = document.getElementById("donateModal");
+      const countEl = document.getElementById("donateArticlesCountText");
+      if (countEl) {
+        countEl.innerText = count !== undefined ? count : (localStorage.getItem("total_created_articles_count") || "0");
+      }
+      if (modal) {
+        modal.style.display = "flex";
+      }
+    }
+
+    function closeDonateModal() {
+      const modal = document.getElementById("donateModal");
+      if (modal) {
+        modal.style.display = "none";
+      }
+    }
+
+    function copyDonateStk() {
+      const stk = "9363870102";
+      navigator.clipboard.writeText(stk).then(() => {
+        showToast("✅ Đã sao chép STK: 9363870102 (TRAN VAN TOAN - Vietcombank)");
+      }).catch(() => {
+        showToast("STK: 9363870102 (TRAN VAN TOAN - Vietcombank)");
       });
     }
 
-    function createNewPromptTemplate() {
-      const name = prompt("Nhập tên cho mẫu Prompt mới:", "Mẫu phân tích " + (geminiPrompts.length + 1));
-      if (!name || !name.trim()) return;
-      const newId = "prompt_" + Date.now();
-      geminiPrompts.push({
-        id: newId,
-        name: name.trim(),
-        content: DEFAULT_GEMINI_PROMPT_CONTENT
-      });
-      currentPromptId = newId;
-      renderPromptSelectOptions();
-      savePromptsToServer();
-      showToast("➕ Đã tạo mẫu prompt mới!");
-    }
 
-    function resetDefaultPrompt() {
-      if (!confirm("Bạn có chắc chắn muốn khôi phục nội dung mẫu này về định dạng Cinematic 15s chuẩn ban đầu?")) return;
-      const activePrompt = geminiPrompts.find(p => p.id === currentPromptId);
-      if (activePrompt) {
-        activePrompt.content = DEFAULT_GEMINI_PROMPT_CONTENT;
-        displayActivePrompt();
-        savePromptsToServer();
-        showToast("🔄 Đã khôi phục prompt về mẫu chuẩn!");
-      }
-    }
+    
 
-    function deleteCurrentPromptTemplate() {
-      if (currentPromptId === "cinematic_15s") {
-        alert("Không thể xóa mẫu mặc định!");
-        return;
-      }
-      if (!confirm("Bạn có chắc muốn xóa mẫu prompt này?")) return;
-      geminiPrompts = geminiPrompts.filter(p => p.id !== currentPromptId);
-      currentPromptId = geminiPrompts[0] ? geminiPrompts[0].id : "cinematic_15s";
-      renderPromptSelectOptions();
-      savePromptsToServer();
-      showToast("🗑 Đã xóa mẫu prompt!");
-    }
-
-    function openGeminiPopup() {
-      const w = 1120;
-      const h = 880;
-      const left = Math.max(0, (window.screen.width - w) / 2);
-      const top = Math.max(0, (window.screen.height - h) / 2);
-      window.open(
-        'https://gemini.google.com/app',
-        'GeminiWorkspaceWindow',
-        `width=${w},height=${h},top=${top},left=${left},resizable=yes,scrollbars=yes,status=no,toolbar=no,menubar=no,location=yes`
-      );
-      showToast("🚀 Đang mở cửa sổ Gemini độc lập...");
-    }
-
-    function openGeminiNewTab() {
-      window.open('https://gemini.google.com/app', '_blank');
-    }
-
-    function reloadGeminiIframe() {
-      const iframe = document.getElementById("geminiIframe");
-      if (iframe) {
-        iframe.src = iframe.src;
-        showToast("🔄 Đang tải lại khung Gemini...");
-      }
-    }
-
-    function dismissGeminiNotice() {
-      const notice = document.getElementById("geminiIframeNotice");
-      if (notice) notice.style.display = "none";
-    }
 
     // Khởi tạo ban đầu
     fetchLicenseInfo(true);
     loadAccountSettings();
     loadHistory();
     checkAppUpdate(false);
+    checkStartupDonate();
 
   </script>
 </body>

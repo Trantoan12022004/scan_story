@@ -68,6 +68,7 @@ def build_version(target: str):
         '--console',
         '--name', exe_name,
         '--add-data', 'templates;templates',
+        '--add-data', 'static;static',
         '--add-data', 'version.json;.',
     ] + COMMON_HIDDEN_IMPORTS
 

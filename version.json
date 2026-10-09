@@ -1,7 +1,7 @@
 {
-  "version": "2.0.7",
-  "release_date": "2026-09-26",
-  "changelog": "log đầy đủ lỗi",
-  "download_url_user": "https://github.com/Trantoan12022004/scan_story/releases/download/v2.0.7/StoryScraper_User.exe",
-  "download_url_admin": "https://github.com/Trantoan12022004/scan_story/releases/download/v2.0.7/StoryScraper_Admin.exe"
+  "version": "2.0.9",
+  "release_date": "2026-10-09",
+  "changelog": "Bản phát hành v2.0.9: Tinh gọn giao diện web chuyên sâu cào truyện & đăng bài CMS, tích hợp site TreeIQ gộp chương tự động, bổ sung thông báo donate ủng hộ tác giả.",
+  "download_url_user": "https://github.com/Trantoan12022004/scan_story/releases/download/v2.0.9/StoryScraper_User.exe",
+  "download_url_admin": "https://github.com/Trantoan12022004/scan_story/releases/download/v2.0.9/StoryScraper_Admin.exe"
 }

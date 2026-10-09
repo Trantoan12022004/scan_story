@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Build & packaging output
+dist/
+out/
+output/
+
+# Cache & logs
+.license_cache
+*.log*
+.eslintcache
+.DS_Store
+
+# Temporary scraped / test HTML dumps (keep renderer HTML in src/renderer/)
+/*.html

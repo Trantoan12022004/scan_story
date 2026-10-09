@@ -31,7 +31,8 @@ from license_manager import LicenseManager, get_machine_id
 if getattr(sys, 'frozen', False):
     base_dir = getattr(sys, '_MEIPASS', os.path.dirname(sys.executable))
     template_folder = os.path.join(base_dir, "templates")
-    app = Flask(__name__, template_folder=template_folder)
+    static_folder = os.path.join(base_dir, "static")
+    app = Flask(__name__, template_folder=template_folder, static_folder=static_folder)
     APP_ROOT = os.path.dirname(sys.executable)
 else:
     app = Flask(__name__)
@@ -44,6 +45,7 @@ app.jinja_env.auto_reload = True
 subscribers = []
 subscribers_lock = threading.Lock()
 is_processing = False
+APP_BOOT_ID = str(int(time.time() * 1000))
 
 
 def emit_event(event_type: str, message: str = "", data: dict = None):
@@ -263,19 +265,22 @@ def process_story_thread(params):
     # Đăng bài lên CMS nếu có bật
     cms_posts = []
     if publish_cms and chapters:
-        emit_event("info", f"🚀 Bắt đầu đăng lên CMS ({cms_url}) với user '{cms_user}' (Content mode: chapter)...")
+        emit_event("info", f"🚀 Bắt đầu đăng lên CMS ({cms_url}) với user '{cms_user}'...")
         publisher = CMSPublisher(base_url=cms_url, username=cms_user, password=cms_pass, on_log=emit_event)
         if publisher.login():
             emit_event("success", f"🔑 Đăng nhập CMS thành công (User: {cms_user})!")
             created = publisher.publish_story(story_info, chapters)
             if created:
                 cms_posts = created
-                if len(created) == len(chapters):
+                if publisher.cms_type == "treeiq":
+                    post_url = created[0].get("url") or ""
+                    emit_event("success", f"🎉 Đăng bài thành công lên TreeIQ CMS (1 bài viết tổng hợp {len(chapters)} chương)! Link: {post_url}", {"cms_posts": created})
+                elif len(created) == len(chapters):
                     emit_event("success", f"🎉 Đăng bài thành công ({len(created)}/{len(chapters)} posts đã tạo trên CMS)!", {"cms_posts": created})
                 else:
                     emit_event("warning", f"⚠️ Đăng bài hoàn tất một phần: {len(created)}/{len(chapters)} chapter thành công, {len(chapters) - len(created)} chapter thất bại. Xem chi tiết lỗi ở trên.", {"cms_posts": created})
             else:
-                emit_event("error", f"❌ Lỗi đăng bài lên CMS (0/{len(chapters)} chapter thành công). Chi tiết: {publisher.last_error or 'Kiểm tra lại log lỗi ở trên'}")
+                emit_event("error", f"❌ Lỗi đăng bài lên CMS. Chi tiết: {publisher.last_error or 'Kiểm tra lại log lỗi ở trên'}")
         else:
             emit_event("error", f"❌ Đăng nhập CMS thất bại cho user '{cms_user}': {publisher.last_error or 'Vui lòng kiểm tra lại URL hoặc mật khẩu.'}")
 
@@ -327,6 +332,7 @@ def get_license_info():
     return jsonify({
         "ok": True,
         "is_admin": admin,
+        "boot_id": APP_BOOT_ID,
         "data": info,
         "sheet_url": sheet_url,
         "sheet_web_url": sheet_web_url
@@ -1372,7 +1378,7 @@ def api_quan_ly_open_video():
         return jsonify({"ok": False, "message": f"Đường dẫn không tồn tại: {clean_path}"}), 404
 
 
-def start_server(port: int = 5001):
+def start_server(port: int = 5000):
     admin = is_admin_mode()
     mode_name = "QUẢN TRỊ VIÊN (ADMIN)" if admin else "NGƯỜI DÙNG (USER)"
     url = f"http://localhost:{port}"
