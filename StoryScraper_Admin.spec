@@ -2,11 +2,11 @@
 
 
 a = Analysis(
-    ['entry_user.py'],
+    ['entry_admin.py'],
     pathex=[],
     binaries=[],
     datas=[('templates', 'templates'), ('static', 'static'), ('version.json', '.')],
-    hiddenimports=['parsers', 'parsers.base', 'parsers.treeiq', 'parsers.ahcms', 'parsers.universal', 'downloader', 'translator', 'publisher', 'license_manager', 'fb_downloader', 'bs4', 'lxml', 'requests'],
+    hiddenimports=['parsers', 'parsers.base', 'parsers.treeiq', 'parsers.ahcms', 'parsers.universal', 'downloader', 'translator', 'publisher', 'license_manager', 'fb_downloader', 'bs4', 'lxml', 'requests', 'keygen'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -22,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='StoryScraper_User',
+    name='StoryScraper_Admin',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

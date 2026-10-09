@@ -45,6 +45,19 @@ COMMON_HIDDEN_IMPORTS = [
 ]
 
 
+COMMON_EXCLUDES = [
+    '--exclude-module', 'PyQt5',
+    '--exclude-module', 'PyQt6',
+    '--exclude-module', 'PySide2',
+    '--exclude-module', 'PySide6',
+    '--exclude-module', 'matplotlib',
+    '--exclude-module', 'IPython',
+    '--exclude-module', 'tkinter',
+    '--exclude-module', 'tornado',
+    '--exclude-module', 'scipy',
+]
+
+
 def build_version(target: str):
     """
     target: 'user' hoặc 'admin'
@@ -70,7 +83,7 @@ def build_version(target: str):
         '--add-data', 'templates;templates',
         '--add-data', 'static;static',
         '--add-data', 'version.json;.',
-    ] + COMMON_HIDDEN_IMPORTS
+    ] + COMMON_HIDDEN_IMPORTS + COMMON_EXCLUDES
 
     if is_admin:
         pyinstaller_args += ['--hidden-import', 'keygen']
